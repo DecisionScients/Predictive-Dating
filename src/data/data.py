@@ -1,4 +1,13 @@
-#%%
+
+# %%
+import os
+import imp
+import pandas as pd
+
+settings = imp.load_source('settings',
+                           r"c:\Users\John\Documents\Data Science"
+                           r"\Projects\Predictive Dating\src"
+                           r"\settings.py")
 # --------------------------------------------------------------------------- #
 #                                   DATA                                      #
 # --------------------------------------------------------------------------- #
@@ -57,12 +66,7 @@ def write(df, directory, filename):
 #                                 Main                                        #
 # --------------------------------------------------------------------------- #
 if __name__ == "__main__":
-    import os
-    import imp
-    import pandas as pd
-    settings = imp.load_source('settings',
-                               r"c:\Users\John\Documents\Data Science\Projects\Predictive Dating\src\settings.py")
-    
+
     df = read(settings.RAW_DATA_DIR, settings.RAW_DATA_FILENAME, settings.VARS)
     print(df.info())
     write(df, settings.INTERIM_DATA_DIR, 'speed_dating.csv')

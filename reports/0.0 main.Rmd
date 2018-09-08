@@ -57,24 +57,24 @@ knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
 import os, sys, inspect
 os.environ['QT_QPA_PLATFORM_PLUGIN_PATH'] = '/ProgramData/Anaconda3/Library/plugins/platforms'
 
+# 
+# import matplotlib as mpl
+# import matplotlib.pyplot as plt
+# import matplotlib.pylab as pylab
+# import pandas as pd
+# import statistics as stat
+# import seaborn as sns
+# 
+# from sklearn.linear_model import LogisticRegression
+# from sklearn.model_selection import train_test_split
+# from sklearn import metrics 
+# from sklearn.metrics import classification_report
+# from sklearn.metrics import confusion_matrix
 
-import matplotlib as mpl
-import matplotlib.pyplot as plt
-import matplotlib.pylab as pylab
-import pandas as pd
-import statistics as stat
-import seaborn as sns
-
-from sklearn.linear_model import LogisticRegression
-from sklearn.model_selection import train_test_split
-from sklearn import metrics 
-from sklearn.metrics import classification_report
-from sklearn.metrics import confusion_matrix
-
-sys.path.append("./src")
-import settings
-sys.path.append("./src/visualization")
-import visual
+# sys.path.append("./src")
+# import settings
+# sys.path.append("./src/visualization")
+# import visual
 
 ```
 
@@ -82,10 +82,4 @@ import visual
 ```
 
 ```{r case, child = '2.0 case.rmd'}
-```
-
-```{r ml, child = '3.0 ml.rmd'}
-```
-
-```{r la, child = '4.0 la.rmd'}
 ```

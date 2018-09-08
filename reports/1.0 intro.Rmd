@@ -14,23 +14,27 @@ By the end of this series, you will be able to:
 5.	Evaluate and contrast the performance of the algorithms   
 
 ## How will we get there?   
-We will take a case-based approach as follows:     
+We will take a case-based approach as follows:  
+
 1. Case Introduction   
-2. Introduction to Machine Learning and Classification   
-    * Machine Learning Tasks    
-    * Machine Learning Applications   
-    * The Classification Problem  
-3. Linear Classifiers   
-    * Logistic Regression   
-    * Linear Discriminant Analysis   
-    * Support Vector Machines   
-4. Non-Linear Classifiers   
-    * K-Nearest Neighbors
-    * Generalized Additive Models for Classification
-    * Neural Networks   
-5. Tree-Based Classifiers    
-    * Classification Tree   
-    * Bagging    
-    * Random Forests   
-    *  Boosting   
-6. Capstone: Predicting Speed Dating Matches
+2. Exploratory Data Analysis   
+3. Machine Learning and Classification Review   
+    3.1. Machine Learning Tasks   
+    3.2. Machine Learning Applications      
+    3.3. Linear Algebra Review   
+    3.4. The Classification Problem   
+4. Linear Classifiers   
+    4.1. Logistic Regression   
+    4.2. Linear Discriminant Analysis   
+    4.3. Support Vector Machines   
+5. Non-Linear Classifiers    
+    5.1. K-Nearest Neighbors   
+    5.2. Generalized Additive Models for Classification  
+    5.3. Neural Networks   
+6. Tree-Based Classifiers    
+    6.1. Classification Tree   
+    6.2. Bagging    
+    6.3. Random Forests   
+    6.4. Boosting   
+7. Discussion  
+8. Conclusions  
