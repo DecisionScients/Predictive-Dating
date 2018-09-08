@@ -66,7 +66,6 @@ def write(df, directory, filename):
 #                                 Main                                        #
 # --------------------------------------------------------------------------- #
 if __name__ == "__main__":
-
     df = read(settings.RAW_DATA_DIR, settings.RAW_DATA_FILENAME, settings.VARS)
     print(df.info())
     write(df, settings.INTERIM_DATA_DIR, 'speed_dating.csv')
