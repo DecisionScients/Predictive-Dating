@@ -1,0 +1,41 @@
+---
+title: ""
+author: ""
+date: '`r format(Sys.time(), "%d %B, %Y")`'
+output:
+  rmdformats::readthedown:
+    highlight: kate
+    css: ../css/rmdStyles.css
+    number_sections: false
+bibliography: Machine Learning.bib
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: inline
+---
+```{r setup, echo=FALSE}
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+```
+
+
+```{r load-libraries, echo=FALSE}
+library(reticulate)
+```
+
+```{r}
+import_from_path('repros', path = './test/')
+source_python("./test/repros.py")
+```
+
+
+```{python}
+import os
+os.environ['QT_QPA_PLATFORM_PLUGIN_PATH'] = '/ProgramData/Anaconda3/Library/plugins/platforms'
+```
+
+```{python, eval=TRUE}
+repros()
+plt.show()
+```

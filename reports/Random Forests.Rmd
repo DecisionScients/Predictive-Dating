@@ -1,0 +1,88 @@
+---
+title: "Random Forests & Speed Dating"
+author: "John James jjames@DecisionScients.org"
+date: '`r format(Sys.time(), "%d %B, %Y")`'
+output:
+  rmdformats::readthedown:
+    highlight: kate
+    css: ../css/rmdStyles.css
+    number_sections: false
+bibliography: Machine Learning.bib
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: inline
+---
+
+
+```{r knitr_init, echo=FALSE, cache=FALSE, warning=FALSE, message=FALSE}
+options(knitr.table.format = "html")
+options(max.print=100, scipen=999, width = 800)
+knitr::opts_chunk$set(echo=FALSE,
+	             cache=FALSE,
+               prompt=FALSE,
+	             eval = TRUE,
+               tidy=TRUE,
+               root.dir = "..",
+               fig.height = 8,
+               fig.width = 20,
+               comment=NA,
+               message=FALSE,
+               warning=FALSE)
+knitr::opts_knit$set(width=100, figr.prefix = T, figr.link = T)
+knitr::knit_hooks$set(inline = function(x) {
+  prettyNum(x, big.mark=",")
+})
+```
+
+```{r load-libraries}
+library(data.table)
+library(dplyr)
+library(extrafont)
+```
+
+The most important machine learning algorithm ever created!
+Ok, I’m not usually this hyperbolic, but  my social media consultant advises me that my claim to “Boost your love life with Random Forests” was a) “unsupported“, ii) “unconvincing”, and 3), …refer to  a )and ii). Despite such unsupportive commentary , I argue that a fast and adaptable learning model that:
+1.	is easily interpreted and mirrors human decision making, 
+2.	can grow to arbitrary levels of complexity without over-fitting the training data,   
+3.	ports well to both regression and classification problems,    
+4.	requires minimal data processing and normalization,    
+5.	increases predictive accuracy nearly monotonically with model complexity,    
+6.	is robust to noise and outliers,   
+7.	has outperformed support vector machines (SVMs), neural networks and boosting in empirical studies[@Caruana], and    
+8.	can predict speed dating matches with an “out-of-the-box” AUC-ROC exceeding ___%
+will transform not only our love lives, but the predictive dating industry itself!
+So, what are random forests?  How do they really work? When should I use them? How do I implement random forests in my predictive dating applications?  This series has been designed to approach these questions in three parts:  
+1.	The Essentials: Decision, regression, and classification trees  and other tree-based methods 
+2.	Random Forests: What are they, how do they work and when to use them   
+3.	The Lab: Speed dating and random forests in python   
+
+# The Essentials 
+To understand the innovation of random forests, we first consider decision trees and other tree-based methods such as bagging and boosting. Decision tree learning, routinely used in data mining, is a non-parametric learning method that uses decision trees to predict the value of a target variable based upon several inputs.  Classification trees in which the target variable is a discrete class to which the data belong and regression trees used to predict continuous outcomes are the two main types of decision trees used among practitioners. Boosted trees, bootstrap aggregated (or “Bagged”) trees, and random forests, otherwise known as ensemble methods, construct multiple decision trees and use averaging or majority vote of individual trees to render predictions in classification and regression settings. 
+
+## Decision Trees
+To motivate decision trees we’ll begin with a simple regression problem. 
+
+### Regression Trees
+It’s Monday morning 8:59am, your first day back in the office following an extended sabbatical. and your boss tasks you with building a model to predict housing prices in Aimes Iowa.   She cautions against a “black box” solution that is difficult to interpret since she will use the model during onboarding of new real estate sales executives, who lack advanced statistics and mathematical expertise. Fortunately, while you were in Malaysia building group homes for retired circus clowns with Capgras delusion, Eric, the summer intern was dutifully and meticulously compiling the dataset for the project  [@DeCock2011].  Sipping your third espresso in 30 minutes, you start pouring over the data and contemplating your strategy.  The initial readout is scheduled for Friday. 
+
+Using the Ames  Iowa Housing Dataset [@DeCock2011], let’s start by fitting a model to predict home prices based upon area and age.  Price, the dependent variable and age are log transformed so that their distributions have a more typical bell-shape.  For illustrative purposes, we’ve limited the dataset to 10 observations and the resulting decision tree in FIG contains:  
+•	Internal nodes – splitting rules based upon the value of a input feature  
+•	Branches – the output of a decision or splitting rule, and     
+•	Terminal leaf nodes containing predicted values or probability distributions over the classes   
+
+In the top-most node, the root node, we observe computes a mean log price prediction for all observations of 11.892, or \$146,093 on the linear scale. Our first split assigns homes that are smaller than 1,207 square feet to the left branch, terminating at a node with a mean predicted log price of 11.727 (\$123,871). Larger homes; on the other hand, were assigned to the right branch. The homes terminating in the connecting node had a mean predicted log price of 12.277 or $123,871 on the linear scale. Progressing down and to the left, the next split we see is based upon the value of log age; whereas, the right splits on area once more.  So far, we see that the tree has stratified or segmented the homes into four regions of the predictor space:   
+•	homes that are less than 1,207 square feet and have a log age of less than 3.873
+•	homes that are less than 1,207 square feet and have a log age of greater than or equal to 3.873
+•	homes that are greater than or equal to 1,207 square feet, but less than 1,793 square feet
+•	homes that are greater than or equal to 1,207 square feet, but greater than or equal to 1,793 square feet 
+
+These predictor regions can be written as:  
+•	$R_1$ = ${X|area < 1207 sq. feet, age.log < 3.873}$
+•	$R_1$ = ${X|area < 1207 sq. feet, age.log \ge 3.873}$
+•	$R_1$ = ${X|area \ge 1207 sq. feet, area < 1793 sq. feet}$
+•	$R_1$ = ${X|area \ge 1207 sq. feet, area \ge 1793 sq. feet}$
+
+The splitting continues in this fashion until we encounter leaf terminal nodes, each containing a single observation.

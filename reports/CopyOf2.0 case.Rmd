@@ -1,0 +1,97 @@
+# Case: Predictive Dating
+Congratulations on getting a job as a data scientist at SpeedDating.com, the dominate player in the speed dating market! Your boss has compiled data from a series of past speed dating events and she asks you to:  
+1. develop a model to predict whether a participant requests a second date,  
+2. determine which attributes, or combinations thereof, are most highly associated with a second date decision, and      
+3. present interesting insights about speed dating.
+
+Not interested in a 'blackbox' solution, she advises that the model must make sense to the domain experts in marketing. You are also expected to describe your model selection process, justify your model choice, and explain how the model works.
+
+## The Data 
+The data was obtained from participants in experimental speed dating events from 2002-2004.  During these events, participants would have a series of four-minute “first-dates” with every other participant of the opposite sex. At the end of each four-minute date, participants were asked if they would like to see their date again.  Participants were also asked to rate their date on six attributes: Attractiveness, sincerity, intelligence, fun, ambition, and shared interests. Additional information was obtained throughout the process such as demographics, lifestyle information and beliefs on what others find valuable in a mate. The training set is comprised of 5,925 observations or 'first dates'.
+
+In this case, we examine the six factors that relate to a decision to request a second date. In particular, we wish to understand the association between a decision and partner attractiveness, sincerity, intelligence, sense of humor, ambition and the degree to which interests correlate.
+
+```{python data}
+df = pd.read_csv("./data/processed/train.csv",
+                 encoding = "Latin-1", low_memory = False) 
+df = df[['gender', 'attractive_partner','sincere_partner', 'intelligence_partner',
+         'funny_partner', 'ambition_partner', 'interests_correlate', 'decision']]
+```
+
+```{python gender}
+sns.set(style="whitegrid", font_scale=1.5)
+fig, ax = plt.subplots()
+sns.barplot(x='decision', y='gender', data=df, ax=ax).set_title('Decision by Gender')    
+plt.tight_layout()
+
+if not os.path.exists(r.figures):
+  os.makedirs(r.figures)
+figure_data = os.path.join(r.figures, 'gender.png')
+fig.savefig(figure_data)
+plt.close(fig)
+```
+
+```{r gender_plot}
+knitr::include_graphics(file.path("..", figures,'gender.png'))
+```
+`r kfigr::figr(label = "gender_plot", prefix = TRUE, link = TRUE, type="Figure")`: Decisions by Gender
+
+
+```{python figure2}
+# Plotting Parameters
+mpl.rc('xtick', labelsize=20) 
+mpl.rc('ytick', labelsize=20) 
+
+fig, ax = plt.subplots(2,3)
+
+sns.set(style="whitegrid", font_scale=1.5)
+ax[0,0] = sns.boxplot(x='decision', y = 'attractive_partner', data = df, ax = ax[0,0])
+ax[0,0].set_title("Attractive",fontsize=20)
+ax[0,0].set_xlabel("Decision", fontsize=20)
+ax[0,0].set_ylabel("Attractive", fontsize=20)
+
+ax[0,1] = sns.boxplot(x='decision', y = 'intelligence_partner', data = df, ax = ax[0,1])
+ax[0,1].set_title("Intelligence", fontsize=20)
+ax[0,1].set_xlabel("Decision", fontsize=20)
+ax[0,1].set_ylabel("Intelligence", fontsize=20)
+
+ax[0,2] = sns.boxplot(x='decision', y = 'ambition_partner', data = df, ax = ax[0,2])
+ax[0,2].set_title("Ambition", fontsize=20)
+ax[0,2].set_xlabel("Decision", fontsize=20)
+ax[0,2].set_ylabel("Ambition", fontsize=20)
+
+ax[1,0] = sns.boxplot(x='decision', y = 'sincere_partner', data = df, ax = ax[1,0])
+ax[1,0].set_title("Sincerity", fontsize=20)
+ax[1,0].set_xlabel("Decision", fontsize=20)
+ax[1,0].set_ylabel("Sincerity", fontsize=20)
+
+ax[1,1] = sns.boxplot(x='decision', y = 'funny_partner', data = df, ax = ax[1,1])
+ax[1,1].set_title("Funny", fontsize=20)
+ax[1,1].set_xlabel("Decision", fontsize=20)
+ax[1,1].set_ylabel("Funny", fontsize=20)
+
+ax[1,2] = sns.boxplot(x='decision', y = 'interests_correlate', data = df, ax = ax[1,2])
+ax[1,2].set_title("Interests", fontsize=20)
+ax[1,2].set_xlabel("Decision", fontsize=20)
+ax[1,2].set_ylabel("Interests", fontsize=20)
+
+plt.tight_layout()
+
+if not os.path.exists(r.figures):
+  os.makedirs(r.figures)
+figure_data = os.path.join(r.figures, 'data.png')
+fig.savefig(figure_data)
+
+plt.close(fig)
+```
+
+```{r figure1_plot}
+knitr::include_graphics(file.path("..", figures,'data.png'))
+```
+`r kfigr::figr(label = "data", prefix = TRUE, link = TRUE, type="Figure")`: Speed dating data
+
+`r kfigr::figr(label = "data", prefix = TRUE, link = TRUE, type="Figure")` shows the distributions of participants' ratings of their speed dating partner on the six attributes described above, vis-a-vis the decision to request a second date.  A one on the x-axis indicates a second date was chosen. Ratings were on a scale of 0 to 10 and the correlation of interests ranged from -1 to 1. The horizontal bars inside the boxes indicate the mean rating for all observations within the group.
+
+Consider, for example, the upper left hand panel which displays ratings of attractiveness for both groups.  This plot suggests that higher attraction ratings are associated with a decision to request a second date. Similarly, higher ratings of intelligence, sincerity, and a sense of humor were associated with positive decisions. On the other hand, the plots for ambition and the correlation of interests indicate little association with a decision. Modeling these to variables alone is not likely to provide reliable decision predictions.
+
+Having familiarized ourselves with the data, let's review a few of the import machine learning concepts. 

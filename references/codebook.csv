@@ -1,0 +1,47 @@
+Variable,Type,Description
+gender,Categorical, Gender of self  
+age,Numeric, Age of self  
+age_o,Numeric, Age of partner  
+d_age,Numeric, Difference in age  
+race,Categorical, Race of self  
+race_o,Categorical, Race of partner  
+samerace,Categorical, Whether the two persons have the same race or not.  
+importance_same_race,Numeric, How important is it that partner is of same race?  
+importance_same_religion,Numeric, How important is it that partner has same religion?  
+pref_o_attractive,Numeric, How important does partner rate attractiveness  
+pref_o_sinsere,Numeric, How important does partner rate sincerity  
+pref_o_intelligence,Numeric, How important does partner rate intelligence  
+pref_o_funny,Numeric, How important does partner rate being funny  
+pref_o_ambitious,Numeric, How important does partner rate ambition  
+pref_o_shared_interests,Numeric, How important does partner rate having shared interests  
+attractive_o,Numeric, Rating by partner (about me) at night of event on attractiveness  
+sincere_o,Numeric, Rating by partner (about me) at night of event on sincerity  
+intelligence_o,Numeric, Rating by partner (about me) at night of event on intelligence  
+funny_o,Numeric, Rating by partner (about me) at night of event on being funny  
+ambitous_o,Numeric, Rating by partner (about me) at night of event on being ambitious  
+shared_interests_o,Numeric, Rating by partner (about me) at night of event on shared interest  
+attractive_important,Numeric, What do you look for in a partner - attractiveness  
+sincere_important,Numeric, What do you look for in a partner - sincerity  
+intellicence_important,Numeric, What do you look for in a partner - intelligence  
+funny_important,Numeric, What do you look for in a partner - being funny  
+ambtition_important,Numeric, What do you look for in a partner - ambition  
+shared_interests_important,Numeric, What do you look for in a partner - shared interests  
+attractive,Numeric, Rate yourself - attractiveness  
+sincere,Numeric, Rate yourself - sincerity   
+intelligence,Numeric, Rate yourself - intelligence   
+funny,Numeric, Rate yourself - being funny   
+ambition,Numeric, Rate yourself - ambition  
+attractive_partner,Numeric, Rate your partner - attractiveness  
+sincere_partner,Numeric, Rate your partner - sincerity   
+intelligence_partner,Numeric, Rate your partner - intelligence   
+funny_partner,Numeric, Rate your partner - being funny   
+ambition_partner,Numeric, Rate your partner - ambition   
+shared_interests_partner,Numeric, Rate your partner - shared interests  
+interests_correlate,Numeric, Correlation between participant’s and partner’s ratings of interests.  
+expected_happy_with_sd_people,Numeric, How happy do you expect to be with the people you meet during the speed-dating event?  
+expected_num_interested_in_me,Numeric," Out of the 20 people you will meet, how many do you expect will be interested in dating you?  "
+expected_num_matches,Numeric, How many matches do you expect to get?  
+guess_prob_liked,Numeric, How likely do you think it is that your partner likes you?   
+decision,Categorical, Decision at night of event.
+decision_o,Categorical, Decision of partner at night of event.  
+match,Categorical, Match (yes/no)

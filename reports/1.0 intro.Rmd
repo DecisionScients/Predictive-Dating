@@ -1,0 +1,36 @@
+> Prediction is very difficult, especially if it's about the future. - Niels Boh
+
+# Introduction
+Selecting and implementing the “right” machine learning algorithm to predict the future based upon past data is a necessary, but not sufficient, condition for success as a data scientist. Data science and the outcomes it produces may be complex and difficult to explain.  Yet, the effective data scientist must be equally facile at explaining her approach and findings to both colleagues and non-technical stakeholders.
+
+In this ___ part series, we examine and contrast the most widely used machine learning classification algorithms.  Unlike regression algorithms which predict continuous outcomes, classifiers assign unseen observations to one or more classes, based upon insights, historical relationships and trends in the labeled training data.
+
+## What will you learn?
+By the end of this series, you will be able to:   
+1.	Describe the most important machine learning classifiers   
+2.	Relate their strengths, weaknesses and underlying assumptions   
+3.	Identify the problems for which the algorithms are best suited   
+4.	Implement the classifiers in Python   
+5.	Evaluate and contrast the performance of the algorithms   
+
+## How will we get there?   
+We will take a case-based approach as follows:     
+1. Case Introduction   
+2. Introduction to Machine Learning and Classification   
+    * Machine Learning Tasks    
+    * Machine Learning Applications   
+    * The Classification Problem  
+3. Linear Classifiers   
+    * Logistic Regression   
+    * Linear Discriminant Analysis   
+    * Support Vector Machines   
+4. Non-Linear Classifiers   
+    * K-Nearest Neighbors
+    * Generalized Additive Models for Classification
+    * Neural Networks   
+5. Tree-Based Classifiers    
+    * Classification Tree   
+    * Bagging    
+    * Random Forests   
+    *  Boosting   
+6. Capstone: Predicting Speed Dating Matches

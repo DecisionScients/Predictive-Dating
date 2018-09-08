@@ -1,0 +1,41 @@
+# Linear Algebra Review
+Linear algebra is one of the most fundamental subjects in mathematics. It is a broad range of study with applications in engineering, physics, economics, statistics and machine learning. Throughout this series, linear algebra will be the language by which we analyze and explore algorithms. Our goal for this section is to review vectors, matrices and their operations. First an editorial.
+
+## Is Linear Algebra a Prerequisite to Understanding Machine Learning 
+In the opinion of this writer, yes. Though there is merit to the argument that says that one doesn't need to understand how cars work to drive them. Implementing machine algorithms in python doesn't require one to understand eigenvalues and singular value decomposition. The degree to which one invests in learning linear algebra depends upon ones goals. If you seek to:
+1. develop a strong intuition for methods and their applications    
+2. solve complex learning problems with advanced methods   
+3. concisely and precisely describe methods to colleagues    
+4. evolve an advanced sense of the algorithms most suited for a wider range of problems 
+
+an investment in learning linear algebra will open new doors, reveal new possibilities, and bolster your value as a data scientist.
+
+From a machine learning perspective, linear algebra provides the analytical structure for many optimization algorithms such as gradient descent, least squares regression, and support vector machines. Matrix factorization, LU decomposition and singular-value decomposition (SVD) are the core concepts behind dimensionality reduction, least squares optimization algorithms and recommender systems. At its core, deep learning is a manifestation of operations on vectors, matrices and tensors, scaled up to multiple dimensions. A good understanding of linear algebra is constitutive to understanding and developing machine learning algorithms. Linear algebra is the language of data. Linear algebra is the lingua franca of machine learning. 
+
+That said, let's jump in!
+
+## Scalars, Vectors, Matrices and Tensors
+Scalars, vectors, matrices and tensors are the elemental mathematical objects we study in linear algebra:    
+* Scalars: A scalar is just a single real number in $\mathbf{R}$ or natural number in $\mathbf{N}$. For instance we may say "Let $s \in \mathbf{R}$ be the slope of the line", or "Let $u \in \mathbf{N}$ be the number of units".   
+* Vectors: A vector, $x$ is an array of ordered numbers indexed by a subscript. We give vectors lowercase variable names (typically in bold typeface) and write them as a column enclosed in square brackets like so:  
+
+$$
+\mathbf{x} = \left[\begin{array}
+{r}
+x_1\\ 
+x_2\\
+\vdots\\
+x_n
+\end{array}\right].
+$$
+When we need to index a set of elements in a vector, we define a set containing their indices and write the set as a subscript. For example, to access $x_1$, $x_2$, and $x_5$, we define the set $S$ - {1,2,5}, then write $x_S$. To access all elements except  $x_1$, $x_2$, and $x_5$, we use the $-$ sign to index the complement of the set, as in $x_{-S}$. When describing a vector, we must also indicate what type of numbers are stored in the vector. For instance, we denote a vector of $n$ real numbers as $\mathbf{R}^n$.  
+* Matrices: A matrix is a 2-D array of numbers, so each element is identiﬁed by two indices instead of just one. For instance, $A_{1,1}$ identifies the element in the 1st row and 1st column of matrix $\textbf{A}$ Given a matrix $\textbf{A}$ with $m$ rows and $n$ columns, we index the lower right element as $A_{m,n}$. If $\textbf{A}$ is real-valued, we denote the matrix as $\textbf{A} \in R^{m×n}$. To reference all numbers on an axis, we write a ":" for the coordinate of the axis. For instance, we write $A_{i,:}$ to reference all numbers in the $i$th row. Similarly, we write $A_{:,j}$ to index all the numbers in the $j$th column. To explicitly identify the elements of a matrix, we write them as an array enclosed in square brackets: 
+
+$$
+\left[\begin{array}
+{r,r}
+A_{1,1} & A_{1,2}\\ 
+A_{2,1} & A_{2,2}
+\end{array}\right].
+$$
+* Tensors: An $n>2$ dimensional array arranged in a regular grid is known as a tensor. Given a three-dimensional tensor, $\textbf{A}$, we identify the element at coordinates ($i,j,k$) by writing $\textbf{a}_{i,j,k}$.

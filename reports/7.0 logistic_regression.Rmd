@@ -1,0 +1,12 @@
+# Logistic Regression 
+
+
+```{python log_reg}
+lr = LogisticRegression()
+lr.fit(X_train, y_train)
+y_hat = lr.predict(X_test)
+confusion = confusion_matrix(y_test, y_hat)
+print(confusion)
+print(classification_report(y_test, y_hat))
+
+```
