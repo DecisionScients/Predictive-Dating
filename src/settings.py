@@ -13,6 +13,9 @@ VARS = ['gender', 'age', 'age_o', 'd_age', 'race', 'race_o', 'samerace',
         'shared_interests_important', 'attractive',	'sincere',
         'intelligence', 'funny', 'ambition', 'attractive_partner',
         'sincere_partner', 'intelligence_partner', 'funny_partner',
-        'ambition_partner', 'shared_interests_partner',
-        'interests_correlate', 'expected_happy_with_sd_people',
-        'guess_prob_liked', 'decision', 'decision_o', 'match']
+        'ambition_partner', 'sports', 'tvsports', 'exercise', 'dining',
+        'museums', 'art', 'hiking', 'gaming', 'clubbing', 'reading',
+        'tv', 'theater', 'movies', 'concerts', 'music', 'shopping',
+        'yoga', 'shared_interests_partner', 'interests_correlate',
+        'expected_happy_with_sd_people', 'like', 'guess_prob_liked',
+        'decision', 'decision_o', 'match']

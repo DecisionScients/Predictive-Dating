@@ -3,32 +3,49 @@
 import os
 import sys
 import inspect
-current = os.path.dirname(os.path.abspath(
-    inspect.getfile(inspect.currentframe())))
-parent = os.path.dirname(current)
-sys.path.append(parent)
+current = os.path.join(os.path.dirname(os.path.abspath(
+    inspect.getfile(inspect.currentframe()))), "src")
+sys.path.append(current)
 
 import pandas as pd
 
-import decorators
+from decorators import check_types
 import settings
 # --------------------------------------------------------------------------- #
 #                                   DATA                                      #
 # --------------------------------------------------------------------------- #
 
 
-@decorators.check_types
+@check_types
 def read(directory: str, filename: str, vars: list = None)-> "Data frame " \
         "with complete cases including requested variables":
     df = pd.read_csv(os.path.join(directory, filename),
                      encoding="Latin-1", low_memory=False)
+
+    # Recode race levels
+    df['race'] = df['race'].replace({
+        'asian/pacific islander/asian-american': 'asian',
+        'european/caucasian-american': 'caucasian',
+        'black/african american': 'black',
+        'latino/hispanic american': 'latino',
+        'other': 'other'})
+    df['race_o'] = df['race_o'].replace({
+        'asian/pacific islander/asian-american': 'asian',
+        'european/caucasian-american': 'caucasian',
+        'black/african american': 'black',
+        'latino/hispanic american': 'latino',
+        'other': 'other'})
+
+    # Correct spelling
+    df.rename({'sinsere_o': 'sincere_o',
+               'intellicence_important': 'intelligence_important',
+               'ambtition_important': 'ambition_important'})
 
     # Obtain variables of interest
     if vars:
         df = df[vars]
     # Obtain complete cases
     df = df.dropna()
-    print(df.info())
     return(df)
 
 # --------------------------------------------------------------------------- #

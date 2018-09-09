@@ -1,14 +1,24 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from matplotlib.legend_handler import HandlerLine2D
+from matplotlib.pylab import rc, rcParams
+import seaborn as sns
+import statistics as stat
+import tabulate
+import warnings
+warnings.filterwarnings('ignore')
+
 def print_df(df, centered = True):
-    # This function pretty prints a pandas dataframe
-    import tabulate
-    print(tabulate.tabulate(df, headers='keys', tablefmt='psql'))
+    # This function pretty prints a pandas dataframe    
+    print(tabulate(df, headers='keys', tablefmt='psql'))
 
 #%%
 def multi_countplot(df: pd.DataFrame, nrows: int=None, ncols: int=None,
                     width: [int, float]=None, height: [int, float]=None,
-                    title : str) -> 'figure containing multiple countplots':  
-    import seaborn as sns
-    import matplotlib.pyplot as plt
+                    title : str=None) -> 'figure containing multiple countplots':  
+
+
     sns.set(style="whitegrid", font_scale=1)
     sns.set_palette("GnBu_d")
  
@@ -29,6 +39,9 @@ def multi_countplot(df: pd.DataFrame, nrows: int=None, ncols: int=None,
 
     fig, axes = plt.subplots(ncols = ncols, nrows=nrows, figsize=figsize)
     cols = df.columns
+    if title:
+        fig.suptitle(title)
+        fig.subplots_adjust(top=1)
 
     for ax, cols in zip(axes.flat, cols):
         sns.countplot(x = df[cols], ax=ax)
@@ -37,11 +50,44 @@ def multi_countplot(df: pd.DataFrame, nrows: int=None, ncols: int=None,
 #%%
 def multi_histogram(df: pd.DataFrame, nrows: int=None, ncols: int=None,
                     width: [int, float]=None, height: [int, float]=None,
-                    title : str) -> 'figure containing multiple histograms':  
-    import seaborn as sns
-    import matplotlib.pyplot as plt
-    import warnings
+                    title : str=None) -> 'figure containing multiple histograms':  
+    import pandas as pd
+
     warnings.filterwarnings('ignore')
+
+    sns.set(style="whitegrid", font_scale=1)
+    sns.set_color_codes("dark")
+    
+    # Sets number of rows and columns
+    if all(v is None for v in [nrows, ncols]):
+        nrows = len(df.columns)
+        ncols = 1
+    elif not nrows:
+        nrows = -(-len(df.columns) // ncols)
+    else:
+        ncols = -(-len(df.columns) // nrows)        
+
+    if not width:
+        width = plt.rcParams.get('figure.figsize')[0]
+    if not height:
+        height = plt.rcParams.get('figure.figsize')[1] 
+    figsize = [width, height]       
+
+    fig, axes = plt.subplots(ncols = ncols, nrows=nrows, figsize=figsize)    
+    cols = df.columns
+
+    if title:
+        fig.suptitle(title)
+        fig.subplots_adjust(top=1)
+
+    for ax, cols in zip(axes.flat, cols):
+        sns.distplot(a = df[cols], kde=False, ax=ax, color='b')
+    plt.tight_layout()
+
+#%%
+def multi_boxplot(df: pd.DataFrame, nrows: int=None, ncols: int=None,
+                    width: [int, float]=None, height: [int, float]=None,
+                    title : str=None) -> 'figure containing multiple boxplots':  
 
     sns.set(style="whitegrid", font_scale=1)
     sns.set_color_codes("dark")
@@ -64,9 +110,14 @@ def multi_histogram(df: pd.DataFrame, nrows: int=None, ncols: int=None,
     fig, axes = plt.subplots(ncols = ncols, nrows=nrows, figsize=figsize)
     cols = df.columns
 
+    if title:
+        fig.suptitle(title)
+        fig.subplots_adjust(top=1)
+        
     for ax, cols in zip(axes.flat, cols):
-        sns.distplot(a = df[cols], kde=False, ax=ax, color='b').set_title(title)
+        sns.boxplot(x = df[cols], ax=ax)
     plt.tight_layout()
+
 
 #%%
 def bar_plot(df, xval, yval, title):
@@ -90,39 +141,7 @@ def histogram(values, title):
     hist = sns.distplot(values,bins=40, ax=ax, kde=False).set_title(title)    
     return(hist)
 
-def eda_uni_quant_plot(df, var):
-    import analysis
-    import numpy as np
-    import seaborn as sns
-    import matplotlib.pyplot as plt
-
-    # Get dataframe without outliers
-    df2 = analysis.outliers(df, var)
-
-    # Render boxplots
-    fig, ax = plt.subplots(3,2)
-    fig.suptitle('Univariate Analysis: ' + var)
-
-    sns.set(style="whitegrid")
-    ax[0,0] = sns.boxplot(x=df[var], ax=ax[0,0]).set_title("With Outliers")
-    ax[0,1] = sns.boxplot(x=df2[var], ax=ax[0,1]).set_title("Without Outliers")
-    ax[1,0] = sns.distplot(df[var], ax=ax[1,0],bins=40,kde=False,
-                color='royalblue').set_title("With Outliers")
-    ax[1,1] = sns.distplot(df2[var], ax=ax[1,1],bins=40,kde=False,
-                color='royalblue').set_title("Without Outliers")
-    ax[2,0] = sns.distplot(np.sqrt(df[var]), ax=ax[2,0],bins=40,kde=False,
-                color='royalblue').set_title("Sqrt Transformation")
-    ax[2,1] = sns.distplot(np.log(df[var]+1), ax=ax[2,1],bins=40,kde=False,
-                color='royalblue').set_title("Log Transformation")
-    return(ax)
-
-
 def corrplot(df):
-    from string import ascii_letters
-    import numpy as np
-    import pandas as pd
-    import seaborn as sns
-    import matplotlib.pyplot as plt
 
     sns.set(style="white")
     # Compute the correlation matrix
@@ -143,9 +162,7 @@ def corrplot(df):
                 square=True, linewidths=.5, cbar_kws={"shrink": .5})
 
 def plot_AUC(x, y1, y2, xlab, y1lab, y2lab):
-    import numpy as np
-    import matplotlib.pyplot as plt
-    from matplotlib.legend_handler import HandlerLine2D
+   
     line1, = plt.plot(x, y1, 'b', label=y1lab)
     line2, = plt.plot(x, y2, 'r', label=y2lab)
 
@@ -168,8 +185,7 @@ def plot_AUC(x, y1, y2, xlab, y1lab, y2lab):
     plt.show()
     
 def plot_line(x,y, xlab, ylab):
-    import numpy as np
-    import matplotlib.pyplot as plt
+
     line = plt.plot(x, y, 'b')
     plt.ylabel(ylab)
     plt.xlabel(xlab)    
@@ -185,7 +201,7 @@ def plot_line(x,y, xlab, ylab):
     plt.show()
 
 def plot_rf_hyperparameter(df, param):
-    import matplotlib.pyplot as plt
+
     fig, ax1 = plt.subplots()
     color = 'tab:red'
     ax1.set_xlabel('Iteration')
@@ -206,7 +222,7 @@ def plot_rf_hyperparameter(df, param):
 
 def ezrc(fontSize=22., lineWidth=2., labelSize=None, tickmajorsize=10,
          tickminorsize=5, figsize=(6, 8)):    
-    from matplotlib.pylab import rc, rcParams
+  
     if labelSize is None:
         labelSize = fontSize + 5
     rc('figure', figsize=figsize)
