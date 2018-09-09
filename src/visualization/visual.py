@@ -3,18 +3,72 @@ def print_df(df, centered = True):
     import tabulate
     print(tabulate.tabulate(df, headers='keys', tablefmt='psql'))
 
-
-def freq_dist(counts, title = None):
+#%%
+def multi_countplot(df: pd.DataFrame, nrows: int=None, ncols: int=None,
+                    width: [int, float]=None, height: [int, float]=None,
+                    title : str) -> 'figure containing multiple countplots':  
     import seaborn as sns
     import matplotlib.pyplot as plt
-    import numpy as np
-    fig, ax = plt.subplots()
+    sns.set(style="whitegrid", font_scale=1)
+    sns.set_palette("GnBu_d")
+ 
+    # Sets number of rows and columns
+    if all(v is None for v in [nrows, ncols]):
+        nrows = len(df.columns)
+        ncols = 1
+    elif not nrows:
+        nrows = -(-len(df.columns) // ncols)
+    else:
+        ncols = -(-len(df.columns) // nrows)  
+
+    if not width:
+        width = plt.rcParams.get('figure.figsize')[0]
+    if not height:
+        height = plt.rcParams.get('figure.figsize')[1] 
+    figsize = [width, height]       
+
+    fig, axes = plt.subplots(ncols = ncols, nrows=nrows, figsize=figsize)
+    cols = df.columns
+
+    for ax, cols in zip(axes.flat, cols):
+        sns.countplot(x = df[cols], ax=ax)
+    plt.tight_layout()
+
+#%%
+def multi_histogram(df: pd.DataFrame, nrows: int=None, ncols: int=None,
+                    width: [int, float]=None, height: [int, float]=None,
+                    title : str) -> 'figure containing multiple histograms':  
+    import seaborn as sns
+    import matplotlib.pyplot as plt
+    import warnings
+    warnings.filterwarnings('ignore')
+
     sns.set(style="whitegrid", font_scale=1)
     sns.set_color_codes("dark")
-    fdp = sns.distplot(counts, bins=40, ax=ax, kde=False,
-                            color='royalblue').set_title(title)    
-    return(fdp)
+    
+    # Sets number of rows and columns
+    if all(v is None for v in [nrows, ncols]):
+        nrows = len(df.columns)
+        ncols = 1
+    elif not nrows:
+        nrows = -(-len(df.columns) // ncols)
+    else:
+        ncols = -(-len(df.columns) // nrows)        
 
+    if not width:
+        width = plt.rcParams.get('figure.figsize')[0]
+    if not height:
+        height = plt.rcParams.get('figure.figsize')[1] 
+    figsize = [width, height]       
+
+    fig, axes = plt.subplots(ncols = ncols, nrows=nrows, figsize=figsize)
+    cols = df.columns
+
+    for ax, cols in zip(axes.flat, cols):
+        sns.distplot(a = df[cols], kde=False, ax=ax, color='b').set_title(title)
+    plt.tight_layout()
+
+#%%
 def bar_plot(df, xval, yval, title):
     import seaborn as sns
     import matplotlib.pyplot as plt

@@ -1,47 +1,35 @@
 
 # %%
 import os
-import imp
+import sys
+import inspect
+current = os.path.dirname(os.path.abspath(
+    inspect.getfile(inspect.currentframe())))
+parent = os.path.dirname(current)
+sys.path.append(parent)
+
 import pandas as pd
 
-settings = imp.load_source('settings',
-                           r"c:\Users\John\Documents\Data Science"
-                           r"\Projects\Predictive Dating\src"
-                           r"\settings.py")
+import decorators
+import settings
 # --------------------------------------------------------------------------- #
 #                                   DATA                                      #
 # --------------------------------------------------------------------------- #
 
 
-def read(directory, filename, vars):
-    '''
-    This function reads the requested variables from the designated filename
-    and directory, then returns only the complete cases.
+@decorators.check_types
+def read(directory: str, filename: str, vars: list = None)-> "Data frame " \
+        "with complete cases including requested variables":
+    df = pd.read_csv(os.path.join(directory, filename),
+                     encoding="Latin-1", low_memory=False)
 
-    Args:
-        directory (str): The path to the file designated in the filename
-                         argument.
-        filename (str): The name of the file to be read, relative to the
-                        raw data directory.
-        vars (str): The names of the variables to be returned.
-
-    Returns:
-        pandas.DataFrame containing the complete cases
-    '''
-    if isinstance(directory, str):
-        if isinstance(filename, str):
-            df = pd.read_csv(os.path.join(directory, filename),
-                             encoding="Latin-1", low_memory=False)
-
-            # Obtain variables of interest
-            df = df[vars]
-            # Obtain complete cases
-            df = df.dropna()
-            return(df)
-        else:
-            return False
-    else:
-        return False
+    # Obtain variables of interest
+    if vars:
+        df = df[vars]
+    # Obtain complete cases
+    df = df.dropna()
+    print(df.info())
+    return(df)
 
 # --------------------------------------------------------------------------- #
 #                                Write                                        #
@@ -67,5 +55,4 @@ def write(df, directory, filename):
 # --------------------------------------------------------------------------- #
 if __name__ == "__main__":
     df = read(settings.RAW_DATA_DIR, settings.RAW_DATA_FILENAME, settings.VARS)
-    print(df.info())
     write(df, settings.INTERIM_DATA_DIR, 'speed_dating.csv')

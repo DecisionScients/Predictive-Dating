@@ -11,7 +11,11 @@ The data was obtained from participants in experimental speed dating events from
 
 In this case, we examine the six factors that relate to a decision to request a second date. In particular, we wish to understand the association between a decision and partner attractiveness, sincerity, intelligence, sense of humor, ambition and the degree to which interests correlate.
 
-```{python data, code = readLines("../src/data/data.py"), echo=TRUE}
+```{python data, code = readLines("../src/data/data.py"), echo=FALSE}
+
+```
+
+```{python data_read_code, code = readLines("../src/data/data.py")[16:46], echo=TRUE, eval=FALSE}
 
 ```
 
