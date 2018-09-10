@@ -5,15 +5,20 @@
 # ---------------------------------------------------------------------------- #
 #                                 LIBRARIES                                    #
 # ---------------------------------------------------------------------------- #
+from collections import OrderedDict
 from itertools import combinations
+from itertools import product
 import matplotlib as mp
 import numpy as np
 import pandas as pd
 import scipy
 from scipy import stats
 from sklearn import preprocessing
-import settings
+import sys
 import textwrap
+
+import settings
+from decorators import check_types
 from visualization import visual
 # %%
 # ---------------------------------------------------------------------------- #
@@ -21,15 +26,15 @@ from visualization import visual
 # ---------------------------------------------------------------------------- #
 
 
-def cramers_corrected_stat(confusion_matrix):
+def cramers_corrected_stat(contingency_table):
     """ calculate Cramers V statistic for categorical-categorical association.
         uses correction from Bergsma and Wicher, 
         Journal of the Korean Statistical Society 42 (2013): 323-328
     """
-    chi2 = stats.chi2_contingency(confusion_matrix)[0]
-    n = confusion_matrix.sum().sum()
+    chi2 = stats.chi2_contingency(contingency_table)[0]
+    n = contingency_table.sum().sum()
     phi2 = chi2/n
-    r, k = confusion_matrix.shape
+    r, k = contingency_table.shape
     phi2corr = max(0, phi2 - ((k-1)*(r-1))/(n-1))
     rcorr = r - ((r-1)**2)/(n-1)
     kcorr = k - ((k-1)**2)/(n-1)
@@ -65,7 +70,7 @@ class Independence:
         print("\n", '{:^80}'.format(results))
         print("\n*", "=" * 78, "*")
 
-    def post_hoc(self, rowwise=True, verbose=True):
+    def post_hoc(self, rowwise=True, verbose=False):
 
         dfs = []
         if rowwise:
@@ -140,3 +145,54 @@ class Independence:
         lines = wrapper.wrap(text=self._report)
         for line in lines:
             print(line)
+
+# %%
+# ---------------------------------------------------------------------------- #
+#                                ASSOCTABLE                                     #
+# ---------------------------------------------------------------------------- #
+
+
+@check_types
+def assoctable(df: pd.DataFrame) -> "Dataframe containing results of " \
+        "pairwise association tests":
+    df = df.select_dtypes(include='object')
+    terms = df.columns
+
+    tests = []
+    for pair in list(combinations(terms, 2)):
+        x = df[pair[0]]
+        y = df[pair[1]]
+        ct = pd.crosstab(x, y)
+        ct = pd.crosstab(x, y)
+        cv = analysis.cramers_corrected_stat(ct)
+        tests.append(OrderedDict(
+            {'x': pair[0], 'y': pair[1], "Cramer's V": cv}))
+    tests = pd.DataFrame(tests)
+    return(tests)
+
+
+# %%
+# ---------------------------------------------------------------------------- #
+#                                CORRTABLE                                     #
+# ---------------------------------------------------------------------------- #
+
+
+@check_types
+def corrtable(df: pd.DataFrame) -> "Dataframe containing pairwise  " \
+                                   "correlations above 0.5":
+    df = df.select_dtypes(include=['int', 'float64'])
+    terms = df.columns
+
+    tests = []
+    for pair in list(combinations(terms, 2)):
+        x = df[pair[0]]
+        y = df[pair[1]]
+        r = stats.pearsonr(x, y)
+        tests.append(OrderedDict(
+            {'x': pair[0], 'y': pair[1], "Correlation": r[0], "p-value": r[1]}))
+    tests = pd.DataFrame(tests)
+    tests['AbsCorr'] = tests['Correlation'].abs()
+    top = tests.loc[tests['AbsCorr'] > 0.5]
+    tests.drop(['AbsCorr'], inplace=True, axis=1)
+    top.drop(['AbsCorr'], inplace=True, axis=1)
+    return top

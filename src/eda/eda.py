@@ -18,8 +18,6 @@ sys.path.append(home)
 current = os.path.join(home, "eda")
 sys.path.append(current)
 
-sys.path.append("../")
-
 import itertools
 import matplotlib as mpl
 import matplotlib.pyplot as plt
