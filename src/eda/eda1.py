@@ -27,8 +27,9 @@ import pandas as pd
 import seaborn as sns
 
 import analysis
-from decorators import check_types
-import settings
+from shared import directories
+from shared import filenames
+from shared import variables
 from visualization import visual
 
 # --------------------------------------------------------------------------- #
@@ -36,21 +37,15 @@ from visualization import visual
 # --------------------------------------------------------------------------- #
 
 
-@check_types
-def qualitative(df: pd.DataFrame) -> "non-graphical / graphical analysis of "\
-        "qualitative variables":
+def qualitative(df):
     qual = df.select_dtypes(include=['object'])
-    print(qual.describe().T)
     visual.multi_countplot(qual, ncols=3, width=10, title="Categorical Variable "
                            "Frequency Analysis ")
     return(qual.describe().T)
 
 
-@check_types
-def quantitative(df: pd.DataFrame) -> "non-graphical / graphical analysis of "\
-        "qualitative variables":
+def quantitative(df):
     quant = df.select_dtypes(include=['int', 'float64'])
-    print(quant.describe().T)
     visual.multi_histogram(quant, ncols=3, width=10, height=20, title="Quantitative "
                            "Variable Histogram Analysis ")
     visual.multi_boxplot(quant, ncols=3, width=10, height=20, title="Quantitative "
@@ -62,8 +57,7 @@ def quantitative(df: pd.DataFrame) -> "non-graphical / graphical analysis of "\
 #                                CORRELATION                                   #
 # ============================================================================ #
 
-@check_types
-def corrplot(df: pd.DataFrame) -> "Correlation Plot":
+def corrplot(df):
     df = df.select_dtypes(include=['float64', 'int64'])
     corr = df.corr()
     mask = np.zeros_like(corr, dtype=np.bool)
@@ -81,8 +75,7 @@ def corrplot(df: pd.DataFrame) -> "Correlation Plot":
 #                                ASSOCIATION                                   #
 # ============================================================================ #
 
-@check_types
-def assocplot(df: pd.DataFrame) -> "Association Plot":
+def assocplot(df):
     df = df.select_dtypes(include=['object'])
     cols = list(df.columns.values)
     corrM = np.zeros((len(cols), len(cols)))
@@ -110,10 +103,11 @@ def assocplot(df: pd.DataFrame) -> "Association Plot":
 #                                 MAIN                                        #
 # --------------------------------------------------------------------------- #
 if __name__ == "__main__":
-    filename = 'speed_dating.csv'
-    df = pd.read_csv(os.path.join(settings.INTERIM_DATA_DIR, filename),
+    df = pd.read_csv(os.path.join(directories.INTERIM_DATA_DIR, filenames.TRAIN_FILENAME),
                      encoding="Latin-1", low_memory=False)
-    #qual = qualitative(df)
-    #quant = quantitative(df)
-    r = corrplot(df)
-    a = assocplot(df)
+    qual = qualitative(df)
+    quant = quantitative(df)
+    rt = analysis.corrtable(df, threshold=0.4)
+    visual.print_df(rt)
+    '''r = corrplot(df)
+    a = assocplot(df)'''

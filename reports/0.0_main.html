@@ -1421,75 +1421,6 @@ border-bottom: 1px solid #fcfcfc;
 </script>
 
 
-<style type="text/css">code{white-space: pre;}</style>
-<style type="text/css">
-a.sourceLine { display: inline-block; line-height: 1.25; }
-a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; position: absolute; }
-.sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-code.sourceCode { white-space: pre-wrap; }
-a.sourceLine { text-indent: -1em; padding-left: 1em; }
-}
-pre.numberSource a.sourceLine
-  { position: relative; }
-pre.numberSource a.sourceLine:empty
-  { position: absolute; }
-pre.numberSource a.sourceLine::before
-  { content: attr(data-line-number);
-    position: absolute; left: -5em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-    background-color: #ffffff;
-    color: #a0a0a0;
-  }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #a0a0a0;  padding-left: 4px; }
-div.sourceCode
-  { color: #1f1c1b; background-color: #ffffff; }
-@media screen {
-a.sourceLine::before { text-decoration: underline; }
-}
-code span. { color: #1f1c1b; } /* Normal */
-code span.al { color: #bf0303; background-color: #f7e6e6; font-weight: bold; } /* Alert */
-code span.an { color: #ca60ca; } /* Annotation */
-code span.at { color: #0057ae; } /* Attribute */
-code span.bn { color: #b08000; } /* BaseN */
-code span.bu { color: #644a9b; font-weight: bold; } /* BuiltIn */
-code span.cf { color: #1f1c1b; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #924c9d; } /* Char */
-code span.cn { color: #aa5500; } /* Constant */
-code span.co { color: #898887; } /* Comment */
-code span.cv { color: #0095ff; } /* CommentVar */
-code span.do { color: #607880; } /* Documentation */
-code span.dt { color: #0057ae; } /* DataType */
-code span.dv { color: #b08000; } /* DecVal */
-code span.er { color: #bf0303; text-decoration: underline; } /* Error */
-code span.ex { color: #0095ff; font-weight: bold; } /* Extension */
-code span.fl { color: #b08000; } /* Float */
-code span.fu { color: #644a9b; } /* Function */
-code span.im { color: #ff5500; } /* Import */
-code span.in { color: #b08000; } /* Information */
-code span.kw { color: #1f1c1b; font-weight: bold; } /* Keyword */
-code span.op { color: #1f1c1b; } /* Operator */
-code span.ot { color: #006e28; } /* Other */
-code span.pp { color: #006e28; } /* Preprocessor */
-code span.re { color: #0057ae; background-color: #e0e9f8; } /* RegionMarker */
-code span.sc { color: #3daee9; } /* SpecialChar */
-code span.ss { color: #ff5500; } /* SpecialString */
-code span.st { color: #bf0303; } /* String */
-code span.va { color: #0057ae; } /* Variable */
-code span.vs { color: #bf0303; } /* VerbatimString */
-code span.wa { color: #bf0303; } /* Warning */
-</style>
 
 <style type="text/css">.col3-left{float: left;width: 33%;text-align: left;}.col3-center{display: inline-block;width: 33%;text-align: center;}.col3-right{float: right;width: 33%;text-align: right;}.col2-left{float: left;width: 50%;text-align: left;}.col2-right{float: right;width: 50%;text-align: right;}</style>
 
@@ -1527,9 +1458,12 @@ $(document).ready(function () {
       <li><a href="#what-will-you-learn">What will you learn?</a></li>
       <li><a href="#how-will-we-get-there">How will we get there?</a></li>
       </ul></li>
-      <li><a href="#case-predictive-dating">Case: Predictive Dating</a><ul>
-      <li><a href="#the-data">The Data</a></li>
+      <li><a href="#linear-algebra-review">Linear Algebra Review</a><ul>
+      <li><a href="#is-linear-algebra-a-prerequisite-to-understanding-machine-learning">Is Linear Algebra a Prerequisite to Understanding Machine Learning</a></li>
+      <li><a href="#scalars-vectors-matrices-and-tensors">Scalars, Vectors, Matrices and Tensors</a></li>
+      <li><a href="#vector-and-matrix-operations">Vector and Matrix Operations</a></li>
       </ul></li>
+      <li><a href="#references">References</a></li>
       </ul>
     </div>
 </div>
@@ -1587,146 +1521,72 @@ $(document).ready(function () {
 </ol>
 </div>
 </div>
-<div id="case-predictive-dating" class="section level1">
-<h1>Case: Predictive Dating</h1>
-<p>Congratulations on getting a job as a data scientist at SpeedDating.com, the dominate player in the speed dating market! Your boss has compiled data from a series of past speed dating events and she asks you to:<br />
-1. develop a model to predict whether a participant requests a second date,<br />
-2. determine which attributes, or combinations thereof, are most highly associated with a second date decision, and<br />
-3. present interesting insights about speed dating.</p>
-<p>Not interested in a ‘blackbox’ solution, she advises that the model must make sense to the domain experts in marketing. You are also expected to describe your model selection process, justify your model choice, and explain how the model works.</p>
-<div id="the-data" class="section level2">
-<h2>The Data</h2>
-<p>The data was obtained from participants in experimental speed dating events from 2002-2004. During these events, participants would have a series of four-minute “first-dates” with every other participant of the opposite sex. At the end of each four-minute date, participants were asked if they would like to see their date again. Participants were also asked to rate their date on six attributes: Attractiveness, sincerity, intelligence, fun, ambition, and shared interests. Additional information was obtained throughout the process such as demographics, lifestyle information and beliefs on what others find valuable in a mate. The training set is comprised of 5,925 observations or ‘first dates’.</p>
-<p>In this case, we examine the six factors that relate to a decision to request a second date. In particular, we wish to understand the association between a decision and partner attractiveness, sincerity, intelligence, sense of humor, ambition and the degree to which interests correlate.</p>
-<pre><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
-Int64Index: 5736 entries, 0 to 8377
-Data columns (total 44 columns):
-gender                           5736 non-null object
-age                              5736 non-null float64
-age_o                            5736 non-null float64
-d_age                            5736 non-null int64
-race                             5736 non-null object
-race_o                           5736 non-null object
-samerace                         5736 non-null int64
-importance_same_race             5736 non-null float64
-importance_same_religion         5736 non-null float64
-pref_o_attractive                5736 non-null float64
-pref_o_sincere                   5736 non-null float64
-pref_o_intelligence              5736 non-null float64
-pref_o_funny                     5736 non-null float64
-pref_o_ambitious                 5736 non-null float64
-pref_o_shared_interests          5736 non-null float64
-attractive_o                     5736 non-null float64
-sinsere_o                        5736 non-null float64
-intelligence_o                   5736 non-null float64
-funny_o                          5736 non-null float64
-ambitous_o                       5736 non-null float64
-shared_interests_o               5736 non-null float64
-attractive_important             5736 non-null float64
-sincere_important                5736 non-null float64
-intellicence_important           5736 non-null float64
-funny_important                  5736 non-null float64
-ambtition_important              5736 non-null float64
-shared_interests_important       5736 non-null float64
-attractive                       5736 non-null float64
-sincere                          5736 non-null float64
-intelligence                     5736 non-null float64
-funny                            5736 non-null float64
-ambition                         5736 non-null float64
-attractive_partner               5736 non-null float64
-sincere_partner                  5736 non-null float64
-intelligence_partner             5736 non-null float64
-funny_partner                    5736 non-null float64
-ambition_partner                 5736 non-null float64
-shared_interests_partner         5736 non-null float64
-interests_correlate              5736 non-null float64
-expected_happy_with_sd_people    5736 non-null float64
-guess_prob_liked                 5736 non-null float64
-decision                         5736 non-null int64
-decision_o                       5736 non-null int64
-match                            5736 non-null int64
-dtypes: float64(36), int64(5), object(3)
-memory usage: 2.0+ MB
-None</code></pre>
-<div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="co">#                                   DATA                                      #</span></a>
-<a class="sourceLine" id="cb2-2" data-line-number="2"><span class="co"># --------------------------------------------------------------------------- #</span></a>
-<a class="sourceLine" id="cb2-3" data-line-number="3"><span class="at">@decorators.check_types</span></a>
-<a class="sourceLine" id="cb2-4" data-line-number="4"><span class="kw">def</span> read(directory: <span class="bu">str</span>, filename: <span class="bu">str</span>, <span class="bu">vars</span>: <span class="bu">list</span> <span class="op">=</span> <span class="va">None</span>)<span class="op">-&gt;</span> <span class="st">&quot;Data frame &quot;</span> \</a>
-<a class="sourceLine" id="cb2-5" data-line-number="5">        <span class="st">&quot;with complete cases including requested variables&quot;</span>:</a>
-<a class="sourceLine" id="cb2-6" data-line-number="6">    df <span class="op">=</span> pd.read_csv(os.path.join(directory, filename),</a>
-<a class="sourceLine" id="cb2-7" data-line-number="7">                     encoding<span class="op">=</span><span class="st">&quot;Latin-1&quot;</span>, low_memory<span class="op">=</span><span class="va">False</span>)</a>
-<a class="sourceLine" id="cb2-8" data-line-number="8">    <span class="co"># Obtain variables of interest</span></a>
-<a class="sourceLine" id="cb2-9" data-line-number="9">    <span class="cf">if</span> <span class="bu">vars</span>:</a>
-<a class="sourceLine" id="cb2-10" data-line-number="10">        df <span class="op">=</span> df[<span class="bu">vars</span>]</a>
-<a class="sourceLine" id="cb2-11" data-line-number="11">    <span class="co"># Obtain complete cases</span></a>
-<a class="sourceLine" id="cb2-12" data-line-number="12">    df <span class="op">=</span> df.dropna()</a>
-<a class="sourceLine" id="cb2-13" data-line-number="13">    <span class="bu">print</span>(df.info())</a>
-<a class="sourceLine" id="cb2-14" data-line-number="14">    <span class="cf">return</span>(df)</a>
-<a class="sourceLine" id="cb2-15" data-line-number="15"><span class="co"># --------------------------------------------------------------------------- #</span></a>
-<a class="sourceLine" id="cb2-16" data-line-number="16"><span class="co">#                                Write                                        #</span></a>
-<a class="sourceLine" id="cb2-17" data-line-number="17"><span class="co"># --------------------------------------------------------------------------- #</span></a>
-<a class="sourceLine" id="cb2-18" data-line-number="18"><span class="kw">def</span> write(df, directory, filename):</a>
-<a class="sourceLine" id="cb2-19" data-line-number="19">    <span class="cf">if</span> <span class="bu">isinstance</span>(df, pd.DataFrame):</a>
-<a class="sourceLine" id="cb2-20" data-line-number="20">        <span class="cf">if</span> <span class="bu">isinstance</span>(filename, <span class="bu">str</span>):</a>
-<a class="sourceLine" id="cb2-21" data-line-number="21">            <span class="cf">if</span> <span class="kw">not</span> os.path.isdir(directory):</a>
-<a class="sourceLine" id="cb2-22" data-line-number="22">                os.mkdir(directory)</a>
-<a class="sourceLine" id="cb2-23" data-line-number="23">            df.to_csv(os.path.join(directory, filename),</a>
-<a class="sourceLine" id="cb2-24" data-line-number="24">                      index<span class="op">=</span><span class="va">False</span>, index_label<span class="op">=</span><span class="va">False</span>)</a>
-<a class="sourceLine" id="cb2-25" data-line-number="25">            <span class="cf">return</span>(<span class="va">True</span>)</a></code></pre></div>
-<pre><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
-Int64Index: 5736 entries, 0 to 8377
-Data columns (total 44 columns):
-gender                           5736 non-null object
-age                              5736 non-null float64
-age_o                            5736 non-null float64
-d_age                            5736 non-null int64
-race                             5736 non-null object
-race_o                           5736 non-null object
-samerace                         5736 non-null int64
-importance_same_race             5736 non-null float64
-importance_same_religion         5736 non-null float64
-pref_o_attractive                5736 non-null float64
-pref_o_sincere                   5736 non-null float64
-pref_o_intelligence              5736 non-null float64
-pref_o_funny                     5736 non-null float64
-pref_o_ambitious                 5736 non-null float64
-pref_o_shared_interests          5736 non-null float64
-attractive_o                     5736 non-null float64
-sinsere_o                        5736 non-null float64
-intelligence_o                   5736 non-null float64
-funny_o                          5736 non-null float64
-ambitous_o                       5736 non-null float64
-shared_interests_o               5736 non-null float64
-attractive_important             5736 non-null float64
-sincere_important                5736 non-null float64
-intellicence_important           5736 non-null float64
-funny_important                  5736 non-null float64
-ambtition_important              5736 non-null float64
-shared_interests_important       5736 non-null float64
-attractive                       5736 non-null float64
-sincere                          5736 non-null float64
-intelligence                     5736 non-null float64
-funny                            5736 non-null float64
-ambition                         5736 non-null float64
-attractive_partner               5736 non-null float64
-sincere_partner                  5736 non-null float64
-intelligence_partner             5736 non-null float64
-funny_partner                    5736 non-null float64
-ambition_partner                 5736 non-null float64
-shared_interests_partner         5736 non-null float64
-interests_correlate              5736 non-null float64
-expected_happy_with_sd_people    5736 non-null float64
-guess_prob_liked                 5736 non-null float64
-decision                         5736 non-null int64
-decision_o                       5736 non-null int64
-match                            5736 non-null int64
-dtypes: float64(36), int64(5), object(3)
-memory usage: 2.0+ MB
-None</code></pre>
-<p><a href="#data">Figure 1</a>: Speed dating data</p>
-<p><a href="#data">Figure 1</a> shows the distributions of participants’ ratings of their speed dating partner on the six attributes described above, vis-a-vis the decision to request a second date. A one on the x-axis indicates a second date was chosen. Ratings were on a scale of 0 to 10 and the correlation of interests ranged from -1 to 1. The horizontal bars inside the boxes indicate the mean rating for all observations within the group.</p>
-<p>Consider, for example, the upper left hand panel which displays ratings of attractiveness for both groups. This plot suggests that higher attraction ratings are associated with a decision to request a second date. Similarly, higher ratings of intelligence, sincerity, and a sense of humor were associated with positive decisions. On the other hand, the plots for ambition and the correlation of interests indicate little association with a decision. Modeling these to variables alone is not likely to provide reliable decision predictions.</p>
-<p>Having familiarized ourselves with the data, let’s review a few of the import machine learning concepts.</p>
+<div id="linear-algebra-review" class="section level1">
+<h1>Linear Algebra Review</h1>
+<p>Linear algebra is one of the most fundamental subjects in mathematics. It is a broad range of study with applications in engineering, physics, economics, statistics and machine learning. Throughout this series, linear algebra will be the language by which we analyze and explore algorithms. Our goal for this section is to review vectors, matrices and their operations. First an editorial.</p>
+<div id="is-linear-algebra-a-prerequisite-to-understanding-machine-learning" class="section level2">
+<h2>Is Linear Algebra a Prerequisite to Understanding Machine Learning</h2>
+<p>In the opinion of this writer, yes. Though there is merit to the argument that says that one doesn’t need to understand operating systems to send an email. Implementing machine algorithms in python doesn’t require one to understand eigenvalues and singular value decomposition. So, the degree to which one invests in learning linear algebra depends upon ones goals. If you seek to: 1. develop a strong intuition for methods and their applications<br />
+2. solve complex learning problems with advanced methods<br />
+3. concisely and precisely describe methods to colleagues<br />
+4. evolve an advanced sense of the algorithms most suited for a wider range of problems</p>
+<p>an investment in learning linear algebra will open new doors, reveal new possibilities, and bolster your value as a data scientist.</p>
+<p>From a machine learning perspective, linear algebra provides the analytical structure for many optimization algorithms such as gradient descent, least squares regression, and support vector machines. Matrix factorization, LU decomposition and singular-value decomposition (SVD) are the core concepts behind dimensionality reduction, least squares optimization algorithms and recommender systems. At its core, deep learning is a manifestation of operations on vectors, matrices and tensors, scaled up to multiple dimensions. A good understanding of linear algebra is constitutive to understanding and developing machine learning algorithms. Linear algebra is the language of data. Linear algebra is the lingua franca of machine learning!</p>
+<p>End of speech.</p>
+<p><strong>Acknowledgements</strong></p>
+<p>This review borrows liberally from the following sources:<br />
+* <a href="https://www.amazon.com/Introduction-Linear-Algebra-Fourth-Gilbert/dp/0980232716/ref=sr_1_3?s=books&amp;ie=UTF8&amp;qid=1536621558&amp;sr=1-3&amp;keywords=introduction+to+linear+algebra%2C+fifth+edition+by+gilbert+strang">Introduction to Linear Algebra by Professor Gilbert Strang</a>. Highly recommended for a comprehensive treatment of linear algebra for engineers, mathematicians, and computer scientists.<span class="citation">(Strang 2009)</span><br />
+* <a href="https://www.amazon.com/No-bullshit-guide-linear-algebra/dp/0992001021">No Bullshit Guide to Linear Algebra</a>. This university level text by Ivan Savov is a great resource for acquiring a deeper understanding of challenging concepts. Its concise, precise and fun to read.<span class="citation">(Savov 2017)</span><br />
+* <a href="https://www.amazon.com/Linear-Algebra-Its-Applications-4th/dp/0030105676">Linear Algebra and Its Applications</a> Another seminal work by Professor Gilbert Strang, explains theory motivated by real-world applications.<span class="citation">(Strang 2006)</span></p>
+</div>
+<div id="scalars-vectors-matrices-and-tensors" class="section level2">
+<h2>Scalars, Vectors, Matrices and Tensors</h2>
+<p>Scalars, vectors, matrices and tensors are the elemental mathematical objects we study in linear algebra:<br />
+* Scalars: A scalar is just a single real number in <span class="math inline">\(\mathbf{R}\)</span> or natural number in <span class="math inline">\(\mathbf{N}\)</span>. For instance we may say “Let <span class="math inline">\(s \in \mathbf{R}\)</span> be the slope of the line”, or “Let <span class="math inline">\(u \in \mathbf{N}\)</span> be the number of units”.</p>
+<ul>
+<li>Vectors: A vector, <span class="math inline">\(x\)</span> is an array of ordered numbers indexed by a subscript. We give vectors lowercase variable names (typically in bold typeface) and write them as a column enclosed in square brackets like so:</li>
+</ul>
+<p><span class="math display">\[
+\mathbf{v} = \left[\begin{array}
+{r}
+v_1\\ 
+v_2\\
+\vdots\\
+v_n
+\end{array}\right].
+\]</span> An <span class="math inline">\(n\)</span>-dimensional vector may also be represented as:</p>
+<p><span class="math display">\[\overrightarrow{v} = (v_1, v_2, ..., v_n)\in \mathbb{R^n}.\]</span></p>
+<ul>
+<li>Matrices: A matrix is a 2-D array of numbers, so each element is identiﬁed by two indices instead of just one. For instance, <span class="math inline">\(A_{1,1}\)</span> identifies the element in the 1st row and 1st column of matrix <span class="math inline">\(\textbf{A}\)</span> Given a matrix <span class="math inline">\(\textbf{A}\)</span> with <span class="math inline">\(m\)</span> rows and <span class="math inline">\(n\)</span> columns, we index the lower right element as <span class="math inline">\(A_{m,n}\)</span>. If <span class="math inline">\(\textbf{A}\)</span> is real-valued, we denote the matrix as <span class="math inline">\(\textbf{A} \in R^{m×n}\)</span>. To reference all numbers on an axis, we write a “:” for the coordinate of the axis. For instance, we write <span class="math inline">\(A_{i,:}\)</span> to reference all numbers in the <span class="math inline">\(i\)</span>th row. Similarly, we write <span class="math inline">\(A_{:,j}\)</span> to index all the numbers in the <span class="math inline">\(j\)</span>th column. To explicitly identify the elements of a matrix, we write them as an array enclosed in square brackets:</li>
+</ul>
+<p><span class="math display">\[
+\left[\begin{array}
+{r,r}
+A_{1,1} &amp; A_{1,2}\\ 
+A_{2,1} &amp; A_{2,2}
+\end{array}\right].
+\]</span> * Tensors: An <span class="math inline">\(n&gt;2\)</span> dimensional array arranged in a regular grid is known as a tensor. Given a three-dimensional tensor, <span class="math inline">\(\textbf{A}\)</span>, we identify the element at coordinates (<span class="math inline">\(i,j,k\)</span>) by writing <span class="math inline">\(\textbf{a}_{i,j,k}\)</span>.</p>
+</div>
+<div id="vector-and-matrix-operations" class="section level2">
+<h2>Vector and Matrix Operations</h2>
+<div id="vector-operations" class="section level3">
+<h3>Vector Operations</h3>
+<p>Consider two vectors <span class="math inline">\(\overrightarrow{u} = (u_1, u_2)\)</span> and <span class="math inline">\(\overrightarrow{v} = (v_1, v_2)\)</span> and an arbitrary constant <span class="math inline">\(\alpha \in \mathbb{R}\)</span>, the following operations</p>
+</div>
+</div>
+</div>
+<div id="references" class="section level1 unnumbered">
+<h1>References</h1>
+<div id="refs" class="references">
+<div id="ref-savov2017no">
+<p>Savov, I. 2017. <em>No Bullshit Guide to Linear Algebra</em>. Minireference Publishing. <a href="https://books.google.com/books?id=A4WzswEACAAJ" class="uri">https://books.google.com/books?id=A4WzswEACAAJ</a>.</p>
+</div>
+<div id="ref-strang2006linear">
+<p>Strang, Gilbert. 2006. <em>Linear algebra and its applications</em>. Belmont, CA: Thomson, Brooks/Cole. <a href="http://www.amazon.com/Linear-Algebra-Its-Applications-Edition/dp/0030105676" class="uri">http://www.amazon.com/Linear-Algebra-Its-Applications-Edition/dp/0030105676</a>.</p>
+</div>
+<div id="ref-strang09">
+<p>———. 2009. <em>Introduction to Linear Algebra</em>. Fourth. Wellesley, MA: Wellesley-Cambridge Press.</p>
+</div>
 </div>
 </div>
 </div>
@@ -1736,7 +1596,7 @@ None</code></pre>
 
 <div id="postamble" data-toggle="wy-nav-shift" class="status">
 <p class="author"><span class="glyphicon glyphicon-user"></span> John James <a href="mailto:jjames@DecisionScients.com">jjames@DecisionScients.com</a></p>
-<p class="date"><span class="glyphicon glyphicon-calendar"></span> 08 September, 2018</p>
+<p class="date"><span class="glyphicon glyphicon-calendar"></span> 10 September, 2018</p>
 </div>
 
 

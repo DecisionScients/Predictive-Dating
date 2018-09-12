@@ -62,5 +62,8 @@ sys.path.append("./src")
 ```{r intro, child = '1.0 intro.rmd'}
 ```
 
-```{r case, child = '2.0 case.rmd'}
+```{r case, child = '4.0 la.rmd'}
+```
+
+```{r case, child = 'references.rmd'}
 ```

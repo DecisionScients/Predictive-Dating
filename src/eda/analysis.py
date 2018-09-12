@@ -5,6 +5,9 @@
 # ---------------------------------------------------------------------------- #
 #                                 LIBRARIES                                    #
 # ---------------------------------------------------------------------------- #
+import os
+import sys
+
 from collections import OrderedDict
 from itertools import combinations
 from itertools import product
@@ -14,12 +17,7 @@ import pandas as pd
 import scipy
 from scipy import stats
 from sklearn import preprocessing
-import sys
 import textwrap
-
-import settings
-from decorators import check_types
-from visualization import visual
 # %%
 # ---------------------------------------------------------------------------- #
 #                                  CRAMER'S V                                  #
@@ -30,6 +28,13 @@ def cramers_corrected_stat(contingency_table):
     """ calculate Cramers V statistic for categorical-categorical association.
         uses correction from Bergsma and Wicher, 
         Journal of the Korean Statistical Society 42 (2013): 323-328
+
+        Args:
+            contingency_table (pd.DataFrame): Contingency table containing
+                                              counts for the two variables
+                                              being analyzed
+        Returns:
+            float: Corrected Cramer's V measure of Association                                    
     """
     chi2 = stats.chi2_contingency(contingency_table)[0]
     n = contingency_table.sum().sum()
@@ -148,13 +153,23 @@ class Independence:
 
 # %%
 # ---------------------------------------------------------------------------- #
-#                                ASSOCTABLE                                     #
+#                                ASSOCTABLE                                    #
 # ---------------------------------------------------------------------------- #
 
 
-@check_types
-def assoctable(df: pd.DataFrame) -> "Dataframe containing results of " \
-        "pairwise association tests":
+def assoctable(df):
+    '''For a dataframe containing categorical variables, this function 
+    computes a series of association tests for each pair of categorical
+    variables. It returns the adjusted Cramer's V measure of 
+    association between the pairs of categorical variables.  Note, this 
+    is NOT  a hypothesis test. 
+
+    Args:
+        df (pd.DataFrame): Data frame containing categorical variables
+
+    Returns:
+        Data frame containing the results of the pairwise association measures.
+    '''
     df = df.select_dtypes(include='object')
     terms = df.columns
 
@@ -164,7 +179,7 @@ def assoctable(df: pd.DataFrame) -> "Dataframe containing results of " \
         y = df[pair[1]]
         ct = pd.crosstab(x, y)
         ct = pd.crosstab(x, y)
-        cv = analysis.cramers_corrected_stat(ct)
+        cv = cramers_corrected_stat(ct)
         tests.append(OrderedDict(
             {'x': pair[0], 'y': pair[1], "Cramer's V": cv}))
     tests = pd.DataFrame(tests)
@@ -175,24 +190,48 @@ def assoctable(df: pd.DataFrame) -> "Dataframe containing results of " \
 # ---------------------------------------------------------------------------- #
 #                                CORRTABLE                                     #
 # ---------------------------------------------------------------------------- #
+def corrtable(df, target=None, threshold=0):
+    '''For a dataframe containing numeric variables, this function 
+    computes pairwise pearson's R tests of correlation correlation.
 
+    Args:
+        df (pd.DataFrame): Data frame containing numeric variables
+        threshold (float): Threshold above which correlations should be
+                           reported.
 
-@check_types
-def corrtable(df: pd.DataFrame) -> "Dataframe containing pairwise  " \
-                                   "correlations above 0.5":
-    df = df.select_dtypes(include=['int', 'float64'])
-    terms = df.columns
+    Returns:
+        Data frame containing the results of the pairwise tests of correlation.
+    '''
+    df2 = df.select_dtypes(include=['int', 'float64'])
+    terms = df2.columns
+
+    if target:
+        if target in df2.columns:
+            pass
+        else:
+            df2 = df2.join(df[target])
 
     tests = []
-    for pair in list(combinations(terms, 2)):
-        x = df[pair[0]]
-        y = df[pair[1]]
-        r = stats.pearsonr(x, y)
-        tests.append(OrderedDict(
-            {'x': pair[0], 'y': pair[1], "Correlation": r[0], "p-value": r[1]}))
-    tests = pd.DataFrame(tests)
-    tests['AbsCorr'] = tests['Correlation'].abs()
-    top = tests.loc[tests['AbsCorr'] > 0.5]
-    tests.drop(['AbsCorr'], inplace=True, axis=1)
-    top.drop(['AbsCorr'], inplace=True, axis=1)
-    return top
+
+    if target:
+        for term in terms:
+            x = df2[term]
+            y = df2[target]
+            r = stats.pearsonr(x, y)
+            tests.append(OrderedDict(
+                {'x': term, 'y': target, "Correlation": r[0], "p-value": r[1]}))
+        tests = pd.DataFrame(tests)
+        tests['AbsCorr'] = tests['Correlation'].abs()
+        top = tests.loc[tests['AbsCorr'] > threshold]
+        return top
+    else:
+        for pair in list(combinations(terms, 2)):
+            x = df2[pair[0]]
+            y = df2[pair[1]]
+            r = stats.pearsonr(x, y)
+            tests.append(OrderedDict(
+                {'x': pair[0], 'y': pair[1], "Correlation": r[0], "p-value": r[1]}))
+        tests = pd.DataFrame(tests)
+        tests['AbsCorr'] = tests['Correlation'].abs()
+        top = tests.loc[tests['AbsCorr'] > threshold]
+        return top

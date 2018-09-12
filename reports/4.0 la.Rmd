@@ -2,7 +2,7 @@
 Linear algebra is one of the most fundamental subjects in mathematics. It is a broad range of study with applications in engineering, physics, economics, statistics and machine learning. Throughout this series, linear algebra will be the language by which we analyze and explore algorithms. Our goal for this section is to review vectors, matrices and their operations. First an editorial.
 
 ## Is Linear Algebra a Prerequisite to Understanding Machine Learning 
-In the opinion of this writer, yes. Though there is merit to the argument that says that one doesn't need to understand how cars work to drive them. Implementing machine algorithms in python doesn't require one to understand eigenvalues and singular value decomposition. The degree to which one invests in learning linear algebra depends upon ones goals. If you seek to:
+In the opinion of this writer, yes. Though there is merit to the argument that says that one doesn't need to understand operating systems to send an email. Implementing machine algorithms in python doesn't require one to understand eigenvalues and singular value decomposition. So, the degree to which one invests in learning linear algebra depends upon ones goals. If you seek to:
 1. develop a strong intuition for methods and their applications    
 2. solve complex learning problems with advanced methods   
 3. concisely and precisely describe methods to colleagues    
@@ -10,25 +10,36 @@ In the opinion of this writer, yes. Though there is merit to the argument that s
 
 an investment in learning linear algebra will open new doors, reveal new possibilities, and bolster your value as a data scientist.
 
-From a machine learning perspective, linear algebra provides the analytical structure for many optimization algorithms such as gradient descent, least squares regression, and support vector machines. Matrix factorization, LU decomposition and singular-value decomposition (SVD) are the core concepts behind dimensionality reduction, least squares optimization algorithms and recommender systems. At its core, deep learning is a manifestation of operations on vectors, matrices and tensors, scaled up to multiple dimensions. A good understanding of linear algebra is constitutive to understanding and developing machine learning algorithms. Linear algebra is the language of data. Linear algebra is the lingua franca of machine learning. 
+From a machine learning perspective, linear algebra provides the analytical structure for many optimization algorithms such as gradient descent, least squares regression, and support vector machines. Matrix factorization, LU decomposition and singular-value decomposition (SVD) are the core concepts behind dimensionality reduction, least squares optimization algorithms and recommender systems. At its core, deep learning is a manifestation of operations on vectors, matrices and tensors, scaled up to multiple dimensions. A good understanding of linear algebra is constitutive to understanding and developing machine learning algorithms. Linear algebra is the language of data. Linear algebra is the lingua franca of machine learning! 
 
-That said, let's jump in!
+End of speech. 
+
+**Acknowledgements**
+
+This review borrows liberally from the following sources:  
+* [Introduction to Linear Algebra by Professor Gilbert Strang](https://www.amazon.com/Introduction-Linear-Algebra-Fourth-Gilbert/dp/0980232716/ref=sr_1_3?s=books&ie=UTF8&qid=1536621558&sr=1-3&keywords=introduction+to+linear+algebra%2C+fifth+edition+by+gilbert+strang). Highly recommended for a comprehensive treatment of linear algebra for engineers, mathematicians, and computer scientists.[@strang09]   
+* [No Bullshit Guide to Linear Algebra](https://www.amazon.com/No-bullshit-guide-linear-algebra/dp/0992001021). This university level text by Ivan Savov is a great resource for acquiring a deeper understanding of challenging concepts. Its concise, precise and fun to read.[@savov2017no]   
+* [Linear Algebra and Its Applications](https://www.amazon.com/Linear-Algebra-Its-Applications-4th/dp/0030105676) Another seminal work by Professor Gilbert Strang, explains theory motivated by real-world applications.[@strang2006linear]
+
+Ok, let's dig in!
 
 ## Scalars, Vectors, Matrices and Tensors
 Scalars, vectors, matrices and tensors are the elemental mathematical objects we study in linear algebra:    
 * Scalars: A scalar is just a single real number in $\mathbf{R}$ or natural number in $\mathbf{N}$. For instance we may say "Let $s \in \mathbf{R}$ be the slope of the line", or "Let $u \in \mathbf{N}$ be the number of units".   
+
 * Vectors: A vector, $x$ is an array of ordered numbers indexed by a subscript. We give vectors lowercase variable names (typically in bold typeface) and write them as a column enclosed in square brackets like so:  
 
 $$
-\mathbf{x} = \left[\begin{array}
+\mathbf{v} = \left[\begin{array}
 {r}
-x_1\\ 
-x_2\\
+v_1\\ 
+v_2\\
 \vdots\\
-x_n
+v_n
 \end{array}\right].
 $$
-When we need to index a set of elements in a vector, we define a set containing their indices and write the set as a subscript. For example, to access $x_1$, $x_2$, and $x_5$, we define the set $S$ - {1,2,5}, then write $x_S$. To access all elements except  $x_1$, $x_2$, and $x_5$, we use the $-$ sign to index the complement of the set, as in $x_{-S}$. When describing a vector, we must also indicate what type of numbers are stored in the vector. For instance, we denote a vector of $n$ real numbers as $\mathbf{R}^n$.  
+An $n$-dimensional vector may also be represented as $\overrightarrow{v} = (v_1, v_2, ..., v_n)\in \mathbb{R^n}.$. These are known as *component* representations. An equivalent representation, known as the *unit* *vector* notation, expresses the vector in terms of unit vectors as follows: $\overrightarrow{v} = v_1\hat{i} + v_2\hat{j}$, where $i = (1,0)$ and $j = (0,1)$
+
 * Matrices: A matrix is a 2-D array of numbers, so each element is identiﬁed by two indices instead of just one. For instance, $A_{1,1}$ identifies the element in the 1st row and 1st column of matrix $\textbf{A}$ Given a matrix $\textbf{A}$ with $m$ rows and $n$ columns, we index the lower right element as $A_{m,n}$. If $\textbf{A}$ is real-valued, we denote the matrix as $\textbf{A} \in R^{m×n}$. To reference all numbers on an axis, we write a ":" for the coordinate of the axis. For instance, we write $A_{i,:}$ to reference all numbers in the $i$th row. Similarly, we write $A_{:,j}$ to index all the numbers in the $j$th column. To explicitly identify the elements of a matrix, we write them as an array enclosed in square brackets: 
 
 $$
@@ -39,3 +50,40 @@ A_{2,1} & A_{2,2}
 \end{array}\right].
 $$
 * Tensors: An $n>2$ dimensional array arranged in a regular grid is known as a tensor. Given a three-dimensional tensor, $\textbf{A}$, we identify the element at coordinates ($i,j,k$) by writing $\textbf{a}_{i,j,k}$.
+
+## Vector Operations
+There are six operations defined for vectors, and they are:  
+1. Addition  
+2. Subtraction  
+3. Scaling  
+4. Dot Product   
+5. Length  
+6. Cross Product.
+
+Given the follow two vectors:  
+$$
+\mathbf{u} = \left[\begin{array}
+{r}
+u_1\\ 
+u_2\\
+\end{array}\right] and,  
+\mathbf{v} = \left[\begin{array}
+{r}
+v_1\\ 
+v_2\\
+\end{array}\right],
+$$
+
+The operations above would be defined as:  
+
+**Addition:**     $\overrightarrow{u} + \overrightarrow{v} = (u_1 + v_1, u_2 + v_2)$
+**Subtraction:**  $\overrightarrow{u} - \overrightarrow{v} = (u_1 - v_1, u_2 - v_2)$
+**Scaling:**      $\alpha\overrightarrow{u} = (\alpha u_1, \alpha u_2)$ 
+**Dot Product:**  $\overrightarrow{u} \bullet \overrightarrow{v} = u_1v_1 + u_2v_2$
+**Length:**       $\|\overrightarrow{u}\| = \sqrt{\overrightarrow{u} \bullet \overrightarrow{u}} = \sqrt{u_1^2+u_2^2}$
+**Cross Product:** Note, that the cross product is only defined for three-dimensional vectors such as $\overrightarrow{u} = (u_1, u_2, u_3)$ and  $\overrightarrow{v} = (v_1, v_2, v_3)$. The cross product of these two vectors $\overrightarrow{u} \times \overrightarrow{v}$ is defined as $(u_2v_3 - u_3v_2, u_3v_1 - u_1v_3, u_1v_2 - u_2v_1$
+
+## Basis
+A rather important concept to grasp early on, is the concept of a basis. Lets consider the three dimensional space $\mathbb{R}^3$. A basis is a set of vectors $\{{\hat{e}_1, \hat{e}_2, \hat{e}_3}\}$ that can be used as a coordinate system for $\mathbb{R}^3$. One can therefore use the basis to represent *any* vector $\overrightarrow{v} \in \mathbb{R}^3$ as coefficients $(v_1, v_2, v_3)$ *with* *respect* *to* the basis:
+$$\overrightarrow{v} = v_1\hat{e}_1 + v_2\hat{e}_2 + v_3\hat{e}_3$$
+Extending this concept to the n-dimensional space $\mathbb{R}^n$ allows us to express machine learning problems as linear regressions of the feature space. 

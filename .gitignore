@@ -1,4 +1,6 @@
 *.Rproj
+*.bib
+*.csv
 .Rproj.user
 .Rhistory
 .RData

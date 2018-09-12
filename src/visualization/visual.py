@@ -1,3 +1,12 @@
+# =========================================================================== #
+#                                 VISUAL                                      #
+# =========================================================================== #
+'''Modules for creating scatterplots, histograms, barplots, and other 
+visualizations.'''
+
+# --------------------------------------------------------------------------- #
+#                                 LIBRARIES                                   #
+# --------------------------------------------------------------------------- #
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -9,15 +18,29 @@ import tabulate
 import warnings
 warnings.filterwarnings('ignore')
 
+# --------------------------------------------------------------------------- #
+#                           PRINT DATAFRAME                                   #
+# --------------------------------------------------------------------------- #
 def print_df(df, centered = True):
-    # This function pretty prints a pandas dataframe    
-    print(tabulate(df, headers='keys', tablefmt='psql'))
+    '''Pretty prints a data frame'''    
+    print(tabulate.tabulate(df, headers='keys', tablefmt='psql'))
 
-#%%
-def multi_countplot(df: pd.DataFrame, nrows: int=None, ncols: int=None,
-                    width: [int, float]=None, height: [int, float]=None,
-                    title : str=None) -> 'figure containing multiple countplots':  
+# --------------------------------------------------------------------------- #
+#                              MULTI-COUNTPLOT                                #
+# --------------------------------------------------------------------------- #
+def multi_countplot(df, nrows=None, ncols=None, width=None, height=None,
+                    title=None): 
+    '''Prints count plots for the categorical variables in a data frame.
+    The plots can be customized using the number rows, the number columns
+    of columns or both. Users may also designate the height and width
+    of the figure containing the individual count plots.
 
+    Args:
+        ncols (int): The number of plots to render per row
+        nrows (int): The number of rows of plots to render 
+        height (int): The height of the figure in inches
+        width (int): The width of the figure in inches  
+    '''
 
     sns.set(style="whitegrid", font_scale=1)
     sns.set_palette("GnBu_d")
@@ -31,23 +54,28 @@ def multi_countplot(df: pd.DataFrame, nrows: int=None, ncols: int=None,
     else:
         ncols = -(-len(df.columns) // nrows)  
 
+    # Sets height and width 
     if not width:
         width = plt.rcParams.get('figure.figsize')[0]
     if not height:
         height = plt.rcParams.get('figure.figsize')[1] 
     figsize = [width, height]       
 
+    # Designates sub plots
     fig, axes = plt.subplots(ncols = ncols, nrows=nrows, figsize=figsize)
     cols = df.columns
     if title:
         fig.suptitle(title)
         fig.subplots_adjust(top=1)
 
+    # Renders count plots for each subplot 
     for ax, cols in zip(axes.flat, cols):
         sns.countplot(x = df[cols], ax=ax)
     plt.tight_layout()
 
-#%%
+# --------------------------------------------------------------------------- #
+#                              MULTI-HISTOGRAM                                #
+# --------------------------------------------------------------------------- #
 def multi_histogram(df: pd.DataFrame, nrows: int=None, ncols: int=None,
                     width: [int, float]=None, height: [int, float]=None,
                     title : str=None) -> 'figure containing multiple histograms':  
@@ -84,7 +112,9 @@ def multi_histogram(df: pd.DataFrame, nrows: int=None, ncols: int=None,
         sns.distplot(a = df[cols], kde=False, ax=ax, color='b')
     plt.tight_layout()
 
-#%%
+# --------------------------------------------------------------------------- #
+#                               MULTI-BOXPLOT                                 #
+# --------------------------------------------------------------------------- #
 def multi_boxplot(df: pd.DataFrame, nrows: int=None, ncols: int=None,
                     width: [int, float]=None, height: [int, float]=None,
                     title : str=None) -> 'figure containing multiple boxplots':  
@@ -119,19 +149,21 @@ def multi_boxplot(df: pd.DataFrame, nrows: int=None, ncols: int=None,
     plt.tight_layout()
 
 
-#%%
-def bar_plot(df, xval, yval, title):
+# --------------------------------------------------------------------------- #
+#                                 BARPLOT                                     #
+# --------------------------------------------------------------------------- #
+def bar_plot(df, xvar, yvar, title):
     import seaborn as sns
     import matplotlib.pyplot as plt
     import statistics as stat
     sns.set(style="whitegrid", font_scale=1)
     sns.set_palette("GnBu_d")
     fig, ax = plt.subplots()
-    bp = sns.barplot(x=xval, y=yval, data=df, ax=ax).set_title(title)    
-    if (stat.mean(df[[xval]].apply(len)) > 5):
-        plt.xticks(rotation=30)
-    return(bp)
-
+    sns.barplot(x=xvar, y=yvar, data=df, ax=ax, color='b').set_title(title)       
+    plt.tight_layout()
+# --------------------------------------------------------------------------- #
+#                                 HISTOGRAM                                   #
+# --------------------------------------------------------------------------- #
 def histogram(values, title):
     import seaborn as sns
     import matplotlib.pyplot as plt
@@ -140,7 +172,9 @@ def histogram(values, title):
     fig, ax = plt.subplots()
     hist = sns.distplot(values,bins=40, ax=ax, kde=False).set_title(title)    
     return(hist)
-
+# --------------------------------------------------------------------------- #
+#                            CORRELATION PLOT                                 #
+# --------------------------------------------------------------------------- #
 def corrplot(df):
 
     sns.set(style="white")
@@ -160,7 +194,9 @@ def corrplot(df):
     # Draw the heatmap with the mask and correct aspect ratio
     sns.heatmap(corr, mask=mask, cmap=cmap, vmax=.3, center=0,
                 square=True, linewidths=.5, cbar_kws={"shrink": .5})
-
+# --------------------------------------------------------------------------- #
+#                              AUC PLOT                                       #
+# --------------------------------------------------------------------------- #
 def plot_AUC(x, y1, y2, xlab, y1lab, y2lab):
    
     line1, = plt.plot(x, y1, 'b', label=y1lab)
@@ -184,6 +220,9 @@ def plot_AUC(x, y1, y2, xlab, y1lab, y2lab):
     plt.annotate(text2, xy=(x2max, y2max), xytext=(.94,.40), **kw)
     plt.show()
     
+# --------------------------------------------------------------------------- #
+#                                LINE PLOT                                    #
+# --------------------------------------------------------------------------- #    
 def plot_line(x,y, xlab, ylab):
 
     line = plt.plot(x, y, 'b')
@@ -199,7 +238,9 @@ def plot_line(x,y, xlab, ylab):
             arrowprops=arrowprops, bbox=bbox_props, ha="right", va="top")
     plt.annotate(text, xy=(xmax, ymax), xytext=(.94,.20), **kw)
     plt.show()
-
+# --------------------------------------------------------------------------- #
+#                    RANDOM FORESTS HYPERPARAMETER PLOT                       #
+# --------------------------------------------------------------------------- #
 def plot_rf_hyperparameter(df, param):
 
     fig, ax1 = plt.subplots()
