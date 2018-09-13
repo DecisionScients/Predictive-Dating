@@ -13,6 +13,7 @@ from collections import OrderedDict
 import itertools
 from itertools import combinations
 from itertools import product
+import math
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -584,65 +585,34 @@ def multi_histogram(df: pd.DataFrame, nrows: int=None, ncols: int=None,
     for ax, cols in zip(axes.flat, cols):
         sns.distplot(a = df[cols], kde=False, ax=ax, color='b')
     plt.tight_layout()
-
+#%%
 # --------------------------------------------------------------------------- #
 #                               MULTI-BOXPLOT                                 #
 # --------------------------------------------------------------------------- #
-def multi_boxplot(df: pd.DataFrame, nrows: int=None, ncols: int=None,
-                    width: [int, float]=None, height: [int, float]=None,
-                    title : str=None) -> 'figure containing multiple boxplots':  
+def multi_boxplot(df, groupby=None, title=None):  
 
     sns.set(style="whitegrid", font_scale=1)
+    sns.set_palette("GnBu_d")
     sns.set_color_codes("dark")
     
-    # Sets number of rows and columns
-    if all(v is None for v in [nrows, ncols]):
-        nrows = len(df.columns)
-        ncols = 1
-    elif not nrows:
-        nrows = -(-len(df.columns) // ncols)
-    else:
-        ncols = -(-len(df.columns) // nrows)        
-
-    if not width:
-        width = plt.rcParams.get('figure.figsize')[0]
-    if not height:
-        height = plt.rcParams.get('figure.figsize')[1] 
+    # Sets number of rows and columns    
+    plots = (len(df.columns)-1) 
+    ncols = 2
+    nrows = math.ceil(plots / ncols)
+    
+    # Set width and height
+    width = ncols * 3
+    height = nrows * 3
     figsize = [width, height]       
-
     fig, axes = plt.subplots(ncols = ncols, nrows=nrows, figsize=figsize)
-    cols = df.columns
 
+    cols = list(df.columns)
+    cols.remove(groupby)
+    for ax, col in zip(axes.flat, cols):
+        sns.boxplot(x = col, y = groupby, data=df, ax=ax)
+    plt.tight_layout()
+    
     if title:
         fig.suptitle(title)
-        fig.subplots_adjust(top=1)
-        
-    for ax, cols in zip(axes.flat, cols):
-        sns.boxplot(x = df[cols], ax=ax)
-    plt.tight_layout()
+        fig.subplots_adjust(top=.9)
 
-
-
-
-def ezrc(fontSize=22., lineWidth=2., labelSize=None, tickmajorsize=10,
-         tickminorsize=5, figsize=(6, 8)):    
-  
-    if labelSize is None:
-        labelSize = fontSize + 5
-    rc('figure', figsize=figsize)
-    rc('lines', linewidth=lineWidth)
-    rcParams['grid.linewidth'] = lineWidth
-    rcParams['font.sans-serif'] = ['Open Sans']
-    rcParams['font.serif'] = ['Open Sans']
-    rcParams['font.family'] = ['Open Sans']
-    rc('font', size=fontSize, family='sans-serif', weight='bold')
-    rc('axes', linewidth=lineWidth, labelsize=labelSize)
-    rc('legend', borderpad=0.1, markerscale=1., fancybox=False)
-    rc('text', usetex=True)
-    rc('image', aspect='auto')
-    rc('ps', useafm=True, fonttype=3)
-    rcParams['xtick.major.size'] = tickmajorsize
-    rcParams['xtick.minor.size'] = tickminorsize
-    rcParams['ytick.major.size'] = tickmajorsize
-    rcParams['ytick.minor.size'] = tickminorsize
-    rcParams['text.latex.preamble'] = ["\\usepackage{amsmath}"]

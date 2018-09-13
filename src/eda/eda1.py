@@ -50,11 +50,6 @@ visual.count_plot(df['gender'], title='Gender Counts')
 
 # %%
 # --------------------------------------------------------------------------- #
-#                                 RACE                                        #
-# --------------------------------------------------------------------------- #
-visual.count_plot(df['race'], title='Race Counts')
-# %%
-# --------------------------------------------------------------------------- #
 #                              AGE ANALYSIS                                   #
 # --------------------------------------------------------------------------- #
 vars = ['age', 'age_o', 'd_age']
@@ -71,7 +66,7 @@ visual.count_plot(df['decision'], title='Decision Counts')
 # --------------------------------------------------------------------------- #
 #                             PREFERENCE ANALYSIS                             #
 # --------------------------------------------------------------------------- #
-vars = ["importance_same_race", "attractive_important",
+vars = ["attractive_important",
         "sincere_important", "intelligence_important", "funny_important",
         "ambition_important", "shared_interests_important"]
 

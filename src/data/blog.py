@@ -37,20 +37,7 @@ def read(directory, filename, vars):
                'ambtition_important': 'ambition_important'},
               inplace=True,
               axis='columns')
-
-    # Recode race levels
-    df['race'] = df['race'].replace({
-        'asian/pacific islander/asian-american': 'asian',
-        'european/caucasian-american': 'caucasian',
-        'black/african american': 'black',
-        'latino/hispanic american': 'latino',
-        'other': 'other'})
-    df['race_o'] = df['race_o'].replace({
-        'asian/pacific islander/asian-american': 'asian',
-        'european/caucasian-american': 'caucasian',
-        'black/african american': 'black',
-        'latino/hispanic american': 'latino',
-        'other': 'other'})
+    df.decision = np.where(df['decision'] == 0, "no", "yes")
 
     # Obtain variables of interest
     if vars:

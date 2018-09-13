@@ -39,49 +39,75 @@ from visualization import visual
 df = pd.read_csv(os.path.join(
     directories.INTERIM_DATA_DIR, filenames.TRAIN_FILENAME))
 
+# %%
 # --------------------------------------------------------------------------- #
-#                         PREFERENCE SCATTERPLOTS                             #
+#                       PREFERENCES BY GENDER                                 #
 # --------------------------------------------------------------------------- #
-fig, axes = plt.subplots(ncols=3, nrows=1, figsize=[12, 4])
-fig.suptitle('Preferences of Partner')
-sns.scatterplot(x='pref_o_attractive', y='pref_o_sincere',
-                palette='blues', data=df, ax=axes[0])
-sns.scatterplot(x='pref_o_attractive', y='pref_o_ambitious',
-                palette='blues', data=df, ax=axes[1])
-sns.scatterplot(x='pref_o_attractive', y='pref_o_shared_interests',
-                palette='blues', data=df, ax=axes[2])
+vars = ["gender", "age",	"age_o", "d_age"]
+pd = df[vars]
+visual.multi_boxplot(pd, groupby='gender', title='Age by Gender')
 
+# %%
 # --------------------------------------------------------------------------- #
-#                     PREFERENCE CORRELATION BARPLOTS                         #
+#                       PREFERENCES BY GENDER                                 #
 # --------------------------------------------------------------------------- #
-vars = ["pref_o_attractive", "pref_o_sincere", "pref_o_intelligence",
-        "pref_o_funny",	"pref_o_ambitious",	"pref_o_shared_interests"]
-rt = analysis.corrtable(df[vars])
-rt['Pair'] = rt['x'].map(str) + ' & ' + rt['y']
-rt['absr'] = rt['AbsCorr']
-rt = rt.sort_values(by='absr', ascending=False)
-visual.bar_plot(rt, xvar='Correlation', yvar='Pair',
-                title='Preference Correlations')
+vars = ["gender", "attractive_important",	"sincere_important",
+        "ambition_important", "shared_interests_important"]
+pd = df[vars]
+visual.multi_boxplot(pd, groupby='gender', title='Preferences by Gender')
 
+# %%
 # --------------------------------------------------------------------------- #
-#                       QUALITY CORRELATION BARPLOTS                          #
+#                  SELF-ASSESSMENTS BY GENDER                                 #
 # --------------------------------------------------------------------------- #
-vars = ["attractive_o",	"sincere_o",	"intelligence_o",	"funny_o",
-        "ambitous_o",	"shared_interests_o"]
-rt = analysis.corrtable(df[vars])
-rt['Pair'] = rt['x'].map(str) + ' & ' + rt['y']
-rt['absr'] = rt['AbsCorr']
-rt = rt.sort_values(by='absr', ascending=False)
-visual.bar_plot(rt, xvar='Correlation', yvar='Pair',
-                title='Quality Correlations')
+vars = ["gender", "attractive",	"sincere",	"intelligence",	"funny", "ambition"]
+pd = df[vars]
+visual.multi_boxplot(pd, groupby='gender', title='Self-Assessments by Gender')
+
+# %%
+# --------------------------------------------------------------------------- #
+#                  PARTNER ASSESSMENTS BY GENDER                              #
+# --------------------------------------------------------------------------- #
+vars = ["gender", "attractive_partner",	"sincere_partner",
+        "intelligence_partner",	"funny_partner", "ambition_partner"]
+pd = df[vars]
+visual.multi_boxplot(pd, groupby='gender',
+                     title='Partner Assessments by Gender')
 
 
+# %%
 # --------------------------------------------------------------------------- #
-#                    CORRELATION with DECISION BARPLOTS                       #
+#                       PREFERENCES BY DECISION                               #
 # --------------------------------------------------------------------------- #
-rt = analysis.corrtable(df, target='decision_o', threshold=0.2)
-rt['Pair'] = rt['x'].map(str) + ' & ' + rt['y']
-rt['absr'] = rt['AbsCorr']
-rt = rt.sort_values(by='absr', ascending=False)
-visual.bar_plot(rt, xvar='Correlation', yvar='Pair',
-                title='Correlations with Decision')
+vars = ["decision", "age",	"age_o", "d_age"]
+pd = df[vars]
+visual.multi_boxplot(pd, groupby='decision', title='Age by Decision')
+
+# %%
+# --------------------------------------------------------------------------- #
+#                       PREFERENCES BY DECISION                               #
+# --------------------------------------------------------------------------- #
+vars = ["decision", "attractive_important",	"sincere_important",
+        "ambition_important", "shared_interests_important"]
+pd = df[vars]
+visual.multi_boxplot(pd, groupby='decision', title='Preferences by Decision')
+
+# %%
+# --------------------------------------------------------------------------- #
+#                  SELF-ASSESSMENTS BY DECISION                               #
+# --------------------------------------------------------------------------- #
+vars = ["decision", "attractive",	"sincere",
+        "intelligence",	"funny", "ambition"]
+pd = df[vars]
+visual.multi_boxplot(pd, groupby='decision',
+                     title='Self-Assessments by Decision')
+
+# %%
+# --------------------------------------------------------------------------- #
+#                  PARTNER ASSESSMENTS BY DECISION                            #
+# --------------------------------------------------------------------------- #
+vars = ["decision", "attractive_partner",	"sincere_partner",
+        "intelligence_partner",	"funny_partner", "ambition_partner"]
+pd = df[vars]
+visual.multi_boxplot(pd, groupby='decision',
+                     title='Partner Assessments by Decision')
