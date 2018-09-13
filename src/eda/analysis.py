@@ -16,8 +16,30 @@ import numpy as np
 import pandas as pd
 import scipy
 from scipy import stats
+from scipy.stats import kurtosis, skew
 from sklearn import preprocessing
 import textwrap
+
+# %%
+# ---------------------------------------------------------------------------- #
+#                                    DESCRIBE                                  #
+# ---------------------------------------------------------------------------- #
+
+
+def describe_quant(df):
+
+    stats = pd.DataFrame()
+    cols = df.columns
+    for col in cols:
+        d = pd.DataFrame(df[col].describe())
+        d = d.T
+        d['skew'] = skew(df[col])
+        d['kurtosis'] = kurtosis(df[col])
+        c = ['count', 'min', '25%', 'mean', '50%',
+             '75%', 'max', 'skew', 'kurtosis']
+        stats = stats.append(d[c])
+    return stats
+
 # %%
 # ---------------------------------------------------------------------------- #
 #                                  CRAMER'S V                                  #

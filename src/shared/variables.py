@@ -37,11 +37,11 @@ RAW = ['wave', 'gender', 'age', 'age_o', 'd_age',
        'guess_prob_liked', 'd_like', 'd_guess_prob_liked', 'met', 'decision',
        'decision_o', 'match']
 
-BLOG = ["gender", "d_age", "pref_o_attractive", "pref_o_sincere",
-        "pref_o_intelligence", "pref_o_funny", "pref_o_ambitious",
-        "pref_o_shared_interests", "attractive_o", "sincere_o",
-        "intelligence_o", "funny_o", "ambitous_o", "shared_interests_o",
-        "sports", "tvsports", "exercise", "dining", "museums", "art",
-        "hiking", "gaming", "clubbing", "reading", "tv", "theater",
-        "movies", "concerts", "music", "shopping", "yoga",
-        "interests_correlate", "decision_o"]
+BLOG = ["gender", "age", "age_o", "d_age", "race",
+        "race_o", "samerace", "importance_same_race", "attractive_important",
+        "sincere_important", "intelligence_important", "funny_important",
+        "ambition_important", "shared_interests_important", "attractive",
+        "sincere", "intelligence", "funny", "ambition",	"attractive_partner",
+        "sincere_partner", "intelligence_partner", "funny_partner",
+        "ambition_partner", "shared_interests_partner", "interests_correlate",
+        "decision"]
