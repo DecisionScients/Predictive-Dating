@@ -19,6 +19,7 @@ current = os.path.join(home, "eda")
 sys.path.append(current)
 
 import pandas as pd
+import seaborn as sns
 
 from shared import directories
 from shared import filenames
@@ -34,32 +35,74 @@ df = pd.read_csv(os.path.join(directories.INTERIM_DATA_DIR,
 # ============================================================================ #
 #                                CORRELATION                                   #
 # ============================================================================ #
-# visual.correlation(df)
-visual.corrtable(df, threshold=0.25)
+visual.correlation(df)
+visual.corrtable(df, threshold=0.4)
+
+# %%
+# --------------------------------------------------------------------------- #
+#                      STRONG PREFERENCE CORRELATIONS                         #
+# --------------------------------------------------------------------------- #
+vars = ["attractive_important",	"sincere_important",
+        "ambition_important", "shared_interests_important"]
+sc = df[vars]
+sns.pairplot(sc, kind="scatter")
+
+# %%
+# --------------------------------------------------------------------------- #
+#                     PREFERENCE CORRELATION BARPLOTS                         #
+# --------------------------------------------------------------------------- #
+vars = ["attractive_important",	"sincere_important",
+        "ambition_important", "shared_interests_important"]
+rt = visual.corrtable(df[vars])
+rt['Pair'] = rt['x'].map(str) + ' & ' + rt['y']
+rt['absr'] = rt['AbsCorr']
+rt = rt.sort_values(by='absr', ascending=False)
+sns.barplot(x='Correlation', y='Pair', data=rt, hue='Strength',
+            dodge=False).set_title('Preference Correlations')
+# %%
+# --------------------------------------------------------------------------- #
+#                 SELF-ASSESSMENT CORRELATION BARPLOTS                        #
+# --------------------------------------------------------------------------- #
+vars = ["attractive",	"sincere",	"intelligence",	"funny", "ambition"]
+rt = visual.corrtable(df[vars])
+rt['Pair'] = rt['x'].map(str) + ' & ' + rt['y']
+rt['absr'] = rt['AbsCorr']
+rt = rt.sort_values(by='absr', ascending=False)
+sns.barplot(x='Correlation', y='Pair', data=rt, hue='Strength',
+            dodge=False).set_title('Self-Assessment Correlations')
+
+
+# %%
+# --------------------------------------------------------------------------- #
+#                STRONG PARTNER-ASSESSMENT CORRELATIONS                       #
+# --------------------------------------------------------------------------- #
+vars = ["attractive_partner", "sincere_partner",
+        "intelligence_partner", "funny_partner", "ambition_partner",
+        "shared_interests_partner"]
+rt = visual.corrtable(df[vars])
+rt['Pair'] = rt['x'].map(str) + ' & ' + rt['y']
+rt['absr'] = rt['AbsCorr']
+rt = rt.sort_values(by='absr', ascending=False)
+sns.barplot(x='Correlation', y='Pair', data=rt, hue='Strength',
+            dodge=False).set_title('Partner Assessment Correlations')
+
+# %%
+# --------------------------------------------------------------------------- #
+#                 PARTNER/SELF ASSESSMENT CORRELATIONS                        #
+# --------------------------------------------------------------------------- #
+p = ["attractive_partner", "sincere_partner",
+     "intelligence_partner", "funny_partner", "ambition_partner"]
+s = ["attractive",	"sincere",	"intelligence",	"funny", "ambition"]
+rt = visual.corrtable(df=df, x=p, y=s)
+rt['Pair'] = rt['x'].map(str) + ' & ' + rt['y']
+rt['absr'] = rt['AbsCorr']
+rt = rt.sort_values(by='absr', ascending=False)
+sns.barplot(x='Correlation', y='Pair', data=rt, hue='Strength',
+            dodge=False).set_title('Partner Assessment Correlations')
+
+# %%
 # ============================================================================ #
 #                                ASSOCIATION                                   #
 # ============================================================================ #
-# visual.association(df)
-# visual.assoctable(df)
-
-# %%
-# =========================================================================== #
-#                      PREFERENCES BY GENDER STATISTICS                       #
-# =========================================================================== #
-
-vars = ["pref_o_attractive", "pref_o_sincere", "pref_o_intelligence",
-        "pref_o_funny",	"pref_o_ambitious",	"pref_o_shared_interests"]
-
-male = df[df['gender'] == 'male']
-female = df[df['gender'] == 'female']
-stats = pd.DataFrame()
-for v in vars:
-    m = analysis.describe_quant(pd.DataFrame(male[v]))
-    m.insert(0, 'term', v)
-    m.insert(0, 'gender', 'male')
-    f = analysis.describe_quant(pd.DataFrame(female[v]))
-    f.insert(0, 'term', v)
-    f.insert(0, 'gender', 'female')
-    stats = stats.append(m, ignore_index=True)
-    stats = stats.append(f, ignore_index=True)
-print(stats)
+visual.association(df)
+visual.assoctable(df)
