@@ -1,10 +1,12 @@
 # =========================================================================== #
 #                                   BLOG                                      #
 # =========================================================================== #
-''' This module imports the data for the blog project. It corrects the 
-a few misspellings in the variable names and saves the data in the 
-interim data directory.'''
-# %%
+'''
+This module imports the data for the blog project. It corrects the
+a few misspellings in the variable names and saves the data in the
+interim data directory.
+'''
+
 import os
 import sys
 import inspect

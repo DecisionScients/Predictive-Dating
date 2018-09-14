@@ -11,30 +11,24 @@ By the end of this series, you will be able to:
 2.	Relate their strengths, weaknesses and underlying assumptions   
 3.	Identify the problems for which the algorithms are best suited   
 4.	Implement the classifiers in Python   
-5.	Evaluate and contrast the performance of the algorithms   
+5.	Evaluate the performance of the algorithms   
 
 ## How will we get there?   
-We will take a case-based approach as follows:  
-
-1. Case Introduction   
-2. Exploratory Data Analysis   
-3. Machine Learning and Classification Review   
-    3.1. Machine Learning Tasks   
-    3.2. Machine Learning Applications      
-    3.3. Linear Algebra Review   
-    3.4. The Classification Problem   
-4. Linear Classifiers   
-    4.1. Logistic Regression   
-    4.2. Linear Discriminant Analysis   
-    4.3. Support Vector Machines   
+  
+1. Business Case     
+  . Exploratory Data Analysis  
+3. Linear Classifiers   
+    3.1. Logistic Regression   
+    3.2. Linear Discriminant Analysis   
+    3.3. K-Nearest Neighbors  
+    3.4. Support Vector Machines   
+4. Tree-Based Classifiers    
+    4.1. Classification Tree   
+    4.2. Bagging    
+    4.3. Random Forests   
+    4.4. Boosting   
 5. Non-Linear Classifiers    
-    5.1. K-Nearest Neighbors   
-    5.2. Generalized Additive Models for Classification  
-    5.3. Neural Networks   
-6. Tree-Based Classifiers    
-    6.1. Classification Tree   
-    6.2. Bagging    
-    6.3. Random Forests   
-    6.4. Boosting   
+    5.1. Generalized Additive Models for Classification  
+    5.2. Neural Networks   
 7. Discussion  
 8. Conclusions  

@@ -1,2 +1,0 @@
-# Exploratory Data Analysis
-A univariate, bivariate and multivariate exploratory data analysis was 

@@ -6,7 +6,7 @@ This module performs a bivariate analysis of examines measures of age,
 preference, self-assessments, and partner assessments by gender, race and
 decision.
 '''
-# %%
+
 # --------------------------------------------------------------------------- #
 #                                 LIBRARIES                                   #
 # --------------------------------------------------------------------------- #
@@ -27,7 +27,6 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 
-import analysis
 from shared import directories
 from shared import filenames
 from shared import variables
@@ -39,7 +38,11 @@ from visualization import visual
 df = pd.read_csv(os.path.join(
     directories.INTERIM_DATA_DIR, filenames.TRAIN_FILENAME))
 
-# %%
+# --------------------------------------------------------------------------- #
+#                         DECISIONS BY GENDER                                 #
+# --------------------------------------------------------------------------- #
+
+
 # --------------------------------------------------------------------------- #
 #                       PREFERENCES BY GENDER                                 #
 # --------------------------------------------------------------------------- #
@@ -47,7 +50,7 @@ vars = ["gender", "age",	"age_o", "d_age"]
 pd = df[vars]
 visual.multi_boxplot(pd, groupby='gender', title='Age by Gender')
 
-# %%
+
 # --------------------------------------------------------------------------- #
 #                       PREFERENCES BY GENDER                                 #
 # --------------------------------------------------------------------------- #
@@ -56,7 +59,7 @@ vars = ["gender", "attractive_important",	"sincere_important",
 pd = df[vars]
 visual.multi_boxplot(pd, groupby='gender', title='Preferences by Gender')
 
-# %%
+
 # --------------------------------------------------------------------------- #
 #                  SELF-ASSESSMENTS BY GENDER                                 #
 # --------------------------------------------------------------------------- #
@@ -64,7 +67,7 @@ vars = ["gender", "attractive",	"sincere",	"intelligence",	"funny", "ambition"]
 pd = df[vars]
 visual.multi_boxplot(pd, groupby='gender', title='Self-Assessments by Gender')
 
-# %%
+
 # --------------------------------------------------------------------------- #
 #                  PARTNER ASSESSMENTS BY GENDER                              #
 # --------------------------------------------------------------------------- #
@@ -75,7 +78,6 @@ visual.multi_boxplot(pd, groupby='gender',
                      title='Partner Assessments by Gender')
 
 
-# %%
 # --------------------------------------------------------------------------- #
 #                       PREFERENCES BY DECISION                               #
 # --------------------------------------------------------------------------- #
@@ -83,7 +85,7 @@ vars = ["decision", "age",	"age_o", "d_age"]
 pd = df[vars]
 visual.multi_boxplot(pd, groupby='decision', title='Age by Decision')
 
-# %%
+
 # --------------------------------------------------------------------------- #
 #                       PREFERENCES BY DECISION                               #
 # --------------------------------------------------------------------------- #
@@ -92,7 +94,7 @@ vars = ["decision", "attractive_important",	"sincere_important",
 pd = df[vars]
 visual.multi_boxplot(pd, groupby='decision', title='Preferences by Decision')
 
-# %%
+
 # --------------------------------------------------------------------------- #
 #                  SELF-ASSESSMENTS BY DECISION                               #
 # --------------------------------------------------------------------------- #
@@ -102,7 +104,7 @@ pd = df[vars]
 visual.multi_boxplot(pd, groupby='decision',
                      title='Self-Assessments by Decision')
 
-# %%
+
 # --------------------------------------------------------------------------- #
 #                  PARTNER ASSESSMENTS BY DECISION                            #
 # --------------------------------------------------------------------------- #

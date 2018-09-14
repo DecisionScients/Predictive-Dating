@@ -1,8 +1,12 @@
 *.Rproj
 *.bib
 *.csv
+*.html
 .Rproj.user
 .Rhistory
 .RData
 .Ruserdata
 /notes
+/data
+*__pycache__*
+/reports/figures

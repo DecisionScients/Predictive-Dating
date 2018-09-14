@@ -23,6 +23,7 @@ library(extrafont)
 library(kableExtra)
 library(kfigr)
 library(knitr)
+library(png)
 library(reticulate)
 library(rmarkdown)
 ```
@@ -57,12 +58,26 @@ knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
 import os, sys, inspect
 os.environ['QT_QPA_PLATFORM_PLUGIN_PATH'] = '/ProgramData/Anaconda3/Library/plugins/platforms'
 sys.path.append("./src")
+
+home = os.path.join(os.path.dirname(os.path.abspath(
+    inspect.getfile(inspect.currentframe()))), "src")
+sys.path.append(home)
+
+import itertools
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+import matplotlib.pylab as pylab
+import numpy as np
+import pandas as pd
+import seaborn as sns
+
+from shared import directories
+from shared import filenames
+from shared import variables
+from visualization import visual
 ```
 
-```{r intro, child = '1.0 intro.rmd'}
-```
-
-```{r case, child = '4.0 la.rmd'}
+```{r intro, child = '1.0 case.rmd'}
 ```
 
 ```{r case, child = 'references.rmd'}

@@ -1,0 +1,53 @@
+# Case: Predictive Dating
+Congratulations on getting a job as a data scientist at SpeedDating.com, the dominate player in the speed dating market! Your boss has compiled data from a series of past speed dating events and she asks you to:  
+1. develop a model to predict whether a participant requests a second date,  
+2. determine which attributes, or combinations thereof, are most highly associated with a second date decision, and      
+3. present interesting insights about speed dating.
+
+Not interested in a 'blackbox' solution, she advises that the model must make sense to the domain experts in marketing. You are also expected to describe your model selection process, justify your model choice, and explain how the model works.
+
+## The Data 
+The data was obtained from participants in experimental speed dating events from 2002-2004.  During these events, participants would have a series of four-minute “first-dates” with every other participant of the opposite sex. At the end of each four-minute date, participants were asked if they would like to see their date again.  Participants were also asked to rate their date on six attributes: Attractiveness, sincerity, intelligence, fun, ambition, and shared interests. Additional information was obtained throughout the process such as demographics, lifestyle information and beliefs on what others find valuable in a mate. The training set is comprised of 5,925 observations or 'first dates'.
+
+In this case, we will consider the following (`r kfigr::figr(label = "data", prefix = TRUE, link = TRUE, type="Table")`) demographic, self-assessment, partner-assessment and preference data to predict the decision to request a second date.
+
+`r kfigr::figr(label = "data", prefix = TRUE, link = TRUE, type="Table")`: Speed dating data
+```{r codebook}
+filepath <- "./references/codebook.csv"
+codebook <- read.csv(filepath)
+vars <- codebook %>% filter(Blog == 'yes') %>% select(-Blog)
+knitr::kable(vars) %>%  
+  kableExtra::kable_styling(bootstrap_options = c("hover", "condensed", "responsive"), full_width = T, position = "center")
+```
+
+## Data Analysis
+```{python get_data_module, code=readLines("../src/data/blog.py")[28:90]}
+```
+
+```{python eda_data}
+df = pd.read_csv(os.path.join(
+    directories.INTERIM_DATA_DIR, filenames.TRAIN_FILENAME))
+rows = df.shape[0]
+```
+
+Your intern has extracted the complete cases, split the data into a training and test set, and conducted an exploratory data analysis on the `r py$rows` training observations. Let's review the highlights.
+
+```{python decisions_gender}
+dg = pd.crosstab(df['gender'], df['decision'], margins=True)
+female = dg.loc['female', 'All']
+female_yes =  dg.loc['female', 'yes']
+female_yes_pct = female_yes / female * 100
+male = dg.loc['male', 'All']
+male_yes =  dg.loc['male', 'yes']
+male_yes_pct = male_yes / male * 100
+
+
+fig = visual.count_plot(df, x='gender', hue='decision', title='Decisions by Gender')
+fig.savefig("./reports/figures/decision_gender.png")
+plt.close(fig)
+```
+![](../reports/figures/decision_gender.png)
+
+`r kfigr::figr(label = "decisions_gender", prefix = TRUE, link = TRUE, type="Figure")`: Decisions by Gender
+
+As indicated by `r kfigr::figr(label = "decisions_gender", prefix = TRUE, link = TRUE, type="Figure")` women were a bit more selective than men. Of the `r py$female` dates, women requested second dates `r round(py$female_yes_pct,0)`% of the time. Men requested second dates for `r round(py$male_yes_pct, 0)`% of their `r py$male` speed dates.

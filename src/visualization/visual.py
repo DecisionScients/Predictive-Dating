@@ -61,19 +61,20 @@ def print_df(df, centered = True):
 # --------------------------------------------------------------------------- #
 #                                COUNT_PLOT                                   #
 # --------------------------------------------------------------------------- #
-def count_plot(x, title=None):
+def count_plot(df,x, hue=None, title=None):
 
-    sns.set(style="whitegrid", font_scale=1)
+    sns.set(style="whitegrid", font_scale=2)
     sns.set_palette("GnBu_d")
     fig, ax = plt.subplots()
-    sns.countplot(x = x, ax=ax).set_title(title)
-    total = float(len(x))
+    sns.countplot(x = x, data = df, hue=hue, ax=ax).set_title(title)
+    total = float(len(df[x]))
     for p in ax.patches:
         height = p.get_height()
         text = '{:,} ({:.01f})'.format(height, height/total) 
         ax.text(p.get_x()+p.get_width()/2.,
-                height/2, text, fontsize=10, ha="center", color='white') 
+                height/2, text, fontsize=20, ha="center", color='white') 
     plt.tight_layout()
+    return(fig)
 
 # %%
 # --------------------------------------------------------------------------- #
@@ -85,6 +86,7 @@ def bar_plot(df, xvar, yvar, title):
     fig, ax = plt.subplots()
     sns.barplot(x=xvar, y=yvar, data=df, ax=ax, color='b').set_title(title)       
     plt.tight_layout()
+    return(fig)
 # --------------------------------------------------------------------------- #
 #                                 HISTOGRAM                                   #
 # --------------------------------------------------------------------------- #
@@ -92,8 +94,8 @@ def histogram(values, title):
     sns.set(style="whitegrid", font_scale=1)
     sns.set_palette("GnBu_d")
     fig, ax = plt.subplots()
-    hist = sns.distplot(values,bins=40, ax=ax, kde=False).set_title(title)    
-    return(hist)
+    sns.distplot(values,bins=40, ax=ax, kde=False).set_title(title)    
+    return(fig)
 # --------------------------------------------------------------------------- #
 #                            CORRELATION PLOT                                 #
 # --------------------------------------------------------------------------- #
@@ -108,14 +110,15 @@ def corrplot(df):
     mask[np.triu_indices_from(mask)] = True
 
     # Set up the matplotlib figure
-    f, ax = plt.subplots(figsize=(11, 9))
+    fig, ax = plt.subplots(figsize=(11, 9))
 
     # Generate a custom diverging colormap
     cmap = sns.diverging_palette(220, 10, as_cmap=True)
 
     # Draw the heatmap with the mask and correct aspect ratio
-    sns.heatmap(corr, mask=mask, cmap=cmap, vmax=.3, center=0,
+    sns.heatmap(corr, mask=mask, cmap=cmap, vmax=.3, center=0, ax=ax,
                 square=True, linewidths=.5, cbar_kws={"shrink": .5})
+    return(fig)
 
 # ============================================================================ #
 #                                CORRELATION                                   #
@@ -125,12 +128,13 @@ def correlation(df):
     corr = df.corr()
     mask = np.zeros_like(corr, dtype=np.bool)
     mask[np.triu_indices_from(mask)] = True
-    f, ax = plt.subplots(figsize=(11, 9))
+    fig, ax = plt.subplots(figsize=(11, 9))
     cmap = sns.diverging_palette(220, 10, as_cmap=True)
     sns.heatmap(corr, ax=ax, mask=mask, cmap=cmap, vmax=.3, center=0,
                 square=True, linewidths=.5, cbar_kws={"shrink": .5},
                 xticklabels=True, yticklabels=True)
     ax.set_title("Correlation between Variables")
+    return(fig)
 
 # ============================================================================ #
 #                                ASSOCIATION                                   #
@@ -150,12 +154,13 @@ def association(df):
 
     mask = np.zeros_like(assoc, dtype=np.bool)
     mask[np.triu_indices_from(mask)] = True
-    f, ax = plt.subplots(figsize=(11, 9))
+    fig, ax = plt.subplots(figsize=(11, 9))
     cmap = sns.diverging_palette(220, 10, as_cmap=True)
     sns.heatmap(assoc, mask=mask, ax=ax, cmap=cmap, vmax=.3, center=0,
                 square=True, linewidths=.5, cbar_kws={"shrink": .5},
                 xticklabels=True, yticklabels=True)
     ax.set_title("Cramer's V Association between Variables")
+    return(fig)
 
 # %%
 # ---------------------------------------------------------------------------- #

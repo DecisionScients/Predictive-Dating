@@ -46,7 +46,7 @@ df = pd.read_csv(os.path.join(directories.INTERIM_DATA_DIR,
 # --------------------------------------------------------------------------- #
 #                                 GENDER                                      #
 # --------------------------------------------------------------------------- #
-visual.count_plot(df['gender'], title='Gender Counts')
+visual.count_plot(df, x='gender', title='Gender Counts')
 
 # %%
 # --------------------------------------------------------------------------- #
@@ -61,7 +61,7 @@ visual.multiplot(df[vars], title='Age')
 # --------------------------------------------------------------------------- #
 #                                 DECISIONS                                   #
 # --------------------------------------------------------------------------- #
-visual.count_plot(df['decision'], title='Decision Counts')
+visual.count_plot(df, x='decision', title='Decision Counts')
 # %%
 # --------------------------------------------------------------------------- #
 #                             PREFERENCE ANALYSIS                             #

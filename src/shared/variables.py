@@ -37,8 +37,7 @@ RAW = ['wave', 'gender', 'age', 'age_o', 'd_age',
        'guess_prob_liked', 'd_like', 'd_guess_prob_liked', 'met', 'decision',
        'decision_o', 'match']
 
-BLOG = ["gender", "age", "age_o", "d_age", "importance_same_race",
-        "attractive_important",
+BLOG = ["gender", "age", "age_o", "d_age", "attractive_important",
         "sincere_important", "intelligence_important", "funny_important",
         "ambition_important", "shared_interests_important", "attractive",
         "sincere", "intelligence", "funny", "ambition",	"attractive_partner",

@@ -29,4 +29,4 @@ Machine learning can be also categorized in terms of its applications, including
 
 Bringing it down to earth, the essential task for a machine learning algorithm is to generalize its experience. Generalize, in the context of our case, is the ability to predict a decision accurately on new, unseen data. Since our case involves a discrete binary response, we will be exploring, modeling and evaluating supervised machine learning algorithms called *classifiers*. 
 
-A solid foundation in linear algebra is requisite for a deeper understanding of, and intuition into machine learning algorithms. Next we review the linear algebra concepts constitutive to machine learning.
+## Classification
