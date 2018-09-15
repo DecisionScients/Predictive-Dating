@@ -537,14 +537,21 @@ def multi_boxplot(df, groupby=None, nrows=None, ncols=None, hue=None,
         if horizontal:
             sns.boxplot(x = col, y = groupby, data=df, ax=ax, hue=hue,
                         notch=True)
+            if hue is not None:
+                handles, _ = ax.get_legend_handles_labels()
+                ax.legend(handles, ["Female", "Male"])
+                ax.legend(loc=legend) 
             if ylim is not None:
                 ax.set(xlim=(0,ylim))
         else:
             sns.boxplot(x = groupby, y = col, data=df, ax=ax, hue=hue,
                         notch=True)
+            if hue is not None:
+                handles, _ = ax.get_legend_handles_labels()
+                ax.legend(handles, ["Female", "Male"])
+                ax.legend(loc=legend) 
             if ylim is not None:
                 ax.set(ylim=(0,ylim))
-    ax.legend(loc=legend) 
     plt.tight_layout()
     
     if title:
