@@ -55,6 +55,7 @@ def read(directory, filename, vars):
 
 
 def split(df):
+    np.random.seed(5)
     idx = np.random.rand(len(df)) < 0.8
     train = df[idx]
     test = df[~idx]

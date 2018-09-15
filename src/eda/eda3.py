@@ -6,7 +6,7 @@ This module performs a bivariate analysis of examines measures of age,
 preference, self-assessments, and partner assessments by gender, race and
 decision.
 '''
-
+# %%
 # --------------------------------------------------------------------------- #
 #                                 LIBRARIES                                   #
 # --------------------------------------------------------------------------- #
@@ -38,13 +38,9 @@ from visualization import visual
 df = pd.read_csv(os.path.join(
     directories.INTERIM_DATA_DIR, filenames.TRAIN_FILENAME))
 
-# --------------------------------------------------------------------------- #
-#                         DECISIONS BY GENDER                                 #
-# --------------------------------------------------------------------------- #
-
 
 # --------------------------------------------------------------------------- #
-#                       PREFERENCES BY GENDER                                 #
+#                             AGE BY GENDER                                   #
 # --------------------------------------------------------------------------- #
 vars = ["gender", "age",	"age_o", "d_age"]
 pd = df[vars]

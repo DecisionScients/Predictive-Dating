@@ -48,7 +48,7 @@ df = pd.read_csv(os.path.join(directories.INTERIM_DATA_DIR,
 # --------------------------------------------------------------------------- #
 visual.count_plot(df, x='gender', title='Gender Counts')
 
-# %%
+
 # --------------------------------------------------------------------------- #
 #                              AGE ANALYSIS                                   #
 # --------------------------------------------------------------------------- #
@@ -57,12 +57,12 @@ quant = visual.describe_quant(df[vars])
 visual.print_df(quant)
 visual.multiplot(df[vars], title='Age')
 
-# %%
+
 # --------------------------------------------------------------------------- #
 #                                 DECISIONS                                   #
 # --------------------------------------------------------------------------- #
 visual.count_plot(df, x='decision', title='Decision Counts')
-# %%
+
 # --------------------------------------------------------------------------- #
 #                             PREFERENCE ANALYSIS                             #
 # --------------------------------------------------------------------------- #
@@ -72,7 +72,7 @@ vars = ["attractive_important",
 
 quant = visual.describe_quant(df[vars])
 visual.multiplot(df[vars], title='Preferences')
-# %%
+
 # --------------------------------------------------------------------------- #
 #                         SELF-ASSESSMENT ANALYSIS                            #
 # --------------------------------------------------------------------------- #
@@ -82,7 +82,7 @@ quant = visual.describe_quant(df[vars])
 visual.print_df(quant)
 visual.multiplot(df[vars], title='Self-Assessment')
 
-# %%
+
 # --------------------------------------------------------------------------- #
 #                       PARTNER-ASSESSMENT ANALYSIS                           #
 # --------------------------------------------------------------------------- #

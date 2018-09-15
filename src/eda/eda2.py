@@ -31,14 +31,14 @@ from visualization import visual
 df = pd.read_csv(os.path.join(directories.INTERIM_DATA_DIR,
                               filenames.TRAIN_FILENAME),
                  encoding="Latin=1", low_memory=False)
-# %%
+
 # ============================================================================ #
 #                                CORRELATION                                   #
 # ============================================================================ #
 visual.correlation(df)
 visual.corrtable(df, threshold=0.4)
 
-# %%
+
 # --------------------------------------------------------------------------- #
 #                      STRONG PREFERENCE CORRELATIONS                         #
 # --------------------------------------------------------------------------- #
@@ -47,7 +47,7 @@ vars = ["attractive_important",	"sincere_important",
 sc = df[vars]
 sns.pairplot(sc, kind="scatter")
 
-# %%
+
 # --------------------------------------------------------------------------- #
 #                     PREFERENCE CORRELATION BARPLOTS                         #
 # --------------------------------------------------------------------------- #
@@ -59,7 +59,7 @@ rt['absr'] = rt['AbsCorr']
 rt = rt.sort_values(by='absr', ascending=False)
 sns.barplot(x='Correlation', y='Pair', data=rt, hue='Strength',
             dodge=False).set_title('Preference Correlations')
-# %%
+
 # --------------------------------------------------------------------------- #
 #                 SELF-ASSESSMENT CORRELATION BARPLOTS                        #
 # --------------------------------------------------------------------------- #
@@ -72,7 +72,6 @@ sns.barplot(x='Correlation', y='Pair', data=rt, hue='Strength',
             dodge=False).set_title('Self-Assessment Correlations')
 
 
-# %%
 # --------------------------------------------------------------------------- #
 #                STRONG PARTNER-ASSESSMENT CORRELATIONS                       #
 # --------------------------------------------------------------------------- #
@@ -86,7 +85,7 @@ rt = rt.sort_values(by='absr', ascending=False)
 sns.barplot(x='Correlation', y='Pair', data=rt, hue='Strength',
             dodge=False).set_title('Partner Assessment Correlations')
 
-# %%
+
 # --------------------------------------------------------------------------- #
 #                 PARTNER/SELF ASSESSMENT CORRELATIONS                        #
 # --------------------------------------------------------------------------- #
@@ -100,7 +99,7 @@ rt = rt.sort_values(by='absr', ascending=False)
 sns.barplot(x='Correlation', y='Pair', data=rt, hue='Strength',
             dodge=False).set_title('Partner Assessment Correlations')
 
-# %%
+
 # ============================================================================ #
 #                                ASSOCIATION                                   #
 # ============================================================================ #

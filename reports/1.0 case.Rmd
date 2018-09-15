@@ -32,6 +32,25 @@ rows = df.shape[0]
 
 Your intern has extracted the complete cases, split the data into a training and test set, and conducted an exploratory data analysis on the `r py$rows` training observations. Let's review the highlights.
 
+**#1) Approximately 4 out of 10 second dates.**
+```{python gnd}
+female = df[df['gender'] == 'female'].shape[0]
+yes = df[df['decision'] == 'yes'].shape[0]
+dg = df[['gender', 'decision']]
+fig = visual.multi_countplot(dg, nrows=1, ncols=2, title='Gender and Decision Counts')
+fig.savefig("./reports/figures/gnd.png")
+plt.close(fig)
+```
+
+Each observation reflects an encounter of a single individual. Since the data were randomly sampled from complete cases, the number of observations for males does not match that for females. That said, of the `r py$rows` speed dates, `r py$yes` requested second dates.
+
+![](../reports/figures/gnd.png)
+`r kfigr::figr(label = "gnd", prefix = TRUE, link = TRUE, type="Figure")`: Gender and Decisions
+
+* * *
+
+**#2) Female participants 10% more selective than male counterparts**
+
 ```{python decisions_gender}
 dg = pd.crosstab(df['gender'], df['decision'], margins=True)
 female = dg.loc['female', 'All']
@@ -51,3 +70,107 @@ plt.close(fig)
 `r kfigr::figr(label = "decisions_gender", prefix = TRUE, link = TRUE, type="Figure")`: Decisions by Gender
 
 As indicated by `r kfigr::figr(label = "decisions_gender", prefix = TRUE, link = TRUE, type="Figure")` women were a bit more selective than men. Of the `r py$female` dates, women requested second dates `r round(py$female_yes_pct,0)`% of the time. Men requested second dates for `r round(py$male_yes_pct, 0)`% of their `r py$male` speed dates.
+
+* * *
+**#3) Mean age 26, with average of ~3.6 years age difference**
+```{python age}
+age = df[['age', 'd_age']]
+quant = visual.describe_quant(age)
+fig = visual.multi_histogram(age, nrows=1, ncols=2, title='Distribution of Age and Age Differences')
+fig.savefig("./reports/figures/age.png")
+plt.close(fig)
+```
+![](../reports/figures/age.png)
+`r kfigr::figr(label = "age", prefix = TRUE, link = TRUE, type="Figure")`: Distribution of Age and Age Differences
+
+`r kfigr::figr(label = "age_table", prefix = TRUE, link = TRUE, type="Table")`: Distribution of Age and Age Differences
+```{r age_table}
+knitr::kable(py$quant) %>%  
+  kableExtra::kable_styling(bootstrap_options = c("hover", "condensed", "responsive"), full_width = T, position = "center")
+```
+
+According to `r kfigr::figr(label = "age", prefix = TRUE, link = TRUE, type="Figure")` and `r kfigr::figr(label = "age_table", prefix = TRUE, link = TRUE, type="Table")`, participants ranged from age  `r py$quant$min[1]` to `r py$quant$max[1]`, with an interquartile range from `r round(py$quant[1,4],1)` to `r round(py$quant[1,7],1)` years of age. Age differences ranged from `r round(py$quant$min[2],0)` to `r round(py$quant$max[2],1)` years with a mean age difference of `r round(py$quant$mean[2],1)` years.
+
+* * *
+**#4) Attractive, sincere and funny**
+```{python preferences}
+pref = df[["attractive_important",	"sincere_important", "funny_important",
+        "ambition_important", "shared_interests_important"]]
+quant = visual.describe_quant(pref)
+fig = visual.multi_boxplot(pref, nrows=1, ncols=5, ylim=100, horizontal=False, title='Preferences')
+fig.savefig("./reports/figures/preferences.png")
+plt.close(fig)
+```
+![](../reports/figures/preferences.png)
+
+`r kfigr::figr(label = "preferences", prefix = TRUE, link = TRUE, type="Figure")`: Preferences
+
+`r kfigr::figr(label = "preferences_table", prefix = TRUE, link = TRUE, type="Table")`: Preference Statistics
+```{r preferences_table}
+knitr::kable(py$quant) %>%  
+  kableExtra::kable_styling(bootstrap_options = c("hover", "condensed", "responsive"), full_width = T, position = "center")
+```
+Participants were instructed to distribute 100 points among the five attributes, giving more points to the attributes that were more important in their decisions and fewer points to those attributes that were less important. The participants prioritized attractive over all other attributes.  Sincerity and a sense of humor followed. 
+
+
+* * *
+**#5)Male participants? Attraction. Female participants? Ambition and shared interests**
+```{python preferences_by_gender}
+pref = df[["gender", "attractive_important",	"sincere_important", "funny_important",
+        "ambition_important", "shared_interests_important"]]
+fig = visual.multi_boxplot(pref, groupby='gender', nrows=1, ncols=5, ylim=100, horizontal=False,
+                           title='Preferences by Gender')
+fig.savefig("./reports/figures/preferences_by_gender.png")
+plt.close(fig)
+```
+![](../reports/figures/preferences_by_gender.png)
+`r kfigr::figr(label = "preferences_gender", prefix = TRUE, link = TRUE, type="Figure")`: Preferences by Gender
+
+As `r kfigr::figr(label = "preferences_gender", prefix = TRUE, link = TRUE, type="Figure")` reveals, the male participants prioritized the attractive attribute to a signficantly greater degree than did the female participants. On the other hand, the female participants placed greater weight on ambition and shared interests. There was less of a gender difference for the sincerity and humor attributes.
+
+* * *
+**#6) Above Average Sample (according to self-assessments)**
+```{python self_assessments}
+sa = df[["attractive", "sincere", "intelligence", "funny", "ambition"]]
+quant = visual.describe_quant(sa)
+fig = visual.multi_boxplot(sa, nrows=1, ncols=5, horizontal=False, title='Self-Assessments')
+fig.savefig("./reports/figures/self_assessments.png")
+plt.close(fig)
+```
+![](../reports/figures/self_assessments.png)
+
+`r kfigr::figr(label = "self_assessments", prefix = TRUE, link = TRUE, type="Figure")`: Self-Assessments
+
+`r kfigr::figr(label = "self_assessments_table", prefix = TRUE, link = TRUE, type="Table")`: Self-Assessments
+```{r self_assessment_table}
+knitr::kable(py$quant) %>%  
+  kableExtra::kable_styling(bootstrap_options = c("hover", "condensed", "responsive"), full_width = T, position = "center")
+```
+
+Taking '5' as an average, our sample would most definitely be considered 'above average' in all five of the characteristics assessed in the study. According to `r kfigr::figr(label = "self_assessments", prefix = TRUE, link = TRUE, type="Figure")` and `r kfigr::figr(label = "self_assessments_table", prefix = TRUE, link = TRUE, type="Table")`, this sample might be best characterized as sincerely funny!
+
+* * *
+**#7) Male participants had greater range of attractive and sincere attributes**
+```{python self_assessments_by_gender}
+sa = df[["gender", "attractive", "sincere", "intelligence", "funny", "ambition"]]
+fig = visual.multi_boxplot(sa, groupby='gender', nrows=1, ncols=5, horizontal=False,
+                           title='Self-Assessments by Gender')
+fig.savefig("./reports/figures/self_assessments_by_gender.png")
+plt.close(fig)
+```
+![](../reports/figures/self_assessments_by_gender.png)
+`r kfigr::figr(label = "self_assessments_by_gender", prefix = TRUE, link = TRUE, type="Figure")`: Self-Assessments by Gender
+
+Self-assessments of intelligence, humor and ambition were nearly identical between the genders as shown in `r kfigr::figr(label = "self_assessments_by_gender", prefix = TRUE, link = TRUE, type="Figure")`. On the other hand, there was a much greater dispersion for the attractive and sincere attributes among the male participants. That said, the differences in mean self-assessments, perhaps statistically significant, were practically equivalent.  
+
+* * *
+**#8)**
+```{python decisions_by_attribute}
+da = df[["decision","gender", "attractive_partner", "sincere_partner", "intelligence_partner", "funny_partner", "ambition_partner"]]
+fig = visual.multi_boxplot(da, groupby='decision', nrows=1, ncols=5, horizontal=False, hue='gender',
+                           legend='lower center', title='Decisions by Attribute')
+fig.savefig("./reports/figures/decisions_by_attribute.png")
+plt.close()
+```
+![](../reports/figures/decisions_by_attribute.png)
+`r kfigr::figr(label = "decisions_by_attribute", prefix = TRUE, link = TRUE, type="Figure")`: Decisions by Attribute

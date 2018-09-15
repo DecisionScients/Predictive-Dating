@@ -20,6 +20,7 @@ editor_options:
 library(data.table)
 library(dplyr)
 library(extrafont)
+library(gridExtra)
 library(kableExtra)
 library(kfigr)
 library(knitr)
@@ -57,7 +58,6 @@ knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
 ```{python imports, echo=FALSE, cache=FALSE, warning=FALSE, message=FALSE}
 import os, sys, inspect
 os.environ['QT_QPA_PLATFORM_PLUGIN_PATH'] = '/ProgramData/Anaconda3/Library/plugins/platforms'
-sys.path.append("./src")
 
 home = os.path.join(os.path.dirname(os.path.abspath(
     inspect.getfile(inspect.currentframe()))), "src")
@@ -75,6 +75,7 @@ from shared import directories
 from shared import filenames
 from shared import variables
 from visualization import visual
+from analysis import analysis
 ```
 
 ```{r intro, child = '1.0 case.rmd'}
