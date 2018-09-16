@@ -1,0 +1,347 @@
+# Supervised Learning Review
+In this section, we will ground ourselves on a bit of notation, the core elements of supervised learning and basic linear algebra, the lingua-franca of machine learning. For those seeking a refresher or to enhance an intuition with respect to machine learning methods, this section is for you. Others with a solid background on these topics might skip ahead to linear classification.
+```{python}
+df = pd.read_csv(os.path.join(
+    directories.INTERIM_DATA_DIR, filenames.TRAIN_FILENAME))
+n = df.shape[0]
+p = df.shape[1] - 1
+```
+
+## Learning Objectives
+
+
+
+## Notation
+In supervised learning problems, we have inputs and an output. We refer to inputs as *predictors* or *features*, and the output as the *response* or *dependent* variable. A set of $j$ predictors for an observation will be denoted by a vector  $X$, of length $j$, where each feature is accessed by a subscript $x_j$. The response is denoted as $Y$ for numeric (quantitative) responses and $G$ for categorical (quantitative) responses. When referring to the *generic* aspects of a variable, we use capital letters such as $X$, $Y$, and $G$. Actual observations are written in lowercase. Hence, the $i$th observed value of $X$ is written as $x_i$, where $x$ is a scalar in the case of a single predictor, or a vector otherwise. For instance, we will write our `r py$p` predictors in the speed dating dataset as:
+
+$$
+x = \begin{pmatrix}
+x_{1} \\
+x_{2} \\
+\vdots \\
+x_{22}
+\end{pmatrix}.
+$$
+We may occasionally denote a vector as $\overrightarrow{x} = (x_1, x_2,...,x_p)$. 
+
+Qualitative responses are typically represented by numeric codes. When the size of $G$ is two, we  represent the response with a single binary variable containing either a 0 or 1. When there $K>2$ possible responses, we use a vector of $K$ binary *dummy* *variables*, only one of which is 'turned on' at a time.
+
+We will use $n$ to represent the number of observations in our sample. The number of predictors, will be designated by $p$.  For instance, we have $n =$ `r py$n` observations and $p=$ `r py$p` such predictors in our speed dating training dataset. 
+
+The entire $n \times p$ predictor space for all observations will be represented by a matrix $X$.
+
+$$\mathbf{X}=\begin{pmatrix}
+x_{11} & x_{12} & \dotsc & x_{1p} \\
+x_{21} & x_{22} & \dotsc & x_{2p} \\
+\vdots & \vdots & \ddots & \vdots \\
+x_{n1} & x_{n2} & \dotsm & x_{np}
+\end{pmatrix},$$
+
+where $x_{i,j}$ denotes the $j$th variable of the $i$th observation, and $i = 1,2,...,n$ and $j = 1,2,...,p$. 
+
+Occasionally we will need to transpose a vector or matrix, that is to swap the row and column variables. The *transpose* of a matrix or vector is denoted by $^T$. For instance we transpose $x$ as
+$$
+x = \begin{pmatrix}
+x_1 \\
+x_2 \\
+\vdots \\
+x_p
+\end{pmatrix} ,    
+x^T = (x_1, x_2,\dots,x_p).
+$$
+We transpose matrix $X$ as
+
+$$
+\mathbf{X}=\begin{pmatrix}
+x_{11} & x_{12} & \dotsc & x_{1p} \\
+x_{21} & x_{22} & \dotsc & x_{2p} \\
+\vdots & \vdots & \ddots & \vdots \\
+x_{n1} & x_{n2} & \dotsm & x_{np}
+\end{pmatrix},
+\mathbf{X^T}=\begin{pmatrix}
+x_{11} & x_{21} & \dotsc & x_{n1} \\
+x_{12} & x_{22} & \dotsc & x_{n2} \\
+\vdots & \vdots & \ddots & \vdots \\
+x_{1p} & x_{2p} & \dotsm & x_{np}
+\end{pmatrix}
+$$
+
+We will write the rows of $X$ as $x_1, x_2, ..., x_n$, where $x_i$ is a vector of length $p$ containing the predictor values for the $i$th observations. Concretely, the vector notation for $x_i$ is:
+
+$$
+x_i = \begin{pmatrix}
+x_{i1} \\
+x_{i2} \\
+\vdots \\
+x_{ip}
+\end{pmatrix}.
+$$
+
+The column $j$th column of $X$ will be written as:
+$$
+x_j = \begin{pmatrix}
+x_{1j} \\
+x_{2j} \\
+\vdots \\
+x_{nj}
+\end{pmatrix}.
+$$
+
+We'll write the target variable for the $i$th observation as $y_i$. The target for all $n$ observations is written in vector form as
+$$y=\begin{pmatrix}
+y_1 \\
+y_2 \\
+\vdots \\
+y_n
+\end{pmatrix}.$$
+Hence, our observed data consists of $\{(x_1,y_1), (x_2,y_2),...,(x_n,y_n)\}$, where each $x_i$ is a vector of length $p$.
+
+Lastly, we indicate the dimensions of scalars, vectors and matrices as follows:  
+
+* scalar: $a \in \mathbb{R}$  
+* vector: the dimension of a vector of length $n$ is has dimension $a \in \mathbb{R^n}$  
+* matrix: an $n \times p$ matrix $A$ has dimension $A \in \mathbb{R^{n \times p}}$  
+
+## Linear Algebra Review
+Let's review the key ideas from linear algebra that are most germane to machine learning. We'll examine the operations that can be performed with scalars, vectors and matrices, the principal objects in machine learning and linear algebra. 
+
+## Vector Operations 
+The principal operations one can perform on vectors are:
+* Vector Addition (denoted $\overrightarrow{u}+\overrightarrow{v}$)    
+* Vector Subtraction (denoted $\overrightarrow{u}-\overrightarrow{v}$)    
+* Vector Scaling (denoted $\alpha\overrightarrow{u}$)    
+* Vector Dot Product (denoted $\overrightarrow{u}\bullet\overrightarrow{v}$)  
+
+For this section, consider an arbitrary constant $\alpha \in \mathbb{R}$ and vectors $\overrightarrow{u}\in\mathbb{R^2}$ and $\overrightarrow{v}\in\mathbb{R^2}$
+
+
+$$
+\alpha = 4, 
+u = \begin{pmatrix}
+u_{1} \\
+u_{2} 
+\end{pmatrix}
+= \begin{pmatrix}
+5 \\
+3 
+\end{pmatrix},
+v = \begin{pmatrix}
+v_{1} \\
+v_{2} 
+\end{pmatrix}
+= \begin{pmatrix}
+2 \\
+8 
+\end{pmatrix},
+$$
+### Vector Addition
+We compute the sum of vectors $\overrightarrow{u}$ and $\overrightarrow{v}$ as:
+$$
+\begin{pmatrix}
+u_{1} \\
+u_{2} 
+\end{pmatrix}
++ \begin{pmatrix}
+v_{1} \\
+v_{2} 
+\end{pmatrix}
+= \begin{pmatrix}
+u_{1}+v_1 \\
+u_{2}+v_2 
+\end{pmatrix}
+= \begin{pmatrix}
+5+2 \\
+3+8 
+\end{pmatrix}
+= \begin{pmatrix}
+7 \\
+11 
+\end{pmatrix}
+$$
+### Vector Subtraction
+Vector subtraction, denoted as $\overrightarrow{u}-\overrightarrow{v} = \overrightarrow{u}+(-\overrightarrow{v})$, is computed as follows:
+
+$$
+\begin{pmatrix}
+u_{1} \\
+u_{2} 
+\end{pmatrix}
+- \begin{pmatrix}
+v_{1} \\
+v_{2} 
+\end{pmatrix}
+= \begin{pmatrix}
+u_{1}-v_1 \\
+u_{2}-v_2 
+\end{pmatrix}
+= \begin{pmatrix}
+5-2 \\
+3-8 
+\end{pmatrix}
+= \begin{pmatrix}
+3 \\
+-5 
+\end{pmatrix}
+$$
+### Vector Scaling
+We can also scale a vector for any number $\alpha \in \mathbb{R}$. For $\alpha = 4$ we scale $\overrightarrow{v}$:
+
+$$\alpha\overrightarrow{v}
+=\alpha\begin{pmatrix}
+v_{1} \\
+v_{2} 
+\end{pmatrix}
+= 4\begin{pmatrix}
+2 \\
+8 
+\end{pmatrix}
+= \begin{pmatrix}
+8 \\
+32 
+\end{pmatrix}$$
+
+### Vector Dot Product
+The dot product of our vectors $\overrightarrow{u}$ and $\overrightarrow{v}$ is represented as:
+$\overrightarrow{u} \bullet \overrightarrow{v} = u_1v_1 + u_2v_2 = 5\bullet2 + 3\bullet8 = 10+24=34$    
+
+### Matrix Operations
+Given matrices $A$ and $B$, a scalar $\alpha$ and a vector $\overrightarrow{x}$, the following operations are defined:  
+
+* Addition, (denoted $A + B$)    
+* Subtraction, the inverse of addition (denoted $A-B$)     
+* Scaling by a constant $\alpha$ (denoted $\alpha A$)   
+* Matrix-vector product (denoted $A\overrightarrow{x}$)
+* Product (denoted $AB$)
+
+#### Matrix Addition
+For two matrices $A\in\mathbb{R^{3\times2}}$ and $B\in\mathbb{R^{3\times2}}$ defined as:
+$$\mathbf{A}=\begin{pmatrix}
+a_{11} & a_{12} \\
+a_{21} & a_{22} \\
+a_{31} & a_{32}
+\end{pmatrix}
+=\begin{pmatrix}
+5 & 2 \\
+7 & 3 \\
+4 & 9
+\end{pmatrix},
+\mathbf{B}=\begin{pmatrix}
+b_{11} & b_{12} \\
+b_{21} & b_{22} \\
+b_{31} & b_{32}
+\end{pmatrix}
+=\begin{pmatrix}
+9 & 1 \\
+4 & 3 \\
+2 & 5
+\end{pmatrix},$$
+The sum of matrices $A$ and $B$ is:
+$$
+\mathbf{A+B}=\begin{pmatrix}
+a_{11}+b_{11} & a_{12}+b_{12} \\
+a_{21}+b_{21} & a_{22}+b_{22} \\
+a_{31}+b_{31} & a_{32}+b_{32}
+\end{pmatrix}
+=\begin{pmatrix}
+5+9 & 2+1 \\
+7+4 & 3+3 \\
+4+2 & 9+5
+\end{pmatrix}
+=\begin{pmatrix}
+14 & 3 \\
+11 & 6 \\
+6 & 14
+\end{pmatrix}
+$$
+
+#### Matrix Subtraction
+$A$ - $B$ is:
+$$
+\mathbf{A-B}=\begin{pmatrix}
+a_{11}-b_{11} & a_{12}-b_{12} \\
+a_{21}-b_{21} & a_{22}-b_{22} \\
+a_{31}-b_{31} & a_{32}-b_{32}
+\end{pmatrix}
+=\begin{pmatrix}
+5-9 & 2-1 \\
+7-4 & 3-3 \\
+4-2 & 9-5
+\end{pmatrix}
+=\begin{pmatrix}
+-4 & 2 \\
+3 & 0 \\
+2 & 4
+\end{pmatrix}
+$$
+#### Matrix Scaling
+Given our constant $\alpha$ and the matrix $A$, we can *scale* $A$ by $\alpha$ as follows:
+$$
+\alpha A = \alpha\begin{pmatrix}
+a_{11}& a_{12}\\
+a_{21}& a_{22}\\
+a_{31}& a_{32}
+\end{pmatrix}
+= \begin{pmatrix}
+\alpha a_{11}& \alpha a_{12}\\
+\alpha a_{21}& \alpha a_{22}\\
+\alpha a_{31}& \alpha a_{32}
+\end{pmatrix}
+= 4\begin{pmatrix}
+4\times5& 4\times2\\
+4\times7& 4\times3\\
+4\times4& 4\times9
+\end{pmatrix}
+= \begin{pmatrix}
+20&8\\
+28&12\\
+16& 36
+\end{pmatrix}
+$$
+
+#### Matrix-Vector Product
+When we multiply a matrix $A\in\mathbb{R^{n\times p}}$ by a vector $v \in \mathbb{R^p}$, we get an $n$-dimensional vector $\overrightarrow{w} \in \mathbb{R^n}$. In general, we compute the matrix-vector product:
+$$\overrightarrow{w}=A\overrightarrow{v}$$ 
+as:
+$$w_i=\displaystyle\sum_{j=1}^pa_{i,j}v_j,\space  \forall i \in[1,\dots,n].$$
+For instance, the product of matrix $A \in \mathbb{R^{3\times 2}}$ and vector $\overrightarrow{v} \in \mathbb{R^{2 \times 1}}$ is vector $\overrightarrow{w} \in \mathbb{R^{3 \times 1}}$ 
+$$
+A\overrightarrow{v} = 
+\begin{pmatrix}
+a_{11}& a_{12}\\
+a_{21}& a_{22}\\
+a_{31}& a_{32}
+\end{pmatrix}
+\begin{pmatrix}
+v_1 \\
+v_2
+\end{pmatrix}
+= \underbrace{
+v_1
+\begin{pmatrix}
+a_{11} \\
+a_{21} \\
+a_{31}
+\end{pmatrix}
++
+v_2
+\begin{pmatrix}
+a_{12} \\
+a_{22} \\
+a_{32}
+\end{pmatrix}
+}_\text{column  picture}
+= 
+\overbrace{
+\begin{pmatrix}
+(a_{11},a_{12})\bullet\overrightarrow{v} \\
+(a_{21},a_{22})\bullet\overrightarrow{v} \\
+(a_{31},a_{32})\bullet\overrightarrow{v} 
+\end{pmatrix}
+= 
+\begin{pmatrix}
+a_{11}v_1+a_{12}v_2 \\
+a_{21}v_1+a_{22}v_2 \\
+a_{31}v_1+a_{32}v_2
+\end{pmatrix}
+}^\text{row picture}
+$$

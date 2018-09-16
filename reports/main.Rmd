@@ -70,6 +70,7 @@ import matplotlib.pylab as pylab
 import numpy as np
 import pandas as pd
 import seaborn as sns
+from sklearn.linear_model import LogisticRegression
 
 from shared import directories
 from shared import filenames
@@ -78,8 +79,5 @@ from visualization import visual
 from analysis import analysis
 ```
 
-```{r intro, child = '1.0 case.rmd'}
-```
-
-```{r case, child = 'references.rmd'}
+```{r intro, child = '2.0 la_review.rmd'}
 ```

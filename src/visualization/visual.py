@@ -74,6 +74,21 @@ def count_plot(df,x, hue=None, title=None):
                 height/2, text, fontsize=20, ha="center", color='white') 
     plt.tight_layout()
     return(fig)
+# --------------------------------------------------------------------------- #
+#                              SCATTERPLOT (SNS)                              #
+# --------------------------------------------------------------------------- #
+def scatterplot(df, xvar, yvar, target, title=None):
+    sns.set(style="whitegrid", font_scale=2)
+    sns.set_palette("GnBu_d")
+    fig, ax = plt.subplots()
+    if title is not None:
+        sns.scatterplot(x=xvar, y=yvar, data=df, ax=ax, style=target,
+                        hue=target).set_title(title)       
+    else:
+        sns.scatterplot(x=xvar, y=yvar, data=df, ax=ax, style=target,
+                        hue=target)
+    plt.tight_layout()
+    return(fig)
 
 # %%
 # --------------------------------------------------------------------------- #

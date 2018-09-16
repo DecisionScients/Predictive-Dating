@@ -1,0 +1,45 @@
+# Linear Classification 
+Classification problems occur as much, if not more often, than regression problems. Our focus will be on **binary classification**, where the goal is to predict a binary-valued target.  Examples of binary classification problems include:  
+
+* A credit card company receives thousands of new credit card applications which include annual salary, outstanding debts, age, profession, etc... On the basis of existing customer payment history and profile data, you wish to categorize applications as good credit or bad credit.    
+
+* An online music streaming company automatically plays music to its customers based upon prior listening habits and purchasing history. You are tasked with predicting whether a song that the customer has not heard before, should be played or recommended.     
+
+* An online match making service has tens of thousands of member profiles containing personal characteristics, preferences, goals, and historical matching data.  On the basis of this, you must develop an algorithm to predict whether two people are a good match.   
+
+## The Linear Model
+One of the most important formulas in statistics in the linear model. Given a vector of inputs $X^T = (X_1, X_2, ..., X_p)$, we predict the target $Y$ via:
+
+$$\hat{Y}=\hat{\beta_0}$$
+
+Consider the following plot.
+
+```{python linear}
+from sklearn.datasets import make_classification
+X, y = make_classification(200, 2, 2, 0, weights=[.5, .5], random_state=15)
+clf = LogisticRegression().fit(X[:100], y[:100])
+
+xx, yy = np.mgrid[-5:5:.01, -5:5:.01]
+grid = np.c_[xx.ravel(), yy.ravel()]
+probs = clf.predict_proba(grid)[:, 1].reshape(xx.shape)
+
+fig, ax = plt.subplots(figsize=(8, 6))
+ax.contour(xx, yy, probs, levels=[.5], cmap="Greys", vmin=0, vmax=.6)
+
+ax.scatter(X[100:,0], X[100:, 1], c=y[100:], s=50,
+           cmap="GnBu", vmin=-.2, vmax=1.2,
+           edgecolor="white", linewidth=1)
+
+ax.set(aspect="equal",
+       xlim=(-5, 5), ylim=(-5, 5),
+       xlabel="$X_1$", ylabel="$X_2$")
+       
+fig.savefig("./reports/figures/linear_scatter.png")
+plt.close(fig)
+```
+
+![](../reports/figures/linear_scatter.png)
+`r kfigr::figr(label = "linear", prefix = TRUE, link = TRUE, type="Figure")`: Linear Classification Scatterplot
+
+
+
