@@ -55,7 +55,7 @@ knitr::knit_hooks$set(inline = function(x) {
 knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
 ```
 
-```{python imports, echo=FALSE, cache=FALSE, warning=FALSE, message=FALSE}
+```{python imports}
 import os, sys, inspect
 os.environ['QT_QPA_PLATFORM_PLUGIN_PATH'] = '/ProgramData/Anaconda3/Library/plugins/platforms'
 
@@ -79,5 +79,10 @@ from visualization import visual
 from analysis import analysis
 ```
 
-```{r intro, child = '2.0 la_review.rmd'}
+
+```{r intro, child = '2.0 review.rmd'}
+```
+
+
+```{r intro, child = '4.0 linear.rmd'}
 ```
