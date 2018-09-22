@@ -80,9 +80,5 @@ from analysis import analysis
 ```
 
 
-```{r intro, child = '2.0 review.rmd'}
-```
-
-
-```{r intro, child = '4.0 linear.rmd'}
+```{r intro, child = '3.0 classification.rmd'}
 ```

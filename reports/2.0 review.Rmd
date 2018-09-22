@@ -6,8 +6,9 @@ autoNumber: "all",
 formatNumber: function (n) {return '2.'+n}
 }
 }});</script>
-# Supervised Learning Review
-In this section, we will ground ourselves on a bit of notation, the core elements of supervised learning and basic linear algebra, the lingua-franca of machine learning. For those seeking a refresher or to enhance one's intuition with respect to machine learning methods, this section is for you. Others with a solid background on these topics might skip ahead to linear classification.
+
+# Review of Key Concepts
+In this section, we will ground ourselves in the key concepts of statistical learning, supervised learning, basic linear algebra, and regression, and classification methods. 
 ```{python}
 df = pd.read_csv(os.path.join(
     directories.INTERIM_DATA_DIR, filenames.TRAIN_FILENAME))
@@ -16,66 +17,16 @@ p = df.shape[1] - 1
 ```
 
 ## Learning Objectives
+By the end of this section, we'll be able to:  
 
-## Supervised Learning
-*Most* machine learning problems fall into one of two categories: *supervised* or *unsupervised*. Supervised learning problems have both predictor measurement(s) $x_i, i = 1,\dots n$, and an associate response measurement $y_i$. In such cases, we wish to fit a model that reflects the relationship between the predictors and the response so that we can accurately predict responses on unseen data (*prediction*) or better understand the relationship among predictors and response (*inference*).
+1. Perform basic vector and matrix operations such as addition,subtraction, scaling and multiplication   
+2. Characterize and contrast supervised and unsupervised learning problems   
+3. Describe and derive the linear model used in regression and classification settings  
+4. Distinguish parametric and non-parametric methods of regression and classification   
 
-In contrast, *unsupervised* learning involves data sets with predictors and no associated response variable.  The task is somewhat more complex as one attempts to discover patterns and relationships in the data without the presence of a *"supervising"* response variable. Cluster analysis is one such task in which the goal is to ascertain, on the basis of $x1,\dots ,x_n$, whether observations belong to one (of/or) several distinct groups.
+No prior knowledge of linear algebra, statistical learning, multivariate calculus or Bayesian statistics is assumed, but some background would be useful. For some, especially practitioners currently in industry, it may be appropriate to skip ahead to linear classification. If you are like me (and I know I am), this section is intended to refresh, reinforce, stimulate and provoke a working and portable intuition for classification methods specifically, and statistical learning in general.  
 
-Supervised learning, specifically classification will be the focus of this series. Nevertheless, we'll introduce regression problems as certain concepts are worth considering in a classification setting. 
-
-## Regression Versus Classification
-Supervised learning problems can be characterized in terms of their response variables. Those involving quantitative or numerical responses are labeled regression problems. Problems that seek to assign an observation to one or more classes are typically referred to as classification problems. Let's consider a quantitative response $Y$ and $p$ different predictors, $X_1, X_2, \dots X_p$.  We can write the relationship between the predictors and the response as:
-$$Y=f(x)+\epsilon\label{func}$$
-Here, $f$ is some fixed but unknown function of $X_1,\dots,X_P$, and $\epsilon$ is a random *error* *term*, which is independent of $X$ and has a zero mean. Since errors average to zero, we can write the relationship as:
-$$\hat{Y}=\hat{f}(X)$$
-The series is about the concepts and techniques used to estimate and evaluate $f$.
-`r h <- 'Purpose of Estimating $f$'`
-### `r h`  
-We estimate $f$ for two reasons: *prediction* and *inference*. When prediction is our goal,$f$ is often treated as a *black* *box*. As long as $f$ yields accurate predictions for $Y$, one is not *generally* concerned with the exact form of $f$. 
-
-Prediction accuracy stems from two elements: *reducible* and *irreducible* error. Reducible error is that which we seek to minimize using statistical methods. Reducible error is extant because $\hat{f}$ is not a perfect estimate for $f$. Yet, we call this reducible because we can improve our estimate of $f$ with appropriate statistical techniques. Irreducible error, in contrast, exists because $f$ is also a function of $\epsilon$, which, by definition, can't be predicted using $X$. Irreducible error emerges from elements outside of the model and variables which aren't measured. Though they may have a marginal effect on the prediction, such unmeasured elements are not included in the model. For instance, the probability of a positive prediction in a healtcare setting might vary for a given patient, on a given day, depending upon manufacturing variation in the components of the ICG machine taking measurements. Our focus is the application of techniques we can use to minimize *reducible* error and maximize prediction accuracy.
-
-Often we wish to understand the ways in which $Y$ is affected by a predictor space $X_1,\dots X_p$ Our goal, in this case, isn't necessarily to predict $Y$ based upon its predictors. Rather, we seek to understand the relationships between predictors and the response. Can the relationship be modeled as a linear function or is the mapping more complex? How does the change in predictors effect $Y$? In such cases, we can't afford to treat $f$ as a *black* *box*. Unlike prediction, We must know its exact form. 
-
-`r h <- 'How do we Estimate $f$'`
-### `r h` in a Regression Setting
-Now for a bit of statistical decision theory that will provide the framework for developing models such as those introduced informally thus far. Consider $X \in \mathbb{R^p}$, a real-valued predictor vector, and $Y \in \mathbb{R}$, a real-valued response variable with joint distribution Pr$(X,Y)$. We seek to estimate a function $f(X)$ for predicting $Y$ given values of hte predictor vector $X$. Since we require a loss function for penalizing errors in prediction, we shall use the most popular function, *squared* *error* *loss*:
-$$L(Y, f(X))=(Y-f(X))^2.$$
-From this, we are able to ascertain our criterion for choosing $f$, namely we seek to minimize the expected (squared) prediction error:
-$$EPE(f) = E(Y-f(X))^2\label{epe}$$
-For our statistics jocks, recall that we can factor the joint density $Pr(X,Y)=Pr(Y|X)Pr(X).$ Conditioning on $X$, we have:
-$$EPE(f) = \int_x\int_y[y-f(x)]^2Pr(y|x)Pr(x)dydx,$$
-which we can now express in terms of conditional expectation:
-$$EPE(f)=E_XE_{Y|X}([Y-f(X)]^2|X)$$
-We free $f$ of its dependency on $X$ and since the quantity $[Y-f]$ is convex, we arrive at a unique solution. We can now minimize to solve for $f$:
-$$f(x)=\underset{f}{\operatorname{arg\,min}}\space E_{Y|X}([Y-f(x)]^2|X=x).$$
-Differentiating w.r.t. $x$, sparing ourselves some calculus, and setting that to zero, and viola, the conditional expectation aka the *regression* function: 
-$$f(x)=E(Y|X=x)$$
-Therefore, the best prediction of $Y$ at any point $X=x$ is the conditional mean of $Y$, when "best" is measured by average squared error.
-$$f(x)\approx x^T\beta. \label{regression}$$
-
-Finally, the unique theoretical solution to $\beta$ is obtained by plugging $\ref{regression}$ into $\ref{epe}$ and differentiating to reveal:
-$$\beta=[E(XX^T)]^{-1}E(XY).$$
-This; however, is subject to the assumption that the regression function $f(x)$ is approximately linear.
-
-Are we happy with that? Later in this series, we will explore methods that are far more flexibile than the linear model. 
-
-Now we examine this model-based approach in a classification context.
-
-`r h <- 'How do we Estimate $f$'`
-### `r h` in a Classification Setting
-How do we estimate $f$ in a classification setting? Same process, different loss function for penalizing prediction errors. Let:  
-
-* the estimate for $\hat{G}$ be comprised of values in $G$, the set of all possible classes, and
-* the loss function be represented by a $K\times K$ matrix $\mathbf{L}$, where  
-* $L(k,l)$ is the cost for miss-classifying an observation belonging to $G_k$ to $G_l$. We will use the *zero-one* loss function, where all missclassifications have a cost of one. 
-
-That said, the expected prediction error is:
-$$EPE=E[L(G,\hat{G}(X))],$$
-where again the expectation is taken w.r.t. the joint distribution $Pr(G,X)$. We condition on $X$ as was done for the regression model and write EPE as: 
-$$EPE=E_X\displaystyle\sum_{k=1}^KL[G_k, \hat{G}(X)]Pr(G_k|X).$$
-Again, 
+But first, let's align on a bit of notation.
 
 ## Notation
 In supervised learning problems, we have inputs and an output. We refer to inputs as *predictors* or *features*, and the output as the *response* or *dependent* variable. A set of $j$ predictors for an observation will be denoted by a vector  $X$, of length $j$, where each feature is accessed by a subscript $x_j$. The response is denoted as $Y$ for numeric (quantitative) responses and $G$ for categorical (quantitative) responses. When referring to the *generic* aspects of a variable, we use capital letters such as $X$, $Y$, and $G$. Actual observations are written in lowercase. Hence, the $i$th observed value of $X$ is written as $x_i$, where $x$ is a scalar in the case of a single predictor, or a vector otherwise. For instance, we will write our `r py$p` predictors in the speed dating dataset as:
@@ -455,3 +406,95 @@ An essential understanding of linear algebra requires some degree of familiarity
 * Space
 * Subspace
 * Hyperplane
+
+## Supervised Learning
+*Most* machine learning problems fall into one of two categories: *supervised* or *unsupervised*. Supervised learning problems have both predictor measurement(s) $x_i, i = 1,\dots n$, and an associate response measurement $y_i$. In such cases, we wish to fit a model that reflects the relationship between the predictors and the response so that we can accurately predict responses on unseen data (*prediction*) or better understand the relationship among predictors and response (*inference*).
+
+In contrast, *unsupervised* learning involves data sets with predictors and no associated response variable.  The task is somewhat more complex as one attempts to discover patterns and relationships in the data without the presence of a *"supervising"* response variable. Cluster analysis is one such task in which the goal is to ascertain, on the basis of $x1,\dots ,x_n$, whether observations belong to one (of/or) several distinct groups.
+
+Supervised learning, specifically classification will be the focus of this series. Nevertheless, we'll introduce regression problems and introduce the framework we will use to describe classification and other non-linear methods. 
+
+## Regression Versus Classification
+Supervised learning problems can be characterized in terms of their response variables. Those involving quantitative or numerical responses are labeled regression problems. Problems that seek to assign an observation to one or more classes are referred to as classification problems. 
+
+Let's consider a quantitative response $Y$ and $p$ different predictors, $X_1, X_2, \dots X_p$.  We can write the relationship between the predictors and the response as:
+$$Y=f(x)+\epsilon\label{func}$$
+Here, $f$ is some fixed but unknown function of $X_1,\dots,X_P$, and $\epsilon$ is a random *error* *term*, which is independent of $X$ and has a zero mean. Since errors average to zero, we can write the relationship as:
+$$\hat{Y}=\hat{f}(X)$$
+The series is about the concepts and techniques used to estimate and evaluate $f$.
+`r h <- 'Why do we Estimate $f$?'`
+
+### `r h`  
+We estimate $f$ for two reasons: *prediction* and *inference*. When prediction is our goal,$f$ is often treated as a *black* *box*. As long as $f$ yields accurate predictions for $Y$, one is not *generally* concerned with the exact form of $f$. 
+
+#### Prediction
+Prediction accuracy stems from two elements: *reducible* and *irreducible* error. Reducible error is that which we seek to minimize using statistical methods. Reducible error is extant because $\hat{f}$ is not a perfect estimate for $f$. Yet, we call this reducible because we can improve our estimate of $f$ with appropriate statistical techniques. Irreducible error, in contrast, exists because $f$ is also a function of $\epsilon$, which, by definition, can't be predicted using $X$. Irreducible error emerges from elements outside of the model and variables which aren't measured. Though they may have a marginal effect on the prediction, such unmeasured elements are not included in the model. For instance, the probability of a positive prediction in a healtcare setting might vary for a given patient, on a given day, depending upon manufacturing variation in the components of the ICG machine taking measurements. Our focus is the application of techniques we can use to minimize *reducible* error and maximize prediction accuracy.
+
+#### Inference 
+Often we wish to understand the ways in which $Y$ is affected by a predictor space $X_1,\dots X_p$ Our goal, in this case, isn't necessarily to predict $Y$ based upon its predictors. Rather, we seek to understand the relationships between predictors and the response. Can the relationship be modeled as a linear function or is the mapping more complex? How does the change in predictors effect $Y$? In such cases, we can't afford to treat $f$ as a *black* *box*. Unlike prediction, We must know its exact form. 
+
+`r h <- 'How do we Estimate $f$?'`
+### `r h` 
+Given a set of training data, our task is to apply a statistical learning method which will allow us to find a function $\hat{f}$ such that $Y \approx \hat{f}(X)$ for any observation $(X,Y)$. Generally speaking, statistical methods can be characterized as either *parametric* or *non-parametric*. 
+
+#### Parametric Methods
+Parametric learning methods take a two step model-based approach.
+
+1. Make an assumption about the functional form of $f$. We may say, for instance, that $f$ is linear whereby:
+$$f(x)=\beta_0+\beta_1X_1+\beta_2X_2+\dots+\beta_pX_p\label{step1}$$
+This substantially reduces our problem from estimating a $p$-dimensional function $f(X)$ to estimating just the $p+1$ coefficients $\beta_0,\beta_1, \dots ,\beta_p.$  
+2. Estimate the *parameters* by fitting or training the model to find values such that:
+$$Y \approx \beta_0+\beta_1X_1+\beta_2X_2+\dots+\beta_pX_p.$$
+Ordinary least squares is the most common approach for estimating the parameters in $\ref{step1}$ We'll illustrate this approach as we develop linear models for regression and classification.
+
+As stated above, parametric methods reduce the problem of estimating $f$ down to estimating a set of parameters. But this requires us to assume a functional form for $f$ that may or may not be true. Selecting the wrong model will result in a poor estimation of $f$.
+
+#### Non-Parametric Methods
+Non-parametric models make no explicit assumptions about the form of $f$. Rather, they seek to find a 'goldilocks' estimation that closely fits the data without overfitting. Since no functional form is assumed, $f$ can take a wider range of shapes, but this comes at a cost. Non-parametric methods tend to require a far greater number of training observations to estimate $f$ than do parametric models.
+
+We will examine non-parametric methods later in the series. Now, we apply parametric methods to estimating $f$ in regression and classification settings. 
+
+#### `r h` in a Regression Setting
+
+Now for a bit of statistical decision theory that will provide the framework for developing models such as those introduced informally thus far. 
+
+Consider $X \in \mathbb{R^p}$, a real-valued predictor vector, and $Y \in \mathbb{R}$, a real-valued response variable with joint distribution Pr$(X,Y)$. We seek to estimate a function $f(X)$ for predicting $Y$ given values of the predictor vector $X$. Since we require a loss function for penalizing errors in prediction, we shall use the most popular function, *squared* *error* *loss*:
+$$L(Y, f(X))=(Y-f(X))^2.$$
+From this, we are able to ascertain our criterion for choosing $f$, namely we seek to minimize the expected (squared) prediction error:
+$$EPE(f) = E(Y-f(X))^2\label{epe}$$
+For our statistics jocks, recall that we can factor the joint density $Pr(X,Y)=Pr(Y|X)Pr(X).$ Conditioning on $X$, we have:
+$$EPE(f) = \int_x\int_y[y-f(x)]^2Pr(y|x)Pr(x)dydx,$$
+which we can now express in terms of conditional expectation:
+$$EPE(f)=E_XE_{Y|X}([Y-f(X)]^2|X)$$
+We free $f$ of its dependency on $X$ and since the quantity $[Y-f]$ is convex, we arrive at a unique solution. We can now minimize to solve for $f$:
+$$f(x)=\underset{f}{\operatorname{arg\,min}}\space E_{Y|X}([Y-f(x)]^2|X=x).$$
+Differentiating w.r.t. $x$, sparing ourselves some calculus, and setting that to zero, and viola, the conditional expectation aka the *regression* function: 
+$$f(x)=E(Y|X=x)$$
+Therefore, the best prediction of $Y$ at any point $X=x$ is the conditional mean of $Y$, when "best" is measured by average squared error.
+$$f(x)\approx x^T\beta. \label{regression}$$
+
+Finally, the unique theoretical solution to $\beta$ is obtained by plugging $\ref{regression}$ into $\ref{epe}$ and differentiating to reveal:
+$$\beta=[E(XX^T)]^{-1}E(XY).$$
+This; however, is subject to the assumption that the regression function $f(x)$ is approximately linear.
+
+Are we happy with that? Later in this series, we will explore methods that are far more flexibile than the linear model. For now, we examine this model-based approach in a classification context.
+
+`r h <- 'How do we Estimate $f$'`
+#### `r h` in a Classification Setting
+How do we estimate $f$ in a classification setting? Same process, different loss function for penalizing prediction errors. Let:  
+
+* the estimate for $\hat{G}$ be comprised of values in $G$, the set of all possible classes, and
+* the loss function be represented by a $K\times K$ matrix $\mathbf{L}$, where  
+* $L(k,l)$ is the cost for miss-classifying an observation belonging to $G_k$ to $G_l$. We will use the *zero-one* loss function, where all missclassifications have a cost of one. 
+
+That said, the expected prediction error is:
+$$EPE=E[L(G,\hat{G}(X))],$$
+where again the expectation is taken w.r.t. the joint distribution $Pr(G,X)$. We condition on $X$ as was done for the regression model and write EPE as: 
+$$EPE=E_X\displaystyle\sum_{k=1}^KL[G_k, \hat{G}(X)]Pr(G_k|X).$$
+For the zero-one loss function, this simplifies to:
+$$\hat{G}(x) = \operatorname{arg\,min}_{g\in G}[1 − Pr(g|X = x)],$$
+and viola, our estimate for $G$:
+$$\hat{G}(X)=G_k if Pr(G_k|X=x)=\operatorname{max}_{g \in G} \space Pr(g|X=x).$$
+We've essentially derived the solution known as the *Bayes* *classifier* which says that we assign an observation to the most probable class, using the conditional distribution $Pr(G|X)$
+
+## Summary of Key Ideas
