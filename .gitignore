@@ -8,5 +8,7 @@
 .Ruserdata
 /notes
 /data
-*__pycache__*
+__pycache__/
+/src/visualization/__pycache__/visual.cpython-36.pyc
 /reports/figures
+reports/main_cache/
