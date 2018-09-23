@@ -8,11 +8,11 @@ formatNumber: function (n) {return '3.'+n}
 }});</script>
 
 # Classification
-Classification problems occur as much, if not more often, than regression problems. In this section, we revisit the classification problem focusing on **binary classification**, where the goal is to predict a binary-valued target.  Examples of binary classification problems include:  
+Classification problems occur as much, if not more often, than regression problems. Examples include:  
 
-* A credit card company receives thousands of new credit card applications which include annual salary, outstanding debts, age, profession, etc... On the basis of existing customer payment history and profile data, you wish to categorize applications as good credit or bad credit.    
+* A credit card company receives thousands of new credit card applications which include annual salary, outstanding debts, age, profession, etc... On the basis of existing customer payment history and profile data, you wish to categorize applications as good credit risk, bad credit risk, or further review required.    
 
-* An online music streaming company automatically plays music to its customers based upon prior listening habits and purchasing history. You are tasked with predicting whether a song that the customer has not heard before, should be played or recommended.     
+* A hand writing recognition application must ascertain, on the basis of labeled training data, the correct five digit ZIP code from a digitized hand written sample.
 
 * An online match making service has tens of thousands of member profiles containing personal characteristics, preferences, goals, and historical matching data.  On the basis of this, you must develop an algorithm to predict whether two people are a good match.   
 
@@ -67,5 +67,9 @@ $$
 \begin{matrix}
 Pr(G=k|X=x) = \frac{exp(\beta_{k0}+\beta_k^Tx)}{1+\sum_{l=1}^{K-1}exp(\beta_{l0}+\beta_l^Tx)},\space k=1,\dots,K-1, \\
 Pr(G=K|X=x) = \frac{1}{1+\sum_{l=1}^{K-1}exp(\beta_{l0}+\beta_l^Tx)}, \space
-\end{matrix}
+\end{matrix}\label{lr}
 $$
+From $\ref{lr}$ we can see that the probabilities sum to one and that they are dependent only upon the parameter set $\theta = {\beta_{10}, \beta_1^T, \dots, \beta_{(K-1)0},\beta_{K-1}^T}$. To emphasize the point, we can write $Pr(G=k|X=x)=p_k(x;\theta)$[@hastie01statisticallearning]
+
+### How Do We Fit Logistic Regression Models?
+

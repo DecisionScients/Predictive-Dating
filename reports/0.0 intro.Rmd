@@ -16,7 +16,13 @@ By the end of this series, you will be able to:
 ## How will we get there?   
   
 1. Business Case     
-  . Exploratory Data Analysis  
+    1.1. Overview    
+    1.2. Data    
+    1.3. Exploratory Data Analysis    
+2. Core Concepts  
+  2.1. Linear Algebra Review  
+  2.2. 
+
 3. Linear Classifiers   
     3.1. Logistic Regression   
     3.2. Linear Discriminant Analysis   
