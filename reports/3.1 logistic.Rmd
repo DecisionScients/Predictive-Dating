@@ -8,7 +8,26 @@ formatNumber: function (n) {return '3.1.'+n}
 }});</script>
 
 ## Logistic Regression
-We use the logistic regression model when we wish to model the posterior probability that $Y$ belongs to a particular group.  
+Typically used in binary classification problems, logistic regression or logit regression estimates the probability of a binary response based upon one or more predictor variables. Multinomial logistic regression is a generalization of binary logistic regression for response variables with greater than two levels. 
+
+### Learning Objectives
+Selecting and implementing the “right” machine learning algorithm to predict the future based upon past data is a necessary, but not sufficient, condition for success as a data scientist. Data science and the outcomes it produces may be complex and difficult to explain.  Yet, the effective data scientist must be equally facile at explaining her approach and findings to both colleagues and non-technical stakeholders. 
+
+That said, by the end of this section, you will be able to:
+
+1. Describe the Logistic Regression method and characterize its assumptions, advantages and disadvantages.    
+2. Characterize problem sets for which logistic regression is best suited.   
+3. Define the logistic regression hypothesis and cost functions for binary and multinomial classification problems.  
+4. Explain techniques, such as batch gradient descent and stochastic gradient descent, used to estimate the parameters of the logistic function.  
+5. Optimize a logistic regression in python using the scikit-learn package.   
+6. Evaluate the performance of a classifier based upon logistic regression.  
+
+
+### Why Logistic Regression?
+We use the logistic regression model when we wish to model the posterior probability that $Y$ belongs to a particular group. But wait! Why do we need logistic regression when we can simply model $Y$ directly using linear regression methods?  Great question! 
+
+#### Posterior Probabilities are Not Linear With Respect to the Predictors
+To illustrate the point, consider the problem of predicting the probability of default on a credit card, based upon the balance [@James2017]. 
 
 ```{python default}
 # Prepare data
@@ -30,31 +49,47 @@ ax2.set_title(label='Logistic Regression')
 fig.savefig("./reports/figures/default.png")
 plt.close(fig)
 ```
-### Why Logistic Regression?
-Why would we do this? Why not model $Y$ directly using linear regression methods?  
+![](../reports/figures/default.png)
+`r kfigr::figr(label = "default", prefix = TRUE, link = TRUE, type="Figure")`: Probability of Default by Balance 
 
-Linear regression methods for qualitative responses are not appropriate in most cases, especially those involving more than two levels of the qualitative response. Consider a supervised learning problem to predict the psychiatric disorder of a patient based upon electronic medical records and transcripts of past patient interviews. Suppose that there are three possible diagnoses: schizophrenia, major depressive disorder, and capgras delusion. We could encode these values as a quantitative response variable, $Y$, as follows:
+The left plot in `r kfigr::figr(label = "default", prefix = TRUE, link = TRUE, type="Figure")`  shows the estimated probability of default using linear regression. we see that the classes are linearly separable; however, the linear regression returns negative probabilities! On the right, we have the predicted probability of default using a logistic regression based upon the logistic, or sigmoid function.  All probabilities are between 0 and 1.
+
+This illustrates several properties of the posterior probability distribution.   
+
+1. Probabilities must be bounded between 0 and 1 for all real values of the predictor space.  There should be no credit card balance for which the probability of default is less than zero or greater than one.  
+2. Probability must increase monotonomically for increasing values in the predictor space. That is to say that the probability of default must not decrease with increasing balances.  
+3. Hence, the probability distribution is actually S-shaped, rather than linear over the predictor space.  
+
+#### Linear Regression Implies Ordering in the Responses
+Consider a supervised learning problem to predict the psychiatric disorder of a patient based upon electronic medical records and transcripts of past patient interviews. Suppose that there are three possible diagnoses: schizophrenia, major depressive disorder, and capgras delusion. We could encode these values as a quantitative response variable, $Y$, as follows:
 
 $$
 Y=\begin{cases}
 1 \text{ if schizophrenia;} \\
 2 \text{ if major depressive disorder;} \\
-3 \text{ if capgras delusion;}
+3 \text{ if capgras delusion.}
 \end{cases}
 $$
-Using this coding, we could use least squares to fit a linear regression model to predict $Y$ on the basis of a set of predictors $X_1,X_2,\dots, X_p$. Two issues arise. First, the coding implies an ordering on the outcomes that may not exist, and second, the model insists that the distances between the levels has meaning and that they are equal. In practice, there is no implied ordering among the outcomes and the space between the outcomes implies no meaning. There is no practical way to convert a categorical response with more than two levels into a quantitative response for linear regression.
+Using this coding, we could use least squares to fit a linear regression model to predict $Y$ on the basis of a set of predictors $X_1,X_2,\dots, X_p$. Unfortunately, this coding implies an ordering on the outcomes that may not exist. For instance, we could have selected an equally reasonable coding,
+$$
+Y=\begin{cases}
+1 \text{ if major depressive disorder;} \\
+2 \text{ if capgras delusion;} \\
+3 \text{ if schizophrenia.}
+\end{cases}\label{psych}
+$$
+This encoding would imply a completely different relationship between the predictors and response, resulting in very different predictions on test data.
 
-That said, let's assume that there *is* a natural ordering to our categorical response, and that the distances between the levels of the response *are* equal. Would linear regression be appropriate in this case? Consider the problem of predicting the probability of default on a credit card, based upon the balance [@James2017]. 
+#### Linear Regression Implies Equal Difference Between Responses
+Linear regression also insists that the distances between the responses match the difference between the encodings. For instance, the encoding in $\ref{psych}$ implies that the difference between major depressive disorder and capgras delusion equals the difference between capgras delusion and schizophrenia. In this particular example, the differences between the categorical responses have no meaning. 
 
-![](../reports/figures/default.png)
-`r kfigr::figr(label = "default", prefix = TRUE, link = TRUE, type="Figure")`: Probability of Default by Balance 
-
-The left plot in `r kfigr::figr(label = "default", prefix = TRUE, link = TRUE, type="Figure")`  shows the estimated probability of default using linear regression.  Note that some of the probabilities are negative! On the right, we have the predicted probability of default using logistic regression.  All probabilities are between 0 and 1.
-
-Hence, we seek to use methods that are truly suited for the qualitative response values we seek to model. If we are interested in modeling the probability that an observation belongs to a particular group, our model must provide a probability between 0 and 1 for all possible values of the predictor space.
+These scenarios illuminate the point. In many cases, there is no practical way to convert a categorical response with more than two levels into a quantitative response for linear regression. Hence, we seek to use methods that are truly suited for the qualitative response values we seek to model. If we are interested in modeling the probability that an observation belongs to a particular group, our model must provide a monotonically increasing probability between 0 and 1 for all possible values of the predictor space.
 
 ### What is Logistic Regression?
-Let's first consider the binary classification context, where $y \in \lbrace0,1\rbrace$. Logistic or logit regression is a statistical model used to estimate the parameters of the sigmoid function. The sigmoid function is defined as:
+Let's first consider the binary classification context, where $y \in \lbrace0,1\rbrace$. Logistic or logit regression is a statistical model used to estimate the parameters of the sigmoid function.
+
+#### Sigmoid Function  
+The sigmoid function is defined as:
 $$g(z)=\frac{1}{1+e^{-z}}\label{sigmoid}$$
 
 
@@ -83,11 +118,22 @@ plt.close(fig)
 ![](../reports/figures/sigmoid.png)
 `r kfigr::figr(label = "sigmoid", prefix = TRUE, link = TRUE, type="Figure")`: Sigmoid Function
 
-The sigmoid function graphically depicted in `r kfigr::figr(label = "sigmoid", prefix = TRUE, link = TRUE, type="Figure")` is an S-shaped curve, with several appealing characteristics for modeling the probability that an observation belongs to a particular class. First, the sigmoid function is a real function defined for all real input values. Second, it is bounded horizontally, typically from 0 to 1, for $x\rightarrow \pm \infty$, thereby ensuring that all probabilities lie between 0 and 1. Lastly, the sigmoid function has a non-negative differential at each point and therefore returns monotonically increasing values with increasing inputs. To illustrate this point, consider the problem of predicting whether a credit card holder will default, based upon the balance.  If it has been shown that the probability increases with the balance, we would require a model that predicts higher probabilities as the balance increases. The sigmoid function ensures that the probability of default increases monotonically with credit card balance as shown in `r kfigr::figr(label = "default", prefix = TRUE, link = TRUE, type="Figure")`.
+The sigmoid function graphically depicted in `r kfigr::figr(label = "sigmoid", prefix = TRUE, link = TRUE, type="Figure")` is an S-shaped curve, with several appealing characteristics for modeling the probability that an observation belongs to a particular class. 
 
+1. The sigmoid function is a real function defined for all real input values.  
+2. It is bounded horizontally, typically from 0 to 1, for $x\rightarrow \pm \infty$, thereby ensuring that all probabilities lie between 0 and 1.  
+3. The sigmoid function has a non-negative differential at each point and therefore returns monotonically increasing values with increasing inputs. 
+
+#### Hypothesis Function
 For logistic regression, we define our hypothesis function $h_\theta$, as a special case application of the sigmoid function:
 $$h_\theta(x)=g(\theta^Tx)=\frac{1}{1+e^{-(\theta^TX)}},$$
-where $\theta \in \mathbb{R}^{n\times (p+1)}$ is the matrix of coefficients, $x \in \mathbb{R}^{n\times (p+1)}$ is the matrix of inputs, and $g(z)$ is defined as in $\ref{sigmoid}$ Hence, $g(\theta^Tx)$ gives us the probability that our class assignment is 1, in the case of a binary classification of $Y\in[0,1]$.
+where:  
+
+* $\theta \in \mathbb{R}^{n\times (p+1)}$ is the matrix of coefficients,  
+* $x \in \mathbb{R}^{n\times (p+1)}$ is the matrix of inputs, and   
+* $g(z)$ is defined as in $\ref{sigmoid}$. 
+
+Hence, $g(\theta^Tx)$ gives us the probability that our class assignment is 1, in the case of a binary classification of $Y\in \lbrace 0,1\rbrace$.
 
 In order to get our discrete 0 or 1 classification, we translate the output of $g(\theta^Tx)$ as follows:
 $$
@@ -122,7 +168,7 @@ $$5-x_1 \ge 0$$
 In this case, our decision boundary is a straight vertical line placed on the graph where $x_1=5$. Everything to the left of that denotes $y=1$, and everything to the right implies $y=0$.
 
 ### How Do We Fit Logistic Regression Models?
-Let's begin with the binary classification case. 
+Given a training set, how do we learn the parameters $\theta$? We first define a **cost function**, a measure for how close our hypothesis function $h(x)$ is to the true response values. Then, we use a search function that starts with an "initial guess" for $\theta$, then repeatedly makes changes in $\theta$ in order to minimize the cost function until, hopefully, the algorithm converges at a parameter set $\theta$ that minimizes the cost function. 
 
 #### Cost Function
 We first define our cost function for logistic regression:  
@@ -174,8 +220,10 @@ We can implement a vectorized version as follows:
 * $h=g(X\theta)$    
 * $J(\theta)=\frac{1}{n}[-y^Tlog(h)-(1-y)^Tlog(1-h)]$    
 
+Next we describe the search algorithms for estimating $\theta$.
+
 #### Gradient Descent
-Our objective, at this stage, is to find $\theta$ that minimizes $J(\theta)$ For this task, we use **gradient descent**. This algorithm starts with some 'initial guess' for $\theta$, then repeatedly changes $\theta$ to make $J(\theta)$ smaller, until *hopefully* we converge to a value of $\theta$ that minimizes $J(\theta)$. Here we will examine two gradient descent algorithms: batch gradient descent and stochastic (incremental) gradient descent.
+Our objective, at this stage, is to find $\theta$ that minimizes $J(\theta)$ For this task, we use **gradient descent**. This algorithm starts with some 'initial guess' for $\theta$, then repeatedly changes $\theta$ to make $J(\theta)$ smaller, until *hopefully* we converge to a value of $\theta$ that minimizes $J(\theta)$. Here we will examine three gradient descent algorithms: batch gradient descent, stochastic (incremental) gradient descent and Newton's method.
 
 ##### Batch Gradient Descent
 Batch gradient descent starts with some initial $\theta$,then repeated performs the following update:
@@ -191,13 +239,12 @@ This algorithm is called *batch* gradient descent because it looks at every obse
 ##### Stochastic (Incremental) Gradient Descent
 Consider the following algorithm:
 
-  Loop {
-    for i=1 to n, {
-      $\qquad\theta_j:=\theta_j-\alpha(h_\theta(x_i)-y_i)x_{i,j}\space \forall j,$
-    }
-  }
+  Loop {  
+    for i=1 to n, {   
+      $\qquad\theta_j:=\theta_j-\alpha(h_\theta(x_i)-y_i)x_{i,j}\space \forall j,$    
+    }   
+  }   
 
 Here, we repeatedly run through the training set; however, unlike batch gradient descent, we update the parameters according to the gradient of the error with respect to that single observation only. Whereas batch gradient descent has to scan through the entire training set before taking a single step, stochastic gradient descent starts making progress right away.  As stated, stochastic gradient descent often arrives at $\theta$ close to the minimum much faster than batch gradient descent, but it may never 'converge'.  Depending upon the learning rate, the parameters may oscillate around the minimum of $J(\theta)$, but in practice, such approximations of the 'true' minimum or reasonably good. This is why stochastic gradient descent may be a better choice for large datasets.
 
-
-###
+##### Newton's Method

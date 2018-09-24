@@ -70,6 +70,7 @@ import matplotlib.pylab as pylab
 import numpy as np
 import pandas as pd
 import seaborn as sns
+from sklearn import svm
 from sklearn.linear_model import LogisticRegression
 from sklearn.datasets import make_circles
 from sklearn.datasets import make_classification
