@@ -113,7 +113,7 @@ def regression_plot(df, xvar, yvar, title, ci=None):
     sns.set(style="whitegrid", font_scale=2)
     sns.set_palette("GnBu_d")
     fig, ax = plt.subplots()
-    ax = sns.regplot(x=xvar, y=yvar, data=df, ci=ci)
+    ax = sns.regplot(x=xvar, y=yvar, data=df, ci=ci, ax=ax)
     fig.suptitle(title)
     plt.tight_layout()
     return(fig)

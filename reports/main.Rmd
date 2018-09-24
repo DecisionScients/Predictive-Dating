@@ -71,6 +71,8 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 from sklearn.linear_model import LogisticRegression
+from sklearn.datasets import make_circles
+from sklearn.datasets import make_classification
 
 from shared import directories
 from shared import filenames
@@ -80,6 +82,6 @@ from analysis import analysis
 ```
 
 
-```{r concepts, child = '3.0 classification.rmd'}
+```{r concepts, child = '3.0 linear.rmd'}
 ```
 

@@ -32,7 +32,7 @@ More formally, our goal is to learn a **hypothesis** function $h: X \mapsto Y$ s
 
 Supervised learning problems are categorized into *'regression'* and *'classification'* problems. Regression problems involve quantitative or continuous response variables. Real-world examples include: 
 
-* Predict the price of a stock in 6 months from now, on the basis of company performance measures and economic data.    
+* Predict the price of a stock in 6 months from now, on the basis of company performance measures and economic data.  
 * Predict automobile mileage per gallon based upon design characteristics such as weight, horsepower, engine characteristics, passenger compartment configuration, and size.    
 * Predict executive salaries based upon industry, department, candidate experience, and industry salary data. 
 

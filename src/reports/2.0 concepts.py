@@ -25,4 +25,4 @@ df = pd.read_csv(os.path.join(directories.EXTERNAL_DATA_DIR, 'ames.csv'),
 # ============================================================================ #
 #                             LINEAR REGRESSION                                #
 # ============================================================================ #
-sns.residplot(x='area', y='price', data=df.head(100))
+sns.lmplot(x='area', y='price', data=df.head(100), ci=None)

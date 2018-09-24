@@ -1,0 +1,39 @@
+# Linear Classifiers
+In this section, we will explore a range of classifiers called **linear classifiers**. A classifier is *linear* if its decision boundary on the feature space is a linear function, e.g. classes are separated by **hyperplanes** as shown in `r kfigr::figr(label = "linear", prefix = TRUE, link = TRUE, type="Figure")`.
+```{python linear}
+# Create training sets and fit the classifier to the training sets
+X, y = make_classification(200,2,2,0, weights=[.5, .5], random_state=5)
+clf = LogisticRegression().fit(X[:100], y[:100])
+
+# Create continuous grid of values and evaluate the probability of each (x,y) point in the grid
+xx, yy = np.mgrid[-5:5:.01, -5:5:.01]
+grid = np.c_[xx.ravel(), yy.ravel()]
+probs = clf.predict_proba(grid)[:, 1].reshape(xx.shape)
+
+# Create plot
+fig, ax = plt.subplots()
+ax.contour(xx, yy, probs, levels=[.5], cmap="Greys", vmin=0, vmax=.6)
+
+ax.scatter(X[100:,0], X[100:, 1], c=y[100:], s=50,
+           cmap="GnBu", vmin=-.2, vmax=1.2,
+           edgecolor="white", linewidth=1)
+
+ax.set(aspect="equal",
+       xlim=(-5, 5), ylim=(-5, 5),
+       xlabel="$X_1$", ylabel="$X_2$")
+fig.savefig("./reports/figures/linear.png")
+plt.close(fig)
+```
+
+![](../reports/figures/linear.png)
+`r kfigr::figr(label = "linear", prefix = TRUE, link = TRUE, type="Figure")`: Binary Classification with Linear Decision Boundary
+
+We'll examine three of the most-widely used linear classifiers:  
+
+1. **Logistic Regression:**  Typically used in binary classification problems, logistic regression or logit regression estimates the probability of a binary response based upon one or more predictor variables. Multinomial logistic regression is a generalization of binary logistic regression for response variables with greater than two levels. Ordinal logistic regression further generalizes multinomial logistic regression for ordered categorical responses. 
+2. **Linear Discriminant Analysis (LDA):** Like logistic regression, LDA models the conditional distribution of the response $Y$, given the predictor(s) $X$. The distribution of the predictors $X$ is modeled separately for each of the response classes. Then Bayes' theorem is used to estimate the probability of a response, given $X$.
+3. **Rosenblatt's Perceptron:** This binary classifier learns a function that maps its inputs $X$ to an output value $Y$ by finding a separating hyperplane that minimizes the distance of misclassified points to the decision boundry. 
+
+
+```{r logistic, child = '3.1 logistic.rmd'}
+```
