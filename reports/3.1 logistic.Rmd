@@ -199,4 +199,5 @@ Consider the following algorithm:
 
 Here, we repeatedly run through the training set; however, unlike batch gradient descent, we update the parameters according to the gradient of the error with respect to that single observation only. Whereas batch gradient descent has to scan through the entire training set before taking a single step, stochastic gradient descent starts making progress right away.  As stated, stochastic gradient descent often arrives at $\theta$ close to the minimum much faster than batch gradient descent, but it may never 'converge'.  Depending upon the learning rate, the parameters may oscillate around the minimum of $J(\theta)$, but in practice, such approximations of the 'true' minimum or reasonably good. This is why stochastic gradient descent may be a better choice for large datasets.
 
+
 ###

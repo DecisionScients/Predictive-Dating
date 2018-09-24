@@ -19,5 +19,6 @@ By the close of this section you will
 * ...
 
 
+
 ```{r logistic, child = '3.1 logistic.rmd'}
 ```
