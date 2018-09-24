@@ -20,10 +20,9 @@ By the end of this series, you will be able to:
     1.2. Data    
     1.3. Exploratory Data Analysis    
 2. Core Concepts  
-    2.1. Linear Algebra Review  
-    2.2. Statistical Learning      
-    2.3. Regression   
-    2.4. Classification   
+    2.1. Statistical Learning      
+    2.2. Regression   
+    2.3. Classification   
 3. Linear Classifiers   
     3.1. Logistic Regression   
     3.2. Linear Discriminant Analysis   
@@ -41,7 +40,7 @@ By the end of this series, you will be able to:
 8. Conclusions  
 
 ## Notation 
-In supervised learning problems, we have inputs and an output. We refer to inputs as predictors or features, and the output as the response or dependent variable. A set of $j$ predictors for an observation will be denoted by a vector $X$, of length $j$, where each feature is accessed by a subscript $x_j$. The response is denoted as $Y$ for numeric (quantitative) responses and $G$ for categorical (qualitative) responses. Qualitative responses are typically represented by numeric codes. When the size of $G$ is two, we represent the response with a single binary variable containing either a 0 or 1. When there $K>2$ possible responses, we use a vector of $K$ binary dummy variables, only one of which is 'turned on' at a time. We will use $n$ to represent the number of observations in our sample or training data set. When referring to the generic aspects of a variable, we use capital letters such as $X$, $Y$, and $G$. Actual observations are written in lowercase. Hence, the $i$th observed value of $X$ is written as $x_i$, where $x$ is a scalar in the case of a single predictor, or a vector otherwise. For instance, we will write a vector $x$ containing $p$ predictors as:
+In supervised learning problems, we have inputs and an output. We refer to inputs as predictors or features, and the output as the response or dependent variable. A set of $j$ predictors for an observation will be denoted by a vector $X$, of length $j$, where each feature is accessed by a subscript $x_j$. The response is denoted as $Y$. Qualitative responses are typically represented by numeric codes. For instance, if $Y$ takes on one of two values, we represent this response with a single binary variable containing either a 0 or 1. When there are $K>2$ possible responses, we use a vector of $K$ binary dummy variables, only one of which is 'turned on' at a time. We will use $n$ to represent the number of observations in our sample or training data set. When referring to the generic aspects of a variable, we use capital letters such as $X$ and $Y$. Actual observations are written in lowercase. Hence, the $i$th observed value of $X$ is written as $x_i$, where $x$ is a scalar in the case of a single predictor, or a vector otherwise. For instance, we will write a vector $x$ containing $p$ predictors as:
 
 $$
 x = \begin{bmatrix} 

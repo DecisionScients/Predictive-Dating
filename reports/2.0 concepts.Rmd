@@ -26,7 +26,11 @@ The term 'machine learning' was first coined in 1959 by Arthur Samuel as "the fi
 *Most* machine learning problems fall into one of two categories: *supervised* or *unsupervised*. Let's distinguish these broad categories.
 
 ### Supervised Learning  
-In supervised learning problems, we are given a data set with inputs or *predictors* and the output, or *response* variable. Our objective is to *learn* the relationships between the predictors and the response so that we can accurately predict responses on unseen data (*prediction*) or better understand the relationships between the predictors and response (*inference*). Supervised learning problems are categorized into *'regression'* and *'classification'* problems. Regression problems involve quantitative or continuous response variables. Real-world examples include: 
+In supervised learning problems, we are given a training data set with inputs or *predictors* and the output, or *response* variable. Our objective is to *learn* the relationships between the predictors and the response so that we can accurately predict responses on unseen data (*prediction*) or better understand the relationships between the predictors and response (*inference*). 
+
+More formally, our goal is to learn a **hypothesis** function $h: X \mapsto Y$ so that $h(x)$ is a 'good' predictor for the corresponding value of $y$.
+
+Supervised learning problems are categorized into *'regression'* and *'classification'* problems. Regression problems involve quantitative or continuous response variables. Real-world examples include: 
 
 * Predict the price of a stock in 6 months from now, on the basis of company performance measures and economic data.    
 * Predict automobile mileage per gallon based upon design characteristics such as weight, horsepower, engine characteristics, passenger compartment configuration, and size.    
