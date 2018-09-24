@@ -77,16 +77,20 @@ def count_plot(df,x, hue=None, title=None):
 # --------------------------------------------------------------------------- #
 #                              SCATTERPLOT (SNS)                              #
 # --------------------------------------------------------------------------- #
-def scatterplot(df, xvar, yvar, target, title=None):
+def sns_scatterplot(df, xvar, yvar, target, title):
     sns.set(style="whitegrid", font_scale=2)
-    sns.set_palette("GnBu_d")
+    sns.set_palette("Set1")
     fig, ax = plt.subplots()
-    if title is not None:
-        sns.scatterplot(x=xvar, y=yvar, data=df, ax=ax, style=target,
-                        hue=target).set_title(title)       
-    else:
-        sns.scatterplot(x=xvar, y=yvar, data=df, ax=ax, style=target,
-                        hue=target)
+    sns.scatterplot(x=xvar, y=yvar, data=df, ax=ax, style=target,
+                    hue=target).set_title(title)       
+    plt.tight_layout()
+    return(fig)
+
+# --------------------------------------------------------------------------- #
+#                              SCATTERPLOT (PLT)                              #
+# --------------------------------------------------------------------------- #
+def plt_scatterplot(df, xvar, yvar, target, title):
+    fig = plt.scatter(df[xvar], df[yvar], c=target, cmap='viridis')    
     plt.tight_layout()
     return(fig)
 
@@ -101,6 +105,31 @@ def bar_plot(df, xvar, yvar, title):
     sns.barplot(x=xvar, y=yvar, data=df, ax=ax, color='b').set_title(title)       
     plt.tight_layout()
     return(fig)
+
+# --------------------------------------------------------------------------- #
+#                               REGRESSION LINE                               #
+# --------------------------------------------------------------------------- #
+def regression_plot(df, xvar, yvar, title, ci=None):
+    sns.set(style="whitegrid", font_scale=2)
+    sns.set_palette("GnBu_d")
+    fig, ax = plt.subplots()
+    ax = sns.regplot(x=xvar, y=yvar, data=df, ci=ci)
+    fig.suptitle(title)
+    plt.tight_layout()
+    return(fig)
+
+# --------------------------------------------------------------------------- #
+#                               RESIDUALS PLOT                                #
+# --------------------------------------------------------------------------- #
+def residuals_plot(df, xvar, yvar, title):
+    sns.set(style="whitegrid", font_scale=2)
+    sns.set_palette("GnBu_d")
+    fig, ax = plt.subplots()
+    ax = sns.residplot(x=xvar, y=yvar, data=df)
+    fig.suptitle(title)
+    plt.tight_layout()
+    return(fig)
+
 # --------------------------------------------------------------------------- #
 #                                 HISTOGRAM                                   #
 # --------------------------------------------------------------------------- #

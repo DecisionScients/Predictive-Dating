@@ -7,423 +7,58 @@ formatNumber: function (n) {return '2.'+n}
 }
 }});</script>
 
-# Review of Key Concepts
-In this section, we will ground ourselves in the key concepts of statistical learning, supervised learning, basic linear algebra, and regression, and classification methods. 
-```{python}
-df = pd.read_csv(os.path.join(
-    directories.INTERIM_DATA_DIR, filenames.TRAIN_FILENAME))
-n = df.shape[0]
-p = df.shape[1] - 1
-```
+# Machine Learning Core Concepts
+In this section, we introduce the machine learning core concepts, including supervised vs. unsupervised learning, prediction, inference, regression, classification, model selection and evaluation. 
 
 ## Learning Objectives
 By the end of this section, we'll be able to:  
 
-1. Perform basic vector and matrix operations such as addition,subtraction, scaling and multiplication   
-2. Characterize and contrast supervised and unsupervised learning problems   
+1. Characterize and contrast supervised and unsupervised learning problems   
+1. Characterize and contrast supervised and unsupervised learning problems   
 3. Describe and derive the linear model used in regression and classification settings  
 4. Distinguish parametric and non-parametric methods of regression and classification   
 
 No prior knowledge of linear algebra, statistical learning, multivariate calculus or Bayesian statistics is assumed, but some background would be useful. For some, especially practitioners currently in industry, it may be appropriate to skip ahead to linear classification. If you are like me (and I know I am), this section is intended to refresh, reinforce, stimulate and provoke a working and portable intuition for classification methods specifically, and statistical learning in general.  
 
-But first, let's align on a bit of notation.
+## Machine Learning Introduction
+The term 'machine learning' was first coined in 1959 by Arthur Samuel as "the field of study that gives computers the ability to learn without being explicitly programmed." [@5392560] Tom Mitchel, a computer scientist and professor at Carnegie Mellon University (CMU), provided a more formal definition: "A computer program is said to learn from experience E with respect to some class of tasks T and performance measure P if its performance at tasks in T, as measured by P, improves with experience E. [@Mitchell1997]. Machine learning is about learning from data in order to draw inferences or make predictions.
 
-## Notation
-In supervised learning problems, we have inputs and an output. We refer to inputs as *predictors* or *features*, and the output as the *response* or *dependent* variable. A set of $j$ predictors for an observation will be denoted by a vector  $X$, of length $j$, where each feature is accessed by a subscript $x_j$. The response is denoted as $Y$ for numeric (quantitative) responses and $G$ for categorical (quantitative) responses. When referring to the *generic* aspects of a variable, we use capital letters such as $X$, $Y$, and $G$. Actual observations are written in lowercase. Hence, the $i$th observed value of $X$ is written as $x_i$, where $x$ is a scalar in the case of a single predictor, or a vector otherwise. For instance, we will write our `r py$p` predictors in the speed dating dataset as:
+*Most* machine learning problems fall into one of two categories: *supervised* or *unsupervised*. Let's distinguish these broad categories.
 
-$$
-x = \begin{pmatrix}
-x_{1} \\
-x_{2} \\
-\vdots \\
-x_{22}
-\end{pmatrix}.
-$$
-We may occasionally denote a vector as $\overrightarrow{x} = (x_1, x_2,...,x_p)$. 
+### Supervised Learning  
+In supervised learning problems, we are given a data set with inputs or *predictors* and the output, or *response* variable. Our objective is to *learn* the relationships between the predictors and the response so that we can accurately predict responses on unseen data (*prediction*) or better understand the relationships between the predictors and response (*inference*). Supervised learning problems are categorized into *'regression'* and *'classification'* problems. Regression problems involve quantitative or continuous response variables. Real-world examples include: 
 
-Qualitative responses are typically represented by numeric codes. When the size of $G$ is two, we  represent the response with a single binary variable containing either a 0 or 1. When there $K>2$ possible responses, we use a vector of $K$ binary *dummy* *variables*, only one of which is 'turned on' at a time.
+* Predict the price of a stock in 6 months from now, on the basis of company performance measures and economic data.    
+* Predict automobile mileage per gallon based upon design characteristics such as weight, horsepower, engine characteristics, passenger compartment configuration, and size.    
+* Predict executive salaries based upon industry, department, candidate experience, and industry salary data. 
 
-We will use $n$ to represent the number of observations in our sample. The number of predictors, will be designated by $p$.  For instance, we have $n =$ `r py$n` observations and $p=$ `r py$p` such predictors in our speed dating training dataset. 
+Classification problems deal with discrete or qualitative responses. Examples include:  
 
-The entire $n \times p$ predictor space for all observations will be represented by a matrix $X$.
+* Identify the digits in a handwritten ZIP code from a digitized image.  
+* Predict whether a tumor is benign or malignant on the basis tumor size and imaging data.   
+* Predict whether two members on an online dating site are a match on the basis of personal attributes, priorities, values, lifestyle data, and preferences.  
 
-$$\mathbf{X}=\begin{pmatrix}
-x_{11} & x_{12} & \dotsc & x_{1p} \\
-x_{21} & x_{22} & \dotsc & x_{2p} \\
-\vdots & \vdots & \ddots & \vdots \\
-x_{n1} & x_{n2} & \dotsm & x_{np}
-\end{pmatrix},$$
+Classification problems may be further categorized in terms of the number of qualitative responses. For instance a two classification problem is known as a **binary** **classification** problem. The two prediction examples above would be characterized as binary classification problems. The hand writing recognition problem is an example of a **multi-label** **classification** problem. 
 
-where $x_{i,j}$ denotes the $j$th variable of the $i$th observation, and $i = 1,2,...,n$ and $j = 1,2,...,p$. 
+### Unsupervised Learning
+In contrast, *unsupervised* learning involves data sets with predictors and no associated response variable.  The task is somewhat more complex as we attempt to discover patterns and relationships in the data without the presence of a *"supervising"* response variable. Examples of real-world unsupervised learning problems include:
 
-We will write the rows of $X$ as $x_1, x_2, ..., x_n$, where $x_i$ is a vector of length $p$ containing the predictor values for the $i$th observations. Concretely, the vector notation for $x_i$ is:
+* In a market segmentation study, cluster potential customers based upon zip-code, family income, and shopping habits.   
+* Automatically determine the features required for classification from raw, unlabeled input data.  
+* Reduce the dimensions required for classification or regression by mapping inputs into a lower-dimensional predictor space.   
 
-$$
-x_i = \begin{pmatrix}
-x_{i1} \\
-x_{i2} \\
-\vdots \\
-x_{ip}
-\end{pmatrix}.
-$$
+Supervised learning is the focus of this series.  Next, we'll discuss supervised learning model representation, regression and classification.  
 
-The column $j$th column of $X$ will be written as:
-$$
-x_j = \begin{pmatrix}
-x_{1j} \\
-x_{2j} \\
-\vdots \\
-x_{nj}
-\end{pmatrix}.
-$$
+## Model Representation
+Consider a quantitative response $Y$ and $p$ different predictors, $X_1, X_2, \dots X_p$.  We can write the relationship between the predictors and the response as:
+$$Y=f(x)+\epsilon$$
+Here, $f$ is some fixed but unknown function of $X_1,\dots,X_P$, and $\epsilon$ is a random *error* *term*, which is independent of $X$ and has a zero mean. 
 
-We'll write the target variable for the $i$th observation as $y_i$. The target for all $n$ observations is written in vector form as
-$$y=\begin{pmatrix}
-y_1 \\
-y_2 \\
-\vdots \\
-y_n
-\end{pmatrix}.$$
-Hence, our observed data consists of $\{(x_1,y_1), (x_2,y_2),...,(x_n,y_n)\}$, where each $x_i$ is a vector of length $p$.
+In general, we seek to learn an function $\hat{f}(x)$ that renders predictions $\hat{Y}$. Since errors average to zero, we can write this relationship as:
+$$\hat{Y}=\hat{f}(x)$$
+For the classification setting, consider a binary response $Y$, coded as 0 or 1. For instance, we may be classifying a tumor as benign (0) or malignant (1) based upon tumor size and imaging data. We seek a $f(X)$ that renders $Pr(G=1|X=x)$, the probability that a tumor is malignant. The series is about the concepts and techniques used to estimate and evaluate $f$.
 
-Lastly, we indicate the dimensions of scalars, vectors and matrices as follows:  
-
-* scalar: $a \in \mathbb{R}$  
-* vector: the dimension of a vector of length $n$ is has dimension $a \in \mathbb{R^n}$  
-* matrix: an $n \times p$ matrix $A$ has dimension $A \in \mathbb{R^{n \times p}}$  
-
-## Linear Algebra Review
-Let's review the key ideas from linear algebra that are most germane to machine learning. We'll examine the operations that can be performed with scalars, vectors and matrices, the principal objects in machine learning and linear algebra. 
-
-### Vector Operations 
-The principal operations one can perform on vectors are:
-* Vector Addition (denoted $\overrightarrow{u}+\overrightarrow{v}$)    
-* Vector Subtraction (denoted $\overrightarrow{u}-\overrightarrow{v}$)    
-* Vector Scaling (denoted $\alpha\overrightarrow{u}$)    
-* Vector Dot Product (denoted $\overrightarrow{u}\bullet\overrightarrow{v}$)  
-
-For this section, consider an arbitrary constant $\alpha \in \mathbb{R}$ and vectors $\overrightarrow{u}\in\mathbb{R^2}$ and $\overrightarrow{v}\in\mathbb{R^2}$
-
-
-$$
-\alpha = 4, 
-u = \begin{pmatrix}
-u_{1} \\
-u_{2} 
-\end{pmatrix}
-= \begin{pmatrix}
-5 \\
-3 
-\end{pmatrix},
-v = \begin{pmatrix}
-v_{1} \\
-v_{2} 
-\end{pmatrix}
-= \begin{pmatrix}
-2 \\
-8 
-\end{pmatrix},
-$$
-#### Vector Addition
-We compute the sum of vectors $\overrightarrow{u}$ and $\overrightarrow{v}$ as:
-$$
-\begin{pmatrix}
-u_{1} \\
-u_{2} 
-\end{pmatrix}
-+ \begin{pmatrix}
-v_{1} \\
-v_{2} 
-\end{pmatrix}
-= \begin{pmatrix}
-u_{1}+v_1 \\
-u_{2}+v_2 
-\end{pmatrix}
-= \begin{pmatrix}
-5+2 \\
-3+8 
-\end{pmatrix}
-= \begin{pmatrix}
-7 \\
-11 
-\end{pmatrix}
-$$
-#### Vector Subtraction
-Vector subtraction, denoted as $\overrightarrow{u}-\overrightarrow{v} = \overrightarrow{u}+(-\overrightarrow{v})$, is computed as follows:
-
-$$
-\begin{pmatrix}
-u_{1} \\
-u_{2} 
-\end{pmatrix}
-- \begin{pmatrix}
-v_{1} \\
-v_{2} 
-\end{pmatrix}
-= \begin{pmatrix}
-u_{1}-v_1 \\
-u_{2}-v_2 
-\end{pmatrix}
-= \begin{pmatrix}
-5-2 \\
-3-8 
-\end{pmatrix}
-= \begin{pmatrix}
-3 \\
--5 
-\end{pmatrix}
-$$
-#### Vector Scaling
-We can also scale a vector for any number $\alpha \in \mathbb{R}$. For $\alpha = 4$ we scale $\overrightarrow{v}$:
-
-$$\alpha\overrightarrow{v}
-=\alpha\begin{pmatrix}
-v_{1} \\
-v_{2} 
-\end{pmatrix}
-= 4\begin{pmatrix}
-2 \\
-8 
-\end{pmatrix}
-= \begin{pmatrix}
-8 \\
-32 
-\end{pmatrix}$$
-
-#### Vector Dot Product
-The dot product takes pairs of vectors $\in \mathbb{R^n}$ as inputs and produces numbers $\in \mathbb{R}$ as outputs. Given a vectors $\overrightarrow{u} \in \mathbb{R^n}$ and $\overrightarrow{v} \in \mathbb{R^n}$, we compute the dot product $\overrightarrow{u} \bullet \overrightarrow{v}$ as :
-
-$$\overrightarrow{u} \bullet \overrightarrow{v} \equiv \displaystyle\sum_{i=1}^n u_iv_i, \space \forall i \in[1,\dots,n]$$
-For instance, let $\overrightarrow{u} = (1,3)$ and $\overrightarrow{v} = (2,5)$, then:  
-$$\overrightarrow{u} \bullet \overrightarrow{v} = (1,3) \bullet (2,5) = (2+15) = 17$$
-The dot product aka the inner product can be computed for vectors of any dimension, as long as the two vectors have the same length. The scalar it produces carries information about how similar are the two vectors.[@savov2017no]. If the scalar output of a dot product is $0$, then the vectors are know to be *orthogonal*, in that no part of a vector goes in the same direction as the other vector. The dot product is an essential tool for projections, decompositions, and orthogonality [@savov2017no].
-
-### Matrix Operations
-Given matrices $A$ and $B$, a scalar $\alpha$ and a vector $\overrightarrow{x}$, the following operations are defined:  
-
-* Addition, (denoted $A + B$)    
-* Subtraction, the inverse of addition (denoted $A-B$)     
-* Scaling by a constant $\alpha$ (denoted $\alpha A$)   
-* Matrix-vector product (denoted $A\overrightarrow{x}$)
-* Product (denoted $AB$)
-
-#### Matrix Addition
-For two matrices $A\in\mathbb{R^{3\times2}}$ and $B\in\mathbb{R^{3\times2}}$ defined as:
-$$\mathbf{A}=\begin{pmatrix}
-a_{11} & a_{12} \\
-a_{21} & a_{22} \\
-a_{31} & a_{32}
-\end{pmatrix}
-=\begin{pmatrix}
-5 & 2 \\
-7 & 3 \\
-4 & 9
-\end{pmatrix},
-\mathbf{B}=\begin{pmatrix}
-b_{11} & b_{12} \\
-b_{21} & b_{22} \\
-b_{31} & b_{32}
-\end{pmatrix}
-=\begin{pmatrix}
-9 & 1 \\
-4 & 3 \\
-2 & 5
-\end{pmatrix},$$
-The sum of matrices $A$ and $B$ is:
-$$
-\mathbf{A+B}=\begin{pmatrix}
-a_{11}+b_{11} & a_{12}+b_{12} \\
-a_{21}+b_{21} & a_{22}+b_{22} \\
-a_{31}+b_{31} & a_{32}+b_{32}
-\end{pmatrix}
-=\begin{pmatrix}
-5+9 & 2+1 \\
-7+4 & 3+3 \\
-4+2 & 9+5
-\end{pmatrix}
-=\begin{pmatrix}
-14 & 3 \\
-11 & 6 \\
-6 & 14
-\end{pmatrix}
-$$
-
-#### Matrix Subtraction
-$A$ - $B$ is:
-$$
-\mathbf{A-B}=\begin{pmatrix}
-a_{11}-b_{11} & a_{12}-b_{12} \\
-a_{21}-b_{21} & a_{22}-b_{22} \\
-a_{31}-b_{31} & a_{32}-b_{32}
-\end{pmatrix}
-=\begin{pmatrix}
-5-9 & 2-1 \\
-7-4 & 3-3 \\
-4-2 & 9-5
-\end{pmatrix}
-=\begin{pmatrix}
--4 & 2 \\
-3 & 0 \\
-2 & 4
-\end{pmatrix}
-$$
-#### Matrix Scaling  
-Given our constant $\alpha$ and the matrix $A$, we can *scale* $A$ by $\alpha$ as follows:
-$$
-\alpha A = \alpha\begin{pmatrix}
-a_{11}& a_{12}\\
-a_{21}& a_{22}\\
-a_{31}& a_{32}
-\end{pmatrix}
-= \begin{pmatrix}
-\alpha a_{11}& \alpha a_{12}\\
-\alpha a_{21}& \alpha a_{22}\\
-\alpha a_{31}& \alpha a_{32}
-\end{pmatrix}
-= 4\begin{pmatrix}
-4\times5& 4\times2\\
-4\times7& 4\times3\\
-4\times4& 4\times9
-\end{pmatrix}
-= \begin{pmatrix}
-20&8\\
-28&12\\
-16& 36
-\end{pmatrix}
-$$
-
-#### Matrix-Vector Product
-When we multiply a matrix $A\in\mathbb{R^{n\times p}}$ by a vector $v \in \mathbb{R^p}$, we get an $n$-dimensional vector $\overrightarrow{w} \in \mathbb{R^n}$. In general, we compute the matrix-vector product:
-$$\overrightarrow{w}=A\overrightarrow{v}$$ 
-as:
-$$w_i=\displaystyle\sum_{j=1}^pa_{i,j}v_j,\space  \forall i \in[1,\dots,n].$$
-For instance, the product of matrix $A \in \mathbb{R^{3\times 2}}$ and vector $\overrightarrow{v} \in \mathbb{R^{2 \times 1}}$ is vector $\overrightarrow{w} \in \mathbb{R^{3 \times 1}}$ 
-$$
-A\overrightarrow{v} = 
-\begin{pmatrix}
-a_{11}& a_{12}\\
-a_{21}& a_{22}\\
-a_{31}& a_{32}
-\end{pmatrix}
-\begin{pmatrix}
-v_1 \\
-v_2
-\end{pmatrix}
-= \underbrace{
-v_1
-\begin{pmatrix}
-a_{11} \\
-a_{21} \\
-a_{31}
-\end{pmatrix}
-+
-v_2
-\begin{pmatrix}
-a_{12} \\
-a_{22} \\
-a_{32}
-\end{pmatrix}
-}_\text{column  picture}
-= 
-\overbrace{
-\begin{pmatrix}
-(a_{11},a_{12})\bullet\overrightarrow{v} \\
-(a_{21},a_{22})\bullet\overrightarrow{v} \\
-(a_{31},a_{32})\bullet\overrightarrow{v} 
-\end{pmatrix}
-= 
-\begin{pmatrix}
-a_{11}v_1+a_{12}v_2 \\
-a_{21}v_1+a_{22}v_2 \\
-a_{31}v_1+a_{32}v_2
-\end{pmatrix}
-}^\text{row picture}
-$$
-
-#### Matrix Multiplication  
-Let matrix:    
-*  $A \in \mathbb{R^{m \times n}}$ and    
-*  $B \in \mathbb{R^{n \times p}}$,    
-
-the product $AB$ is a matrix:  
-$$AB \in \mathbb{R^{m \times p}}$$. 
-
-We compute $C = AB$ as the dot product between each row of $A$ and each column of $B$, such that:
-$$c = AB \Leftrightarrow c_{ij} = \displaystyle\sum_{k=1}^na_{ik}b_{kj}, \space \forall i \in [1,\dots,m], j \in [1,\dots p].$$
-
-For instance, 
-$$
-\begin{pmatrix}
-a_{11} & a_{12}\\
-a_{21} & a_{22}\\
-a_{31} & a_{32}
-\end{pmatrix}
-\begin{pmatrix}
-b_{11} & b_{12}\\
-b_{21} & b_{22}
-\end{pmatrix}
-= 
-\begin{pmatrix}
-a_{11}b_{11} + a_{12}b_{21} & a_{11}b_{12} + a_{12}b_{22} \\
-a_{21}b_{11} + a_{22}b_{21} & a_{21}b_{12} + a_{22}b_{22} \\
-a_{31}b_{11} + a_{32}b_{21} & a_{31}b_{12} + a_{32}b_{22}
-\end{pmatrix}
-\in \mathbb{R^{3 \times 2}}
-$$
-Note that the *inner* dimensions of the matrices must match.  Concretely, given our matrices above, $AB$ is defined but $BA$ is not. In the former case, the dimension of columns $2$ matches the dimension of rows $2$. In order to multiply the objects in the latter case order, we must transpose $A$, which we define at this time.
-
-#### Matrix Transpose 
-Occasionally we will need to transpose a matrix, that is to swap the row and column variables. The *transpose* of a matrix or vector is denoted by $^T$. For instance we transpose $x$ as
-$$
-x = \begin{pmatrix}
-x_1 \\
-x_2 \\
-\vdots \\
-x_p
-\end{pmatrix} ,    
-x^T = (x_1, x_2,\dots,x_p).
-$$
-We transpose matrix $X$ as
-
-$$
-\mathbf{X}=\begin{pmatrix}
-x_{11} & x_{12} & \dotsc & x_{1p} \\
-x_{21} & x_{22} & \dotsc & x_{2p} \\
-\vdots & \vdots & \ddots & \vdots \\
-x_{n1} & x_{n2} & \dotsm & x_{np}
-\end{pmatrix},
-\mathbf{X^T}=\begin{pmatrix}
-x_{11} & x_{21} & \dotsc & x_{n1} \\
-x_{12} & x_{22} & \dotsc & x_{n2} \\
-\vdots & \vdots & \ddots & \vdots \\
-x_{1p} & x_{2p} & \dotsm & x_{np}
-\end{pmatrix}
-$$
-### Key Ideas
-TODO: 
-An essential understanding of linear algebra requires some degree of familiarity with a few of the key ideas which we shall introduce here. Further exploration of these ideas are recommended. Grasping these concepts will further our intuition w.r.t. machine learning algorithms and their applications.
-
-* Space
-* Subspace
-* Hyperplane
-
-## Supervised Learning
-*Most* machine learning problems fall into one of two categories: *supervised* or *unsupervised*. Supervised learning problems have both predictor measurement(s) $x_i, i = 1,\dots n$, and an associate response measurement $y_i$. In such cases, we wish to fit a model that reflects the relationship between the predictors and the response so that we can accurately predict responses on unseen data (*prediction*) or better understand the relationship among predictors and response (*inference*).
-
-In contrast, *unsupervised* learning involves data sets with predictors and no associated response variable.  The task is somewhat more complex as one attempts to discover patterns and relationships in the data without the presence of a *"supervising"* response variable. Cluster analysis is one such task in which the goal is to ascertain, on the basis of $x1,\dots ,x_n$, whether observations belong to one (of/or) several distinct groups.
-
-Supervised learning, specifically classification will be the focus of this series. Nevertheless, we'll introduce regression problems and introduce the framework we will use to describe classification and other non-linear methods. 
-
-## Regression Versus Classification
-Supervised learning problems can be characterized in terms of their response variables. Those involving quantitative or numerical responses are labeled regression problems. Problems that seek to assign an observation to one or more classes are referred to as classification problems. 
-
-Let's consider a quantitative response $Y$ and $p$ different predictors, $X_1, X_2, \dots X_p$.  We can write the relationship between the predictors and the response as:
-$$Y=f(x)+\epsilon\label{func}$$
-Here, $f$ is some fixed but unknown function of $X_1,\dots,X_P$, and $\epsilon$ is a random *error* *term*, which is independent of $X$ and has a zero mean. Since errors average to zero, we can write the relationship as:
-$$\hat{Y}=\hat{f}(X)$$
-The series is about the concepts and techniques used to estimate and evaluate $f$.
-`r h <- 'Why do we Estimate $f$?'`
-
+`r h <- 'Why Do We Estimate $f$?'`
 ### `r h`  
 We estimate $f$ for two reasons: *prediction* and *inference*. When prediction is our goal,$f$ is often treated as a *black* *box*. As long as $f$ yields accurate predictions for $Y$, one is not *generally* concerned with the exact form of $f$. 
 
@@ -433,7 +68,7 @@ Prediction accuracy stems from two elements: *reducible* and *irreducible* error
 #### Inference 
 Often we wish to understand the ways in which $Y$ is affected by a predictor space $X_1,\dots X_p$ Our goal, in this case, isn't necessarily to predict $Y$ based upon its predictors. Rather, we seek to understand the relationships between predictors and the response. Can the relationship be modeled as a linear function or is the mapping more complex? How does the change in predictors effect $Y$? In such cases, we can't afford to treat $f$ as a *black* *box*. Unlike prediction, We must know its exact form. 
 
-`r h <- 'How do we Estimate $f$?'`
+`r h <- 'How Do We Estimate $f$?'`
 ### `r h` 
 Given a set of training data, our task is to apply a statistical learning method which will allow us to find a function $\hat{f}$ such that $Y \approx \hat{f}(X)$ for any observation $(X,Y)$. Generally speaking, statistical methods can be characterized as either *parametric* or *non-parametric*. 
 
@@ -454,47 +89,13 @@ Non-parametric models make no explicit assumptions about the form of $f$. Rather
 
 We will examine non-parametric methods later in the series. Now, we apply parametric methods to estimating $f$ in regression and classification settings. 
 
-#### `r h` in a Regression Setting
+`r h <- 'How Do We Assess $\\hat{f}$?'`
+## `r h` 
+In this series, we will be exploring a range of parametric and non-parametric supervised learning methods.  We do so because there is no single method that dominates all others over all possible data sets. Therefore, we need a way to measure how well a method's predictions actually match the observed data. In this section, we explore ways to quantify the degree to which predictions match the true responses in both regression and classification contexts. 
 
-Now for a bit of statistical decision theory that will provide the framework for developing models such as those introduced informally thus far. 
+### Model Assessment in Regression  
+In the regression setting, the most widely-used model assessment measure is the **mean** **squared** **error** (MSE), given by
+$$MSE = \frac{1}{2n}\displaystyle\sum_{i=1}^n(y_i - \hat{f}(x_i))^2,$$
+where $\hat{f}(x_i)$ is the prediction that $f$ renders for the $i$th observation. Those familiar with this metric will have noticed that we are actually dividing the mean squared error by two.  This is a convenience for the computation of the *gradient descent* as the derivative term of the square function will cancel out the 1/2 term. Including the 1/2 term doesn't affect the minimalization problem. More on this later.
 
-Consider $X \in \mathbb{R^p}$, a real-valued predictor vector, and $Y \in \mathbb{R}$, a real-valued response variable with joint distribution Pr$(X,Y)$. We seek to estimate a function $f(X)$ for predicting $Y$ given values of the predictor vector $X$. Since we require a loss function for penalizing errors in prediction, we shall use the most popular function, *squared* *error* *loss*:
-$$L(Y, f(X))=(Y-f(X))^2.$$
-From this, we are able to ascertain our criterion for choosing $f$, namely we seek to minimize the expected (squared) prediction error:
-$$EPE(f) = E(Y-f(X))^2\label{epe}$$
-For our statistics jocks, recall that we can factor the joint density $Pr(X,Y)=Pr(Y|X)Pr(X).$ Conditioning on $X$, we have:
-$$EPE(f) = \int_x\int_y[y-f(x)]^2Pr(y|x)Pr(x)dydx,$$
-which we can now express in terms of conditional expectation:
-$$EPE(f)=E_XE_{Y|X}([Y-f(X)]^2|X)$$
-We free $f$ of its dependency on $X$ and since the quantity $[Y-f]$ is convex, we arrive at a unique solution. We can now minimize to solve for $f$:
-$$f(x)=\underset{f}{\operatorname{arg\,min}}\space E_{Y|X}([Y-f(x)]^2|X=x).$$
-Differentiating w.r.t. $x$, sparing ourselves some calculus, and setting that to zero, and viola, the conditional expectation aka the *regression* function: 
-$$f(x)=E(Y|X=x)$$
-Therefore, the best prediction of $Y$ at any point $X=x$ is the conditional mean of $Y$, when "best" is measured by average squared error.
-$$f(x)\approx x^T\beta. \label{regression}$$
-
-Finally, the unique theoretical solution to $\beta$ is obtained by plugging $\ref{regression}$ into $\ref{epe}$ and differentiating to reveal:
-$$\beta=[E(XX^T)]^{-1}E(XY).$$
-This; however, is subject to the assumption that the regression function $f(x)$ is approximately linear.
-
-Are we happy with that? Later in this series, we will explore methods that are far more flexibile than the linear model. For now, we examine this model-based approach in a classification context.
-
-`r h <- 'How do we Estimate $f$'`
-#### `r h` in a Classification Setting
-How do we estimate $f$ in a classification setting? Same process, different loss function for penalizing prediction errors. Let:  
-
-* the estimate for $\hat{G}$ be comprised of values in $G$, the set of all possible classes, and
-* the loss function be represented by a $K\times K$ matrix $\mathbf{L}$, where  
-* $L(k,l)$ is the cost for miss-classifying an observation belonging to $G_k$ to $G_l$. We will use the *zero-one* loss function, where all missclassifications have a cost of one. 
-
-That said, the expected prediction error is:
-$$EPE=E[L(G,\hat{G}(X))],$$
-where again the expectation is taken w.r.t. the joint distribution $Pr(G,X)$. We condition on $X$ as was done for the regression model and write EPE as: 
-$$EPE=E_X\displaystyle\sum_{k=1}^KL[G_k, \hat{G}(X)]Pr(G_k|X).$$
-For the zero-one loss function, this simplifies to:
-$$\hat{G}(x) = \operatorname{arg\,min}_{g\in G}[1 − Pr(g|X = x)],$$
-and viola, our estimate for $G$:
-$$\hat{G}(X)=G_k if Pr(G_k|X=x)=\operatorname{max}_{g \in G} \space Pr(g|X=x).$$
-We've essentially derived the solution known as the *Bayes* *classifier* which says that we assign an observation to the most probable class, using the conditional distribution $Pr(G|X)$
-
-## Summary of Key Ideas
+### Model Assessment in Classification

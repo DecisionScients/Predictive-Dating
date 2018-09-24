@@ -20,13 +20,14 @@ By the end of this series, you will be able to:
     1.2. Data    
     1.3. Exploratory Data Analysis    
 2. Core Concepts  
-  2.1. Linear Algebra Review  
-  2.2. 
-
+    2.1. Linear Algebra Review  
+    2.2. Statistical Learning      
+    2.3. Regression   
+    2.4. Classification   
 3. Linear Classifiers   
     3.1. Logistic Regression   
     3.2. Linear Discriminant Analysis   
-    3.3. K-Nearest Neighbors  
+    3.3. Quadratic Discriminant Analysis
     3.4. Support Vector Machines   
 4. Tree-Based Classifiers    
     4.1. Classification Tree   
@@ -38,6 +39,313 @@ By the end of this series, you will be able to:
     5.2. Neural Networks   
 7. Discussion  
 8. Conclusions  
+
+## Notation 
+In supervised learning problems, we have inputs and an output. We refer to inputs as predictors or features, and the output as the response or dependent variable. A set of $j$ predictors for an observation will be denoted by a vector $X$, of length $j$, where each feature is accessed by a subscript $x_j$. The response is denoted as $Y$ for numeric (quantitative) responses and $G$ for categorical (qualitative) responses. Qualitative responses are typically represented by numeric codes. When the size of $G$ is two, we represent the response with a single binary variable containing either a 0 or 1. When there $K>2$ possible responses, we use a vector of $K$ binary dummy variables, only one of which is 'turned on' at a time. We will use $n$ to represent the number of observations in our sample or training data set. When referring to the generic aspects of a variable, we use capital letters such as $X$, $Y$, and $G$. Actual observations are written in lowercase. Hence, the $i$th observed value of $X$ is written as $x_i$, where $x$ is a scalar in the case of a single predictor, or a vector otherwise. For instance, we will write a vector $x$ containing $p$ predictors as:
+
+$$
+x = \begin{bmatrix} 
+x_{1} \\ 
+x_{2} \\ 
+\vdots 
+\\ x_{p} 
+\end{bmatrix}. 
+$$ 
+We may also denote a vector as $\overrightarrow{x} = (x_1, x_2,...,x_p)$.
+
+The entire $n \times p$ predictor space for all $n$ observations will be represented by a matrix $\mathbf{X}$
+
+$$\mathbf{X}=\begin{bmatrix} x_{11} & x_{12} & \dotsc & x_{1p} \\ x_{21} & x_{22} & \dotsc & x_{2p} \\ \vdots & \vdots & \ddots & \vdots \\ x_{n1} & x_{n2} & \dotsm & x_{np} \end{bmatrix},$$
+
+where $x_{i,j}$ denotes the $j$th variable of the $i$th observation, and $i = 1,2,...,n$ and $j = 1,2,...,p$.
+
+We will write the rows of $\mathbf{X}$ as $x_1, x_2, ..., x_n$, where $x_i$ is a vector of length $p$ containing the predictor values for the $i$th observations. Concretely, the vector notation for $x_i$ is:
+
+$$x_i = \begin{bmatrix} x_{i1} \\ x_{i2} \\ \vdots \\ x_{ip} \end{bmatrix}.$$
+
+The column $j$th column of $X$ will be written as: $$ x_j = \begin{bmatrix} x_{1j} \\ x_{2j} \\ \vdots \\ x_{nj} \end{bmatrix}. $$
+
+We'll write the target variable for the $i$th observation as $y_i$. The target for all $n$ observations is written in vector form as
+$$y=\begin{bmatrix} y_1 \\ y_2 \\ \vdots \\ y_n \end{bmatrix}.$$ Hence, our observed data consists of ${(x_1,y_1), (x_2,y_2),...,(x_n,y_n)}$, where each $x_i$ is a vector of length $p$.
+
+## Linear Algebra Review
+Linear algebra is the lingua franca of machine learning. Here, we'll examine the operations that can be performed with scalars, vectors and matrices, the principal objects in machine learning and linear algebra. 
+
+### Vector Operations 
+The principal operations one can perform on vectors are:
+* Vector Addition (denoted $\overrightarrow{u}+\overrightarrow{v}$)    
+* Vector Subtraction (denoted $\overrightarrow{u}-\overrightarrow{v}$)    
+* Vector Scaling (denoted $\alpha\overrightarrow{u}$)    
+* Vector Dot Product (denoted $\overrightarrow{u}\bullet\overrightarrow{v}$)  
+
+For this section, consider an arbitrary constant $\alpha \in \mathbb{R}$ and vectors $\overrightarrow{u}\in\mathbb{R^2}$ and $\overrightarrow{v}\in\mathbb{R^2}$
+
+
+$$
+\alpha = 4, 
+u = \begin{bmatrix}
+u_{1} \\
+u_{2} 
+\end{bmatrix}
+= \begin{bmatrix}
+5 \\
+3 
+\end{bmatrix},
+v = \begin{bmatrix}
+v_{1} \\
+v_{2} 
+\end{bmatrix}
+= \begin{bmatrix}
+2 \\
+8 
+\end{bmatrix},
+$$
+#### Vector Addition
+We compute the sum of vectors $\overrightarrow{u}$ and $\overrightarrow{v}$ as:
+$$
+\begin{bmatrix}
+u_{1} \\
+u_{2} 
+\end{bmatrix}
++ \begin{bmatrix}
+v_{1} \\
+v_{2} 
+\end{bmatrix}
+= \begin{bmatrix}
+u_{1}+v_1 \\
+u_{2}+v_2 
+\end{bmatrix}
+= \begin{bmatrix}
+5+2 \\
+3+8 
+\end{bmatrix}
+= \begin{bmatrix}
+7 \\
+11 
+\end{bmatrix}
+$$
+#### Vector Subtraction
+Vector subtraction, denoted as $\overrightarrow{u}-\overrightarrow{v} = \overrightarrow{u}+(-\overrightarrow{v})$, is computed as follows:
+
+$$
+\begin{bmatrix}
+u_{1} \\
+u_{2} 
+\end{bmatrix}
+- \begin{bmatrix}
+v_{1} \\
+v_{2} 
+\end{bmatrix}
+= \begin{bmatrix}
+u_{1}-v_1 \\
+u_{2}-v_2 
+\end{bmatrix}
+= \begin{bmatrix}
+5-2 \\
+3-8 
+\end{bmatrix}
+= \begin{bmatrix}
+3 \\
+-5 
+\end{bmatrix}
+$$
+#### Vector Scaling
+We can also scale a vector for any number $\alpha \in \mathbb{R}$. For $\alpha = 4$ we scale $\overrightarrow{v}$:
+
+$$\alpha\overrightarrow{v}
+=\alpha\begin{bmatrix}
+v_{1} \\
+v_{2} 
+\end{bmatrix}
+= 4\begin{bmatrix}
+2 \\
+8 
+\end{bmatrix}
+= \begin{bmatrix}
+8 \\
+32 
+\end{bmatrix}$$
+
+#### Vector Dot Product
+The dot product takes pairs of vectors $\in \mathbb{R^n}$ as inputs and produces numbers $\in \mathbb{R}$ as outputs. Given a vectors $\overrightarrow{u} \in \mathbb{R^n}$ and $\overrightarrow{v} \in \mathbb{R^n}$, we compute the dot product $\overrightarrow{u} \bullet \overrightarrow{v}$ as :
+
+$$\overrightarrow{u} \bullet \overrightarrow{v} \equiv \displaystyle\sum_{i=1}^n u_iv_i, \space \forall i \in[1,\dots,n]$$
+For instance, let $\overrightarrow{u} = (1,3)$ and $\overrightarrow{v} = (2,5)$, then:  
+$$\overrightarrow{u} \bullet \overrightarrow{v} = (1,3) \bullet (2,5) = (2+15) = 17$$
+The dot product aka the inner product can be computed for vectors of any dimension, as long as the two vectors have the same length. The scalar it produces carries information about how similar are the two vectors.[@savov2017no]. If the scalar output of a dot product is $0$, then the vectors are know to be *orthogonal*, in that no part of a vector goes in the same direction as the other vector. The dot product is an essential tool for projections, decompositions, and orthogonality [@savov2017no].
+
+### Matrix Operations
+Given matrices $A$ and $B$, a scalar $\alpha$ and a vector $\overrightarrow{x}$, the following operations are defined:  
+
+* Addition, (denoted $A + B$)    
+* Subtraction, the inverse of addition (denoted $A-B$)     
+* Scaling by a constant $\alpha$ (denoted $\alpha A$)   
+* Matrix-vector product (denoted $A\overrightarrow{x}$)
+* Product (denoted $AB$)
+
+#### Matrix Addition
+For two matrices $A\in\mathbb{R^{3\times2}}$ and $B\in\mathbb{R^{3\times2}}$ defined as:
+$$\mathbf{A}=\begin{bmatrix}
+a_{11} & a_{12} \\
+a_{21} & a_{22} \\
+a_{31} & a_{32}
+\end{bmatrix}
+=\begin{bmatrix}
+5 & 2 \\
+7 & 3 \\
+4 & 9
+\end{bmatrix},
+\mathbf{B}=\begin{bmatrix}
+b_{11} & b_{12} \\
+b_{21} & b_{22} \\
+b_{31} & b_{32}
+\end{bmatrix}
+=\begin{bmatrix}
+9 & 1 \\
+4 & 3 \\
+2 & 5
+\end{bmatrix},$$
+The sum of matrices $A$ and $B$ is:
+$$
+\mathbf{A+B}=\begin{bmatrix}
+a_{11}+b_{11} & a_{12}+b_{12} \\
+a_{21}+b_{21} & a_{22}+b_{22} \\
+a_{31}+b_{31} & a_{32}+b_{32}
+\end{bmatrix}
+=\begin{bmatrix}
+5+9 & 2+1 \\
+7+4 & 3+3 \\
+4+2 & 9+5
+\end{bmatrix}
+=\begin{bmatrix}
+14 & 3 \\
+11 & 6 \\
+6 & 14
+\end{bmatrix}
+$$
+
+#### Matrix Subtraction
+$A$ - $B$ is:
+$$
+\mathbf{A-B}=\begin{bmatrix}
+a_{11}-b_{11} & a_{12}-b_{12} \\
+a_{21}-b_{21} & a_{22}-b_{22} \\
+a_{31}-b_{31} & a_{32}-b_{32}
+\end{bmatrix}
+=\begin{bmatrix}
+5-9 & 2-1 \\
+7-4 & 3-3 \\
+4-2 & 9-5
+\end{bmatrix}
+=\begin{bmatrix}
+-4 & 2 \\
+3 & 0 \\
+2 & 4
+\end{bmatrix}
+$$
+#### Matrix Scaling  
+Given our constant $\alpha$ and the matrix $A$, we can *scale* $A$ by $\alpha$ as follows:
+$$
+\alpha A = \alpha\begin{bmatrix}
+a_{11}& a_{12}\\
+a_{21}& a_{22}\\
+a_{31}& a_{32}
+\end{bmatrix}
+= \begin{bmatrix}
+\alpha a_{11}& \alpha a_{12}\\
+\alpha a_{21}& \alpha a_{22}\\
+\alpha a_{31}& \alpha a_{32}
+\end{bmatrix}
+= 4\begin{bmatrix}
+4\times5& 4\times2\\
+4\times7& 4\times3\\
+4\times4& 4\times9
+\end{bmatrix}
+= \begin{bmatrix}
+20&8\\
+28&12\\
+16& 36
+\end{bmatrix}
+$$
+
+#### Matrix-Vector Product
+When we multiply a matrix $A\in\mathbb{R^{n\times p}}$ by a vector $v \in \mathbb{R^p}$, we get an $n$-dimensional vector $\overrightarrow{w} \in \mathbb{R^n}$. In general, we compute the matrix-vector product:
+$$\overrightarrow{w}=A\overrightarrow{v}$$ 
+as:
+$$w_i=\displaystyle\sum_{j=1}^pa_{i,j}v_j,\space  \forall i \in[1,\dots,n].$$
+For instance, the product of matrix $A \in \mathbb{R^{3\times 2}}$ and vector $\overrightarrow{v} \in \mathbb{R^{2 \times 1}}$ is vector $\overrightarrow{w} \in \mathbb{R^{3 \times 1}}$ 
+$$
+A\overrightarrow{v} = 
+\begin{bmatrix}
+a_{11}& a_{12}\\
+a_{21}& a_{22}\\
+a_{31}& a_{32}
+\end{bmatrix}
+\begin{bmatrix}
+v_1 \\
+v_2
+\end{bmatrix}
+= \underbrace{
+v_1
+\begin{bmatrix}
+a_{11} \\
+a_{21} \\
+a_{31}
+\end{bmatrix}
++
+v_2
+\begin{bmatrix}
+a_{12} \\
+a_{22} \\
+a_{32}
+\end{bmatrix}
+}_\text{column  picture}
+= 
+\overbrace{
+\begin{bmatrix}
+(a_{11},a_{12})\bullet\overrightarrow{v} \\
+(a_{21},a_{22})\bullet\overrightarrow{v} \\
+(a_{31},a_{32})\bullet\overrightarrow{v} 
+\end{bmatrix}
+= 
+\begin{bmatrix}
+a_{11}v_1+a_{12}v_2 \\
+a_{21}v_1+a_{22}v_2 \\
+a_{31}v_1+a_{32}v_2
+\end{bmatrix}
+}^\text{row picture}
+$$
+
+#### Matrix Multiplication  
+Let matrix:    
+*  $A \in \mathbb{R^{m \times n}}$ and    
+*  $B \in \mathbb{R^{n \times p}}$,    
+
+the product $AB$ is a matrix:  
+$$AB \in \mathbb{R^{m \times p}}$$. 
+
+We compute $C = AB$ as the dot product between each row of $A$ and each column of $B$, such that:
+$$c = AB \Leftrightarrow c_{ij} = \displaystyle\sum_{k=1}^na_{ik}b_{kj}, \space \forall i \in [1,\dots,m], j \in [1,\dots p].$$
+
+For instance, 
+$$
+\begin{bmatrix}
+a_{11} & a_{12}\\
+a_{21} & a_{22}\\
+a_{31} & a_{32}
+\end{bmatrix}
+\begin{bmatrix}
+b_{11} & b_{12}\\
+b_{21} & b_{22}
+\end{bmatrix}
+= 
+\begin{bmatrix}
+a_{11}b_{11} + a_{12}b_{21} & a_{11}b_{12} + a_{12}b_{22} \\
+a_{21}b_{11} + a_{22}b_{21} & a_{21}b_{12} + a_{22}b_{22} \\
+a_{31}b_{11} + a_{32}b_{21} & a_{31}b_{12} + a_{32}b_{22}
+\end{bmatrix}
+\in \mathbb{R^{3 \times 2}}
+$$
 
 
 ## Acknowledgements
@@ -52,3 +360,4 @@ This review borrows liberally from the following texts:
 
 * [No Bullshit Guide to Linear Algebra](https://www.amazon.com/No-bullshit-guide-linear-algebra/dp/0992001021). This university level text by Ivan Savov is a great resource for acquiring a deeper understanding of challenging concepts. Its concise, precise and fun to read.[@savov2017no]   
 
+Thanks are also extended to Andrew Ng for his masterful course on [Machine Learning](https://www.coursera.org/learn/machine-learning). 

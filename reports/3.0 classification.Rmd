@@ -1,12 +1,3 @@
-<script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-TeX: {
-equationNumbers: {
-autoNumber: "all",
-formatNumber: function (n) {return '3.'+n}
-}
-}});</script>
-
 # Classification
 Classification problems occur as much, if not more often, than regression problems. Examples include:  
 
@@ -27,49 +18,6 @@ In this section, we will examine three popular methods for linear classification
 By the close of this section you will 
 * ...
 
-## Logistic Regression
-We use the logistic regression model when we wish to model the posterior probability $Pr(G_k) \in [0,1]$ of the $k \in K$ classes via linear functions in $x$ rather than modeling $Y$ directly. 
 
-### Why Logistic Regression?
-Why would we do this? Why not model $Y$ directly using linear regression methods? Linear regression methods for qualitative responses are not appropriate in most cases, especially those involving more than two levels of the qualitative response. Consider a supervised learning problem to predict the psychiatric disorder of a patient based upon electronic medical records and transcripts of past patient interviews. Suppose that there are three possible diagnoses: schizophrenia, major depressive disorder, and capgras delusion. We could encode these values as a quantitative response variable, $Y$, as follows:
-
-$$
-Y=\begin{cases}
-1 \text{ if schizophrenia;} \\
-2 \text{ if major depressive disorder;} \\
-3 \text{ if capgras delusion;}
-\end{cases}
-$$
-Using this coding, we could use least squares to fit a linear regression model to predict $Y$ on the basis of a set of predictors $X_1,X_2,\dots, X_p$. Two issues arise. First, the coding implies an ordering on the outcomes that may not exist, and second, the model insists that the distances between the levels has meaning and that they are equal. In practice, there is no implied ordering among the outcomes and the space between the outcomes implies no meaning. If, on the other hand, the response variable's values did take on a natural ordering, such as disagree, agree, strongly agree, and we felt that the gab between disagree and agree was equal to the gap between agree and strongly agree, then such a coding might be appropriate. Similarly, binary responses could be encoded using dummy variables such as:
-$$
-Y=\begin{cases}
-0 \text{ if not schizophrenia;} \\
-1 \text{ if schizophrenia;}
-\end{cases}
-$$
-We could fit a linear regression model to predict the probability of $Y$ and schizophrenia if $\hat{Y} > 0.5$
-Notwithstanding, there is no practical way to convert a categorical response with more than two levels into a quantitative response for linear regression. Therefore, we seek to use methods that are truly suited for the qualitative response values we seek to model. As stated earlier, logistic regression is appropriate when we want to model the prosterior probabilities $Pr(G_k)$ of the $K$ classes, while ensuring that they sum to one and remain in [0,1].
-
-### What is Logistic Regression?
-Logistic or logit regression is a statistical model used to estimate the parameters of the logistic model and has the form:
-$$
-\begin{matrix}
-log\frac{Pr(G=1|X=x)}{Pr(G=K|X=x)}=\beta_{10}+\beta_1^Tx \\
-log\frac{Pr(G=2|X=x)}{Pr(G=K|X=x)}=\beta_{20}+\beta_2^Tx \\
-\vdots \\
-log\frac{Pr(G=K-1|X=x)}{Pr(G=K|X=x)}=\beta_{(K-1)0}+\beta_{K-1}^Tx,
-\end{matrix}\label{logit}
-$$
-where the log-odds of the probability of an event (LHS of $\ref{logit}$) is a linear combination of the predictor variables (RHS of $\ref{logit}$). Log-odds, in general, are simply the log of the ratio of the probability that an event occurs and the probability that an event does not occur. 
-
-Rearranging the equations, we have:
-$$
-\begin{matrix}
-Pr(G=k|X=x) = \frac{exp(\beta_{k0}+\beta_k^Tx)}{1+\sum_{l=1}^{K-1}exp(\beta_{l0}+\beta_l^Tx)},\space k=1,\dots,K-1, \\
-Pr(G=K|X=x) = \frac{1}{1+\sum_{l=1}^{K-1}exp(\beta_{l0}+\beta_l^Tx)}, \space
-\end{matrix}\label{lr}
-$$
-From $\ref{lr}$ we can see that the probabilities sum to one and that they are dependent only upon the parameter set $\theta = {\beta_{10}, \beta_1^T, \dots, \beta_{(K-1)0},\beta_{K-1}^T}$. To emphasize the point, we can write $Pr(G=k|X=x)=p_k(x;\theta)$[@hastie01statisticallearning]
-
-### How Do We Fit Logistic Regression Models?
-
+```{r logistic, child = '3.1 logistic.rmd'}
+```

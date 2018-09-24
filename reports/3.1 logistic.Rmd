@@ -1,0 +1,167 @@
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+TeX: {
+equationNumbers: {
+autoNumber: "all",
+formatNumber: function (n) {return '3.1.'+n}
+}
+}});</script>
+
+## Logistic Regression
+We use the logistic regression model when we wish to model the posterior probability that $Y$ belongs to a particular group.  
+
+```{python default}
+# Prepare data
+df = pd.read_csv(os.path.join(directories.EXTERNAL_DATA_DIR, 'Default.csv'),
+                 encoding="Latin-1", low_memory=False)
+df['Probability of Default'] = np.where(df['default'] == 'No',0, 1)
+df['Balance'] = df['balance']
+
+# Set plot defaults
+sns.set(style="whitegrid", font_scale=2)
+sns.set_palette("GnBu_d")
+
+# Render plots
+fig, (ax1, ax2) = plt.subplots(nrows=1,ncols=2)
+sns.regplot(x='Balance', y='Probability of Default', data=df, ci=None, ax=ax1)
+sns.regplot(x='Balance', y='Probability of Default', data=df, ci=None,logistic=True, ax=ax2)
+ax1.set_title(label='Linear Regression')
+ax2.set_title(label='Logistic Regression')
+fig.savefig("./reports/figures/default.png")
+plt.close(fig)
+```
+### Why Logistic Regression?
+Why would we do this? Why not model $Y$ directly using linear regression methods?  
+
+Linear regression methods for qualitative responses are not appropriate in most cases, especially those involving more than two levels of the qualitative response. Consider a supervised learning problem to predict the psychiatric disorder of a patient based upon electronic medical records and transcripts of past patient interviews. Suppose that there are three possible diagnoses: schizophrenia, major depressive disorder, and capgras delusion. We could encode these values as a quantitative response variable, $Y$, as follows:
+
+$$
+Y=\begin{cases}
+1 \text{ if schizophrenia;} \\
+2 \text{ if major depressive disorder;} \\
+3 \text{ if capgras delusion;}
+\end{cases}
+$$
+Using this coding, we could use least squares to fit a linear regression model to predict $Y$ on the basis of a set of predictors $X_1,X_2,\dots, X_p$. Two issues arise. First, the coding implies an ordering on the outcomes that may not exist, and second, the model insists that the distances between the levels has meaning and that they are equal. In practice, there is no implied ordering among the outcomes and the space between the outcomes implies no meaning. There is no practical way to convert a categorical response with more than two levels into a quantitative response for linear regression.
+
+That said, let's assume that there *is* a natural ordering to our categorical response, and that the distances between the levels of the response are equal. Would linear regression be appropriate in this case? Consider the problem of predicting the probability of default on a credit card, based upon the balance [@James2017]. 
+
+![](../reports/figures/default.png)
+`r kfigr::figr(label = "default", prefix = TRUE, link = TRUE, type="Figure")`: Probability of Default by Balance 
+
+The left plot in `r kfigr::figr(label = "default", prefix = TRUE, link = TRUE, type="Figure")`  shows the estimated probability of default using linear regression.  Note that some of the probabilities are negative! On the right, we have the predicted probability of default using logistic regression.  All probabilities are between 0 and 1.
+
+Hence, we seek to use methods that are truly suited for the qualitative response values we seek to model. If we are interested in modeling the probability that an observation belongs to a particular group, our model must provide a probability between 0 and 1 for all possible values of the predictor space.
+
+### What is Logistic Regression?
+Logistic or logit regression is a statistical model used to estimate the parameters of the sigmoid function. The sigmoid function is defined as:
+$$f(x)=\frac{1}{1+e^{-x}}$$
+
+
+```{python sigmoid}
+# Create data
+x = np.linspace(-10,10,100)
+
+#sigmoid = lambda x: 1 / (1 + np.exp(-x))
+def sigmoid(x):
+    return (1 / (1 + np.exp(-x)))
+    
+# Set plot defaults
+sns.set(style="whitegrid", font_scale=2)
+sns.set_palette("GnBu_d")
+
+# Render plots
+fig, ax = plt.subplots()
+sns.lineplot(x=x, y=sigmoid(x), ax=ax)
+ax.set_title(label='Logistic (Sigmoid) Function')
+ax.text(4, 0.8, r'$f(x)=\frac{1}{1+e^{-x}}$')
+fig.savefig("./reports/figures/sigmoid.png")
+plt.close(fig)
+
+```
+
+![](../reports/figures/sigmoid.png)
+`r kfigr::figr(label = "sigmoid", prefix = TRUE, link = TRUE, type="Figure")`: Sigmoid Function
+
+The sigmoid function graphically depicted in `r kfigr::figr(label = "sigmoid", prefix = TRUE, link = TRUE, type="Figure")` is an S-shaped curve, with several appealing characteristics for modeling the probability that an observation belongs to a particular class. First, the sigmoid function is a real function defined for all real input values. Second, it is bounded horizontally, typically from 0 to 1, for $x\rightarrow \pm \infty$, thereby ensuring that all probabilities lie between 0 and 1. Lastly, the sigmoid function has a non-negative differential at each point and therefore returns monotonically increasing values with increasing inputs. To illustrate this point, consider the problem of predicting whether a credit card holder will default, based upon the balance.  If it has been shown that the probability increases with the balance, we would require a model that predicts higher probabilities as the balance increases. The sigmoid function ensures that the probability of default increases monotonically with credit card balance as shown in `r kfigr::figr(label = "default", prefix = TRUE, link = TRUE, type="Figure")`.
+
+The logistic function is a special case application of the sigmoid function, and is defined as:
+$$f_\theta(x)=\frac{1}{1+e^{-(\theta^TX)}},$$
+where $\theta \in \mathbb{R}^{n\times (p+1)}$ is the matrix of coefficients and $x \in \mathbb{R}^{n\times (p+1)}$ is the matrix of inputs. Hence, $f_\theta(x)$ gives us the probability that our class assignment is 1, in the case of a binary classification of $Y\in[0,1]$.
+
+In order to get our discrete 0 or 1 classification, we translate the output of $f_\theta(x)$ as follows:
+$$
+y = \begin{cases}
+1, \space if \space f_\theta(x) \ge 0.5 \\
+0, \space if \space f_\theta(x) \lt 0.5
+\end{cases}
+$$
+Recall, the sigmoid function, $$f(x)=\frac{1}{1+e^{-x}},$$
+computes an output greater than or equal to 0.5, when the input is greater than or equal zero. Concretely,  
+
+* $x=0, e^0=1 \implies f(x)=1/2$  
+* $x\rightarrow\infty, e^{-\infty}\rightarrow0\implies f(x)=1$   
+* $x\rightarrow-\infty, e^{\infty}\rightarrow \infty \implies f(x)=0$   
+
+So, if $\theta^TX \ge 0$, this means that $f_\theta(x) \ge 0.5$ .  From these statements we can now say:  
+
+* $\theta^TX \ge 0 \implies y=1$   
+* $\theta^TX \lt 0 \implies y=0$   
+
+From this, we can obtain the **decision boundary** which separates the area where $y=0$ and where $y=1$. For instance, let:
+$$
+\theta = 
+\begin{bmatrix}
+5\\-1\\0
+\end{bmatrix}
+$$
+To obtain the decision boundary, we simply plug the values for $\theta$ into our logistic function.
+$$y = 1, \space if\space 5x_0+(-1)x_1+0x_2 \ge 0,$$
+where $x_0 = 1$. Solving the inequality, we have:
+$$5-x_1 \ge 0$$
+In this case, our decision boundary is a straight vertical line placed on the graph where $x_1=5$. Everything to the left of that denotes $y=1$, and everything to the right implies $y=0$.
+
+### How Do We Fit Logistic Regression Models?
+Let's begin with the binary classification case. We first define our cost function for logistic regression:
+$$J(\theta)=\frac{1}{n}\displaystyle\sum_{i=1}^nCost(f_\theta(x_i),y_i),$$
+where:
+$$
+\begin{matrix}
+Cost(f_\theta(x),y)=-log(f_\theta(x)) & if \space y=1 \\
+Cost(f_\theta(x),y)=-log(1-f_\theta(x)) & if \space y=0
+\end{matrix}
+$$
+```{python cost}
+# Prepare data
+x = np.linspace(0,1,100)
+y0 = -np.log(1-x)
+y1 = -np.log(x)
+
+# Set plot defaults
+sns.set(style="whitegrid", font_scale=2)
+sns.set_palette("GnBu_d")
+
+# Render plots
+fig, (ax1, ax2) = plt.subplots(nrows=1,ncols=2)
+sns.lineplot(x=x, y=y0, ax=ax1)
+sns.lineplot(x=x, y=y1, ax=ax2)
+ax1.set_title(label='Cost if y = 0')
+ax2.set_title(label='Cost if y = 1')
+fig.suptitle("Cost Function")
+fig.savefig("./reports/figures/cost.png")
+plt.close(fig)
+```
+
+`r kfigr::figr(label = "cost", prefix = TRUE, link = TRUE, type="Figure")` graphically depicts the cost function for both values of $y$.
+
+![](../reports/figures/cost.png)
+`r kfigr::figr(label = "cost", prefix = TRUE, link = TRUE, type="Figure")`: Logistic Regression Cost Function
+
+If our correct answer is $y=0$, then the cost function will be 0 if our logistic function also outputs 0.  If our logistic function approaches 1, then the cost function approaches infinity. Conversely, if our correct answer is $y=1$, then the cost function will be 0 if our logistic function computes 1. If the logistic function approaches 0, then the cost function will approach infinity.  Note, that writing the cost function this way guarantees that $J(\theta)$ is convex for logistic regression.
+
+Using the following representation, we can compress our cost function's two conditional cases into one case:
+$$Cost(f_\theta(x),y)=-(\underbrace{ylog(f_\theta(x))}_{(1)})-(\underbrace{(1-y)log(1-f_\theta(x)))}_{(2)}$$
+Note that when $y=1$, term (2) is zero and when $y=0$, term (1) is zero. Neat trick, yes?
+
+We can therefore express the entire cost function as follows:
+$$J(\theta)=-\frac{1}{m}\displaystyle$$

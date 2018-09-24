@@ -80,6 +80,6 @@ from analysis import analysis
 ```
 
 
-```{r concepts, child = '2.0 concepts.rmd'}
+```{r concepts, child = '3.0 classification.rmd'}
 ```
 
