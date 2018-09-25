@@ -168,7 +168,7 @@ $$5-x_1 \ge 0$$
 In this case, our decision boundary is a straight vertical line placed on the graph where $x_1=5$. Everything to the left of that denotes $y=1$, and everything to the right implies $y=0$.
 
 ### How Do We Fit Logistic Regression Models?
-Given a training set, how do we learn the parameters $\theta$? We first define a **cost function**, a measure for how close our hypothesis function $h(x)$ is to the true response values. Then, we use a search function that starts with an "initial guess" for $\theta$, then repeatedly makes changes in $\theta$ in order to minimize the cost function until, hopefully, the algorithm converges at a parameter set $\theta$ that minimizes the cost function. 
+Given a training set, how do we learn the parameters $\theta$? We first define a **cost function**, a measure for how close our hypothesis function $h(x)$ is to the true response values. Then, we use a search function that starts with an "initial guess" for $\theta$, then repeatedly makes changes in $\theta$ in order to minimize the cost function until, *hopefully*, the algorithm converges at a parameter set $\theta$ that minimizes the cost function. 
 
 #### Cost Function
 We first define our cost function for logistic regression:  
@@ -220,21 +220,69 @@ We can implement a vectorized version as follows:
 * $h=g(X\theta)$    
 * $J(\theta)=\frac{1}{n}[-y^Tlog(h)-(1-y)^Tlog(1-h)]$    
 
-Next we describe the search algorithms for estimating $\theta$.
+`r h <- 'Estimating $\theta$'`
+#### `r h`
+Having defined our cost function, the next step is to identify a parameter set $\theta$ that minimizes the cost function. Generally speaking, there are two approaches we can pursue: the **analytic approach**, and the **iterative approach**. 
+
+The analytic approach explicitly takes the derivative of the function with respect to $\theta$, sets it to zero and obtains the **normal equation**:
+$$X^TX\theta=X^T\overrightarrow{y}.$$
+Solving for $\theta$ gives us a closed form equation for the parameters $\theta$ that minimizes our cost function $J(\theta)$:
+$$\theta=(X^TX)^{-1}X^T\overrightarrow{y}.$$
+where:   
+* $X$ is the matrix of input observations and   
+* $y$ is the output vector.    
+
+The problem with this approach is the time complexity of calculating $(X^TX)^{-1}$. Computing the inverse of an $n\times n$ matrix is  $O(n^3)$ and as $n$ increases it can take a very long time to finish. For small datasets ($n \lt 10,000$), the analytic approach might be practical; but, for most machine learning applications, the iterative approach is much faster.
+
+The iterative approach starts with some 'initial guess' for $\theta$, then repeatedly changes $\theta$ to make $J(\theta)$ smaller, until *hopefully* it converges to a value of $\theta$ that minimizes $J(\theta)$. Next, we'll explore three widely used iterative optimization algorithms:  
+
+* Gradient Descent,    
+* Stochastic (Iterative) Gradient Descent, and
+* The Newton-Raphson method.
 
 #### Gradient Descent
-Our objective, at this stage, is to find $\theta$ that minimizes $J(\theta)$ For this task, we use **gradient descent**. This algorithm starts with some 'initial guess' for $\theta$, then repeatedly changes $\theta$ to make $J(\theta)$ smaller, until *hopefully* we converge to a value of $\theta$ that minimizes $J(\theta)$. Here we will examine three gradient descent algorithms: batch gradient descent, stochastic (incremental) gradient descent and Newton's method.
+Gradient descent is an iterative optimization algorithm for finding the minimum of a function. To learn the parameters $\theta$ that minimize our cost function $J(\theta)$, gradient descent starts with an initial $\theta$ then makes successive steps proportional to the *negative* *gradient* of the cost function at the current $\theta$. Hence, each step is in the direction of the steepest descent.
 
-##### Batch Gradient Descent
-Batch gradient descent starts with some initial $\theta$,then repeated performs the following update:
+![](../reports/figures/gradient-descent.png)
+
+`r kfigr::figr(label = "gradient_descent", prefix = TRUE, link = TRUE, type="Figure")`: Gradient Descent
+
+`r kfigr::figr(label = "gradient_descent", prefix = TRUE, link = TRUE, type="Figure")` illustrates gradient descent for two separate 'initial guesses' of $(\theta_1, \theta_2)$. Where you finish *could* depend upon where you start. Convergence to different local minimums based upon an initial position is a characteristic of gradient descent. 
+
+Let's define gradient descent more formally. Starting with some initial $\theta$, gradient descent repeatedly performs the following update:
 $$\theta_j:=\theta_j-\alpha\frac{\partial}{\partial\theta_j}J(\theta).$$
 Computing the partial derivative, we have:
 $$\theta_j:=\theta_j-\frac{\alpha}{n}\displaystyle\sum_{i=1}^n(h_\theta(x_i)-y_i)x_{i,j}\space \forall j,$$
-where the $\alpha$ term is the **learning rate**.  This update, called the **least mean squares** ($\mathbf{LMS}$) update rule, is performed simultaneously for all values of $j=0,\dots,p$, where $p$ is the number of predictors, and $\theta_0=1$ for the bias term. Each update step is taken in the direction of the steepest decrease in $J$.
+where the $\alpha$ term is the **learning rate**.  This update, called the **least mean squares** ($\mathbf{LMS}$) update rule, is performed simultaneously for all values of $j=0,\dots,p$, where $p$ is the number of predictors. Subtracting the gradient ensures that each update step is taken in the direction of the steepest decrease in $J$.
 
 We can vectorize the implementation as follows:
 $$\theta:=\theta=\frac{\alpha}{n}X^T(g(X\theta)-\overrightarrow{y})$$
-This algorithm is called *batch* gradient descent because it looks at every observation in the entire training set on every step. Next we will examine another algorithm which, oftentimes, arrives at a $\theta$ close to that which minimizes $J$ faster. 
+This algorithm is also called *batch* gradient descent because it looks at every observation in the entire training set on every step. 
+
+##### Advantages and Disadvantages of Gradient Descent
+Gradient descent is a popular optimization algorithm for good reason.
+1. It is simple and effective for most convex, differentiable optimization problems.   
+2. Computationally efficient. No need to compute inverses, factorizations, or 2nd derivatives of large matrices.  
+3. Works in spaces with any number of dimensions.  
+4. Error gradients and convergence are highly stable.  
+
+On the other hand, gradient descent may converge slowly or inaccurately.
+1. Convergence may take too many iterations if the curvature for a function is very different in different directions.  
+2. Each gradient step requires $O(np)$ operations ($n=sample size, p=number of covariates$). With modern computing, data sets with $n=10^6$ and $k=10^2$ may be fine, but datasets on the order of $n=10^{12}$ may be prohibitively expensive to process. 
+3. A sub-optimal learning rate may throttle the convergence process. If the learning rate is too small, it will take too many iterations to converge. If it is too large, it may oscillate around a local minimum and never converge to a true minimum. 
+4. Since the entire dataset must be held in memory, certain machine learning problems may be too memory intensive.    
+5. Different initial starting points may result in different local minimums.
+
+That said, gradient descent is the workhorse of iterative optimization algorithms in machine learning. It's simple, relatively fast, and effective method for function minimization. Next, let's review some implementation best practices.
+
+##### Gradient Descent Implementation Best Practices
+In the last section, we illuminated the importance of effective hyperparameter tuning. A learning rate that is too 
+
+
+
+
+
+Next we will examine another algorithm which, oftentimes, arrives at a $\theta$ close to that which minimizes $J$ faster. 
 
 ##### Stochastic (Incremental) Gradient Descent
 Consider the following algorithm:
