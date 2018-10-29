@@ -220,7 +220,7 @@ We can implement a vectorized version as follows:
 * $h=g(X\theta)$    
 * $J(\theta)=\frac{1}{n}[-y^Tlog(h)-(1-y)^Tlog(1-h)]$    
 
-`r h <- 'Estimating $\theta$'`
+`r h <- 'Estimating ' $\theta$`
 #### `r h`
 Having defined our cost function, the next step is to identify a parameter set $\theta$ that minimizes the cost function. Generally speaking, there are two approaches we can pursue: the **analytic approach**, and the **iterative approach**. 
 
@@ -238,7 +238,7 @@ The iterative approach starts with some 'initial guess' for $\theta$, then repea
 
 * Gradient Descent,    
 * Stochastic (Iterative) Gradient Descent, and
-* The Newton-Raphson method.
+* Mini-Batch Gradient Descent
 
 #### Gradient Descent
 Gradient descent is an iterative optimization algorithm for finding the minimum of a function. To learn the parameters $\theta$ that minimize our cost function $J(\theta)$, gradient descent starts with an initial $\theta$ then makes successive steps proportional to the *negative* *gradient* of the cost function at the current $\theta$. Hence, each step is in the direction of the steepest descent.
@@ -249,11 +249,16 @@ Gradient descent is an iterative optimization algorithm for finding the minimum 
 
 `r kfigr::figr(label = "gradient_descent", prefix = TRUE, link = TRUE, type="Figure")` illustrates gradient descent for two separate 'initial guesses' of $(\theta_1, \theta_2)$. Where you finish *could* depend upon where you start. Convergence to different local minimums based upon an initial position is a characteristic of gradient descent. 
 
+##### How does Gradient Descent Work?
 Let's define gradient descent more formally. Starting with some initial $\theta$, gradient descent repeatedly performs the following update:
 $$\theta_j:=\theta_j-\alpha\frac{\partial}{\partial\theta_j}J(\theta).$$
 Computing the partial derivative, we have:
 $$\theta_j:=\theta_j-\frac{\alpha}{n}\displaystyle\sum_{i=1}^n(h_\theta(x_i)-y_i)x_{i,j}\space \forall j,$$
-where the $\alpha$ term is the **learning rate**.  This update, called the **least mean squares** ($\mathbf{LMS}$) update rule, is performed simultaneously for all values of $j=0,\dots,p$, where $p$ is the number of predictors. Subtracting the gradient ensures that each update step is taken in the direction of the steepest decrease in $J$.
+where the $\alpha$ term is the **learning rate**.  The following equivalent notation will be familiar to you vector calculus experts.
+$$\theta := \theta - \alpha\nabla H(\theta)$$
+where $\nabla$ is the symbol for gradient. Subtracting the gradient ensures that each update step is taken in the direction of the steepest decrease in $J$. 
+
+This update, called the **least mean squares** ($\mathbf{LMS}$) update rule, is performed simultaneously for all values of $j=0,\dots,p$, where $p$ is the number of predictors. The LMS update occurs once all training examples have been scanned. This is called a training *epoch*. The algorithm may span several epochs before convergence.  
 
 We can vectorize the implementation as follows:
 $$\theta:=\theta=\frac{\alpha}{n}X^T(g(X\theta)-\overrightarrow{y})$$
@@ -273,26 +278,67 @@ On the other hand, gradient descent may converge slowly or inaccurately.
 4. Since the entire dataset must be held in memory, certain machine learning problems may be too memory intensive.    
 5. Different initial starting points may result in different local minimums.
 
-That said, gradient descent is the workhorse of iterative optimization algorithms in machine learning. It's simple, relatively fast, and effective method for function minimization. Next, let's review some implementation best practices.
+That said, gradient descent is the workhorse of iterative optimization algorithms in machine learning. It's simple, relatively fast, and effective method for function minimization. Now, let's examine an extension of gradient descent that addresses some of its shortcomings.
 
-##### Gradient Descent Implementation Best Practices
-In the last section, we illuminated the importance of effective hyperparameter tuning. A learning rate that is too 
+#### Stochastic (Incremental) Gradient Descent
 
+Stochastic gradient descent, also known as SGD, is an incremental, iterative, stochastic approximation of the gradient descent optimization method. Whereas gradient descent computes a true gradient from the entire training set on each iteration, stochastic gradient descent approximates the true gradient at each training observation. 
 
-
-
-
-Next we will examine another algorithm which, oftentimes, arrives at a $\theta$ close to that which minimizes $J$ faster. 
-
-##### Stochastic (Incremental) Gradient Descent
-Consider the following algorithm:
+##### How does Stochastic Gradient Descent Work?
+Stochastic gradient descent runs through the training set; however, unlike *batch* gradient descent, it performs the update to parameters $\theta$ after each observation. Consider the following algorithm:
 
   Loop {  
     for i=1 to n, {   
-      $\qquad\theta_j:=\theta_j-\alpha(h_\theta(x_i)-y_i)x_{i,j}\space \forall j,$    
+      $\qquad$$\theta := \theta - \alpha\nabla H(\theta)$   
     }   
   }   
 
-Here, we repeatedly run through the training set; however, unlike batch gradient descent, we update the parameters according to the gradient of the error with respect to that single observation only. Whereas batch gradient descent has to scan through the entire training set before taking a single step, stochastic gradient descent starts making progress right away.  As stated, stochastic gradient descent often arrives at $\theta$ close to the minimum much faster than batch gradient descent, but it may never 'converge'.  Depending upon the learning rate, the parameters may oscillate around the minimum of $J(\theta)$, but in practice, such approximations of the 'true' minimum or reasonably good. This is why stochastic gradient descent may be a better choice for large datasets.
+Whereas batch gradient descent has to scan through the entire training set before taking a single step, SGD starts making progress right away. 
+Though the convergence may be more 'noisy', SGD often converges to its approximation of the true minimum much faster than batch gradient descent. Is the stochastic gradient descent optimization close enough to that of batch gradient descent?  Great question. In practice it usually is. In fact, SGD is the standard implementation in many logistic regression packages such as scikit-learn.
 
-##### Newton's Method
+##### Advantages and Disadvantages of Stochastic Gradient Descent
+SGD has several advantages over batch gradient descent.  
+1. Updating with each training example provides immediate insight into the performance of the model and its rate of convergence.  
+2. The frequent updates often results in faster convergence for many machine learning problems. 
+3. Noisy convergence can avoid sub-optimal local minimums.  
+
+Yet, SGD can produce suboptimal results in some settings.   
+1. Frequent updates introduce noise in the error gradient signal, which propogates into the parameters producing higher variance over the training epochs.  
+2. The noisy error gradient may make it more difficult for the algorithm to find the error minimum.
+3. Frequent updates are more computationally expensive resulting in longer convergence times for some problems.  
+4. Requires a number of hyperparameters, such as the regularization parameter and number of iterations.
+5. Avoiding saddle points is notoriously difficult when minimizing highly non-convex cost functions. Saddle points are points where one dimension slopes up and another slopes down. Since they are usually surrounded by a plateau of the same error, they are difficult to escape because the gradient is close to zero in all dimensions [@Dauphin].
+
+
+##### Stochastic Gradient Descent Implementation Best Practices
+
+Now, we examine another varient to gradient descent that encompasses the best features of gradient descent and SGD.
+
+#### Mini-Batch Gradient Descent
+Mini-Batch gradient descent seeks to optimize the efficiency of gradient descent with the effectiveness of SGD. Rather than computing a true gradient error from an entire data set, or an estimation based upon a single observation, mini-batch gradient descent computes the gradient against 'mini-batches' of the training set. Implementations may sum the gradient over the mini-batch or take the average which reduces variance of the gradient over the training epoch.
+
+##### Advantages and Disadvantages of Mini-Batch Gradient Descent
+Computing error gradients over 'mini-batches' provides several advantages.  
+1. It allows for the use of vectorization code libraries, allowing each 'mini-batch' to be computed in parallel across multiple cores, servers, CPUs and GPUs. This can significantly accelerate the convergence process.   
+2. Averaging the gradient over training examples reduce variance in the training epoch.  
+3. More frequent updates (than gradient descent) provides for a more robust convergence, avoiding local minima.
+4. More memory efficient since the entire dataset needn't be stored in memory.    
+
+However, Mini-batch descent doesn't guarantee good convergence. Hyperparameters must be carefully chosen.
+1. Choosing a suitable learning rate can be a challenge. If the learning rate is to small, convergence may be painfully slow. If the learning rate is too large, the algorithm may fluctuate around the minimum or even diverge [@Robbins1951].   
+2. Learning rate schedules [@Darken1992] that reduce the learning rate according to a pre-defined schedule or when the change in objective between epochs falls below a threshold, must be defined in advance.  Thus, the algorithm is unable to adapt to a dataset's characteristics.
+3. 
+  
+1. The need to tune another hyperparameter, 'mini-batch size.
+
+
+
+##### Stochastic Gradient Descent Implementation Best Practices
+
+#### Newton-Raphson Method
+##### What is the Newton-Raphson Method?
+##### How does the Newton-Raphson Method Work?
+##### Advantages and Disadvantages of Newton-Raphson Method
+##### Newton-Raphson Implementation Best Practices
+
+### Case Study

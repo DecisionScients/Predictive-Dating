@@ -22,7 +22,37 @@ import warnings
 warnings.filterwarnings('ignore')
 
 from visualization import visual
+# %%
+# ---------------------------------------------------------------------------- #
+#                                    DESCRIBE                                  #
+# ---------------------------------------------------------------------------- #
 
+
+def describe_qual(df):
+    stats = pd.DataFrame()
+    cols = df.columns
+    for col in cols:
+        d = pd.DataFrame(df[col].describe())
+        d = d.T
+        d['missing'] = df[col].isna().sum()
+        stats = stats.append(d)
+    return stats
+
+
+def describe_quant(df):
+
+    stats = pd.DataFrame()
+    cols = df.columns
+    for col in cols:
+        d = pd.DataFrame(df[col].describe())
+        d = d.T
+        d['skew'] = skew(df[col])
+        d['kurtosis'] = kurtosis(df[col])
+        d['missing'] = df[col].isna().sum()
+        c = ['count', 'missing', 'min', '25%', 'mean', '50%',
+             '75%', 'max', 'skew', 'kurtosis']
+        stats = stats.append(d[c])
+    return stats
 
 # ---------------------------------------------------------------------------- #
 #                               INDEPENDENCE                                   #
