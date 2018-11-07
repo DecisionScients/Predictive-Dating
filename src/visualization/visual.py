@@ -42,18 +42,32 @@ def print_df(df, centered = True):
 # --------------------------------------------------------------------------- #
 #                                COUNT_PLOT                                   #
 # --------------------------------------------------------------------------- #
-def count_plot(df,x, hue=None, title=None):
+def countplot(df,xvar, hue=None, title='Count Plot', add_counts=False):
 
+    sns.set(style="whitegrid", font_scale=1)
+    sns.set_palette("GnBu_d")
+    fig, ax = plt.subplots()
+    sns.countplot(x = xvar, data = df, hue=hue, ax=ax).set_title(title)
+    total = float(len(df[xvar]))
+    if (add_counts == True):
+        for p in ax.patches:
+            height = p.get_height()
+            text = '{:,} ({:.02f})'.format(height, height/total) 
+            ax.text(p.get_x()+p.get_width()/2.,
+                    height/2, text, fontsize=20, ha="center", color='white') 
+    plt.tight_layout()
+    return(fig)
+# --------------------------------------------------------------------------- #
+#                                  BOXPLOT                                    #
+# --------------------------------------------------------------------------- #
+def boxplot(df, xvar, yvar=None, title='Box Plot'):
     sns.set(style="whitegrid", font_scale=2)
     sns.set_palette("GnBu_d")
     fig, ax = plt.subplots()
-    sns.countplot(x = x, data = df, hue=hue, ax=ax).set_title(title)
-    total = float(len(df[x]))
-    for p in ax.patches:
-        height = p.get_height()
-        text = '{:,} ({:.02f})'.format(height, height/total) 
-        ax.text(p.get_x()+p.get_width()/2.,
-                height/2, text, fontsize=20, ha="center", color='white') 
+    if (yvar == None):
+        sns.boxplot(x=xvar, data=df, ax=ax).set_title(title)       
+    else:
+        sns.boxplot(x=xvar, y=yvar, data=df, ax=ax).set_title(title)       
     plt.tight_layout()
     return(fig)
 # --------------------------------------------------------------------------- #
@@ -486,7 +500,7 @@ def multi_countplot(df, nrows=None, ncols=None, width=None, height=None,
 # --------------------------------------------------------------------------- #
 def multi_histogram(df: pd.DataFrame, nrows: int=None, ncols: int=None,
                     width: [int, float]=None, height: [int, float]=None,
-                    title : str=None) -> 'figure containing multiple histograms':  
+                    title : str=None):  
     import pandas as pd
 
     warnings.filterwarnings('ignore')
