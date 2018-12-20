@@ -14,10 +14,9 @@ import inspect
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from pingouin import partial_corr
 import scipy
 from scipy import stats
-from scipy.stats import kurtosis, skew
+from scipy.stats import kurtosis, skew, ttest_ind
 import seaborn as sns
 from statsmodels.graphics.mosaicplot import mosaic
 import statsmodels.api as sm
@@ -56,7 +55,10 @@ def analysis(df, x, y, z):
         plots = visual.condition(df=df, x=x, y=y, z=z)
     elif ((df[x].dtype == np.dtype('object')) and (df[y].dtype == np.dtype('object'))):
         ind = independence.association(df, x, y, z)
-        desc = pd.crosstab(df[z], [df[x], df[y]], rownames=[z],
+        desc = dict()
+        desc['count'] = pd.crosstab(df[z], [df[x], df[y]], rownames=[z],
+                           colnames=[x, y], margins=True, normalize=False)        
+        desc['pct'] = pd.crosstab(df[z], [df[x], df[y]], rownames=[z],
                            colnames=[x, y], margins=False, normalize='columns')
         plots = mosaic(df, [x, y, z])
         plots = plots[0]
@@ -85,10 +87,24 @@ def race_match(df):
     sns.set(style="whitegrid", font_scale=1)
     sns.heatmap(rm, annot=True, ax=ax)
     return(rm, ax)
-
+#%%
+def effect(df, factor, dv):
+    '''Computes the effect (% change in mean) of a factor on a dependent variable.
+    '''
+    effect = pd.DataFrame()
+    factors = df[factor].unique()
+    for f in factors:
+        dv_a = df[(df[factor]==f) & (df[dv]=='No')]
+        dv_b = df[(df[factor]==f) & (df[dv]=='Yes')]
+        dv_a['effect'] = dv_a['mean'] / dv_b['mean'] 
+        dv_b['effect'] = dv_b['mean'] / dv_a['mean']        
+        e = pd.concat([dv_a, dv_b], axis=0)
+        e = e[[factor, dv, 'mean', 'effect']]      
+        effect = pd.concat([effect, e], axis=0)  
+    return(effect)
 
 # %%
 # df = pd.read_csv(os.path.join('../', directories.INTERIM_DATA_DIR,
 #                               filenames.INTERIM_FILENAME),
 #                  encoding="Latin-1", low_memory=False)
-# race_match(df)
+

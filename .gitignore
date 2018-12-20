@@ -12,3 +12,17 @@ __pycache__/
 /src/visualization/__pycache__/visual.cpython-36.pyc
 /reports/figures
 reports/main_cache/
+notebooks/Worksheet.ipynb
+notebooks/.ipynb_checkpoints/1.0 Introduction-checkpoint.ipynb
+notebooks/.ipynb_checkpoints/2.0 Data-checkpoint.ipynb
+notebooks/.ipynb_checkpoints/3.0 Univariate EDA-checkpoint.ipynb
+notebooks/.ipynb_checkpoints/5.0 Multivariate EDA-checkpoint.ipynb
+notebooks/Decision Analysis/.ipynb_checkpoints/4.0 Decision Analysis-checkpoint.ipynb
+notebooks/Decision Analysis/Untitled.ipynb
+notebooks/Decision Analysis/.ipynb_checkpoints/4.0 Decision Analysis-checkpoint.ipynb
+notebooks/Decision Analysis/.ipynb_checkpoints/Conditions and Setting-checkpoint.ipynb
+notebooks/Decision Analysis/.ipynb_checkpoints/Dyadic Predictors-checkpoint.ipynb
+notebooks/Decision Analysis/.ipynb_checkpoints/Interests-checkpoint.ipynb
+notebooks/Decision Analysis/.ipynb_checkpoints/Untitled-checkpoint.ipynb
+test/Untitled.ipynb
+test/.ipynb_checkpoints/Untitled-checkpoint.ipynb
