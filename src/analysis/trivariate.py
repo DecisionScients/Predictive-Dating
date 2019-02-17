@@ -71,6 +71,7 @@ def analysis(df, x, y, z):
         ind = independence.factorial_anova(df, x, y, z)
         desc = description.group_describe(df, x, y, z)
         plots = visual.boxplot(df, x=y, y=x, hue=z)
+    plt.close()
     return ind, desc, plots
 
 
